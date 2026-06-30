@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b1f2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sıla Yolu 2026">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Sıla Yolu 2026 · Leverkusen → Nevşehir</title>
+<style>
+  :root{
+    --bg:#0a1219; --bg2:#0d1a24; --card:#13212c; --card2:#1b2d3a; --line:#273a48;
+    --txt:#eaf3f3; --muted:#94aab4; --red:#e63946; --teal:#2ec4b6; --gold:#f3c969;
+    --blue:#4895ef; --green:#43aa8b; --purple:#9d8df1;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+    background:radial-gradient(1200px 500px at 50% -100px,#12303f 0%,var(--bg) 60%);
+    color:var(--txt);line-height:1.55;padding-bottom:50px;min-height:100vh}
+
+  /* HERO */
+  .hero{padding:max(20px,env(safe-area-inset-top)) 18px 22px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    linear-gradient(135deg,rgba(230,57,70,.18),transparent 60%),
+    linear-gradient(-135deg,rgba(46,196,182,.16),transparent 60%);z-index:0}
+  .hero>*{position:relative;z-index:1}
+  .badge{display:inline-block;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--gold);border:1px solid rgba(243,201,105,.4);border-radius:30px;padding:4px 12px;margin-bottom:10px}
+  .hero h1{margin:0;font-size:25px;font-weight:800;letter-spacing:.5px;
+    background:linear-gradient(90deg,#fff,#bfe7e2);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero .route{font-size:14px;color:#c7dbe0;margin-top:4px;font-weight:600}
+  .flags{font-size:19px;letter-spacing:3px;margin-top:12px}
+  .stats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+  .stat{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:8px 12px;min-width:72px}
+  .stat .n{font-size:17px;font-weight:800;color:#fff}
+  .stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .countdown{margin-top:16px;font-size:13px;color:#fff;background:linear-gradient(90deg,var(--red),#c1121f);
+    display:inline-block;padding:9px 18px;border-radius:30px;font-weight:700;box-shadow:0 6px 18px rgba(230,57,70,.3)}
+
+  main{padding:6px 14px 0;max-width:680px;margin:0 auto}
+
+  /* ACCORDION */
+  .acc{margin-bottom:11px;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    background:linear-gradient(180deg,var(--card),var(--bg2));box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  .acc-head{display:flex;align-items:center;gap:13px;padding:15px 15px;cursor:pointer;user-select:none}
+  .acc-ico{flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;
+    justify-content:center;font-size:21px;background:rgba(255,255,255,.06)}
+  .acc-tt{flex:1;min-width:0}
+  .acc-tt .t{font-size:16px;font-weight:700;line-height:1.2}
+  .acc-tt .s{font-size:12px;color:var(--muted);margin-top:2px}
+  .chev{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.07);
+    display:flex;align-items:center;justify-content:center;transition:transform .35s;font-size:13px;color:var(--muted)}
+  .acc.open .chev{transform:rotate(180deg);background:var(--teal);color:#04201c}
+  .acc-panel{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+  .acc-body{padding:2px 15px 16px}
+  .acc.open{border-color:rgba(46,196,182,.45)}
+
+  h4{font-size:13px;margin:14px 0 7px;color:var(--gold);text-transform:uppercase;letter-spacing:.6px}
+  h4:first-child{margin-top:4px}
+  p{margin:7px 0;font-size:14px}
+  .muted{color:var(--muted)}
+
+  /* STAGE CARDS */
+  .stage{background:var(--card2);border-radius:13px;padding:13px;margin:10px 0;border-left:4px solid var(--red)}
+  .stage .d{font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+  .stage h3{margin:3px 0 7px;font-size:16px}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .pill{font-size:12px;background:rgba(255,255,255,.06);border:1px solid var(--line);padding:4px 9px;border-radius:8px;color:#cfe0e6}
+  .pill b{color:#fff}
+
+  /* NOTES (callouts) */
+  .cal{border-radius:11px;padding:10px 12px;margin:9px 0;font-size:13px;border:1px solid}
+  .cal.tip{background:rgba(46,196,182,.1);border-color:rgba(46,196,182,.35);color:#aef0e8}
+  .cal.warn{background:rgba(243,201,105,.1);border-color:rgba(243,201,105,.38);color:#f5dfa0}
+  .cal.danger{background:rgba(230,57,70,.12);border-color:rgba(230,57,70,.42);color:#ffc0c6}
+  .cal b{color:#fff}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+  th,td{text-align:left;padding:8px 5px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  td b{color:var(--gold)}
+
+  ul.lst{margin:7px 0;padding-left:0;list-style:none}
+  ul.lst li{padding:6px 0 6px 24px;position:relative;font-size:13.5px;border-bottom:1px solid rgba(39,58,72,.5)}
+  ul.lst li:last-child{border:none}
+  ul.lst li::before{content:"›";position:absolute;left:6px;top:6px;color:var(--teal);font-weight:800}
+  ul.lst li.x::before{content:"⚠";color:var(--gold);font-size:12px}
+  ul.lst li.d::before{content:"⛔";font-size:11px}
+
+  .hotel{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+  .hotel:last-child{border:none}
+  .hotel .name{font-weight:700;font-size:14px}
+  .hotel .desc{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .tag{font-size:10.5px;background:var(--teal);color:#04201c;font-weight:800;padding:3px 8px;border-radius:7px;white-space:nowrap}
+  .tag.g{background:var(--gold)} .tag.b{background:var(--blue);color:#031826} .tag.p{background:var(--purple);color:#100a2e}
+
+  .fuelrow{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .fuelrow:last-child{border:none}
+  .fnum{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:rgba(67,170,139,.2);color:#7ee0c4;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+  .fkm{font-size:11px;color:var(--gold);font-weight:700}
+  .ftxt{font-size:13px}
+
+  .ck{display:flex;gap:11px;align-items:flex-start;font-size:14px;cursor:pointer;padding:6px 0}
+  .ck input{width:21px;height:21px;margin-top:1px;accent-color:var(--teal);flex:0 0 auto}
+  .ck.done span{color:var(--muted);text-decoration:line-through}
+  .grp{font-size:11.5px;color:var(--gold);font-weight:800;margin:13px 0 3px;text-transform:uppercase;letter-spacing:.6px}
+  .grp:first-child{margin-top:2px}
+
+  .em{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .em:last-child{border:none}
+  .em a{color:#fff;background:var(--green);text-decoration:none;font-weight:700;padding:5px 13px;border-radius:9px;font-size:13px}
+  .lnk{display:block;color:#8fd9ff;text-decoration:none;font-size:13.5px;padding:8px 0;border-bottom:1px solid rgba(39,58,72,.5)}
+  .lnk:last-child{border:none}
+  .lnk b{color:#fff}
+
+  textarea{width:100%;min-height:130px;background:var(--bg);color:var(--txt);border:1px solid var(--line);
+    border-radius:11px;padding:12px;font-size:14px;font-family:inherit;resize:vertical}
+  .saved{font-size:11px;color:var(--green);margin-top:6px;height:14px;transition:opacity .3s}
+  button.rs{margin-top:10px;background:var(--card2);color:var(--muted);border:1px solid var(--line);
+    padding:8px 14px;border-radius:9px;font-size:12px}
+  footer{text-align:center;font-size:11px;color:var(--muted);padding:22px 16px 8px;line-height:1.7}
+  .quick{display:flex;gap:7px;overflow-x:auto;padding:4px 0 12px;-webkit-overflow-scrolling:touch}
+  .quick::-webkit-scrollbar{display:none}
+  .quick button{flex:0 0 auto;background:var(--card2);border:1px solid var(--line);color:var(--txt);
+    font-size:12px;padding:7px 12px;border-radius:20px;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="badge">🌙 Sıla Yolu 2026</span>
+  <h1>Leverkusen → Nevşehir</h1>
+  <div class="route">Avanos · Kalaba · Kappadokien</div>
+  <div class="flags">🇩🇪 🇦🇹 🇭🇺 🇷🇸 🇧🇬 🇹🇷</div>
+  <div class="stats">
+    <div class="stat"><div class="n">~2.800</div><div class="l">km</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">Länder</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">Nächte</div></div>
+    <div class="stat"><div class="n">~30 h</div><div class="l">Fahrt</div></div>
+  </div>
+  <div class="countdown" id="cd">Abfahrt 29.07.2026</div>
+</div>
+
+<main>
+
+  <div class="quick" id="quick"></div>
+
+  <!-- 1 ETAPPEN -->
+  <div class="acc" data-q="Etappen">
+    <div class="acc-head"><div class="acc-ico">📍</div>
+      <div class="acc-tt"><div class="t">Etappen & Route</div><div class="s">3 Tage · Budapest → Edirne → Heimat</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="stage">
+        <div class="d">Tag 1 · 29.07.</div><h3>Leverkusen → Budapest 🇭🇺</h3>
+        <div class="pills"><span class="pill"><b>~1.350 km</b></span><span class="pill">⏱️ <b>~12–13 h</b></span><span class="pill">A3 · Passau · Wien</span></div>
+        <div class="cal tip">Früh los (~6 Uhr). Alles Schengen — keine Kontrollen bis Ungarn. AT- & HU-Vignette vorher digital kaufen.</div>
+      </div>
+      <div class="stage">
+        <div class="d">Tag 2 · 30.07.</div><h3>Budapest → Edirne 🇹🇷</h3>
+        <div class="pills"><span class="pill"><b>~1.080 km</b></span><span class="pill">⏱️ <b>~12 h + Grenze</b></span><span class="pill">RS · BG · Kapıkule</span></div>
+        <div class="cal danger">⚠️ Der harte Tag! 2 Grenzen + Kapıkule. Im Sommer 1–6 h Stau. <b>Sehr früh aus Budapest (4–5 Uhr)</b> → Grenze vormittags. Edirne liegt schon in der Türkei.</div>
+      </div>
+      <div class="stage">
+        <div class="d">Tag 3 · 31.07.</div><h3>Edirne → Nevşehir 🏁</h3>
+        <div class="pills"><span class="pill"><b>~960 km</b></span><span class="pill">⏱️ <b>~10–11 h</b></span><span class="pill">Istanbul · Ankara · Otoyol</span></div>
+        <div class="cal tip">Schnelle Otoyol. HGS muss aktiv sein (Bosporus-Brücke!). Istanbul nicht zur Rushhour durchfahren.</div>
+      </div>
+      <div class="cal warn">↩️ <b>Rückfahrt ca. 30.08.</b> mit Aydan. Mama fliegt zurück (Flug separat). HGS-Beleg + Fahrzeug-Eintrag im Pass für Ausreise bereithalten.</div>
+    </div></div>
+  </div>
+
+  <!-- 2 SILA YOLU WISSEN -->
+  <div class="acc" data-q="Sıla Yolu">
+    <div class="acc-head"><div class="acc-ico">🛣️</div>
+      <div class="acc-tt"><div class="t">Sıla Yolu — Routen-Wissen</div><div class="s">Klassiker, Alternativen & Strategie</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <h4>Deine Route (Macaristan-Hattı)</h4>
+      <p>🇩🇪 → 🇦🇹 → 🇭🇺 → 🇷🇸 → 🇧🇬 → 🇹🇷. Die <b>Ungarn-Linie</b> gilt als ruhiger als die Kroatien-Variante und ist für Nevşehir die direkteste.</p>
+      <h4>Alternativen (falls nötig)</h4>
+      <ul class="lst">
+        <li><b>Kroatien-Route:</b> AT → SLO → HR → RS → BG. Beliebt, aber im Sommer voller.</li>
+        <li><b>Griechenland/İpsala:</b> über Nordmazedonien → Griechenland → Grenze İpsala. Umweg, aber weniger Balkan-Grenzen.</li>
+        <li><b>Fähre Italien → Griechenland:</b> spart Fahrt, kostet aber Zeit & Geld. Eher für Süd-/Westtürkei.</li>
+      </ul>
+      <div class="cal tip"><b>Faustregel der Gurbetçi:</b> Serbien ist „die Hälfte des Weges" — dort spätestens Pause machen. Müdigkeit ist auf dieser Strecke die größte Gefahr.</div>
+      <div class="cal warn">Distanz gesamt ~2.500–2.800 km · reine Fahrzeit 24–36 h je nach Grenzen. Deshalb 2 Nächte einplanen.</div>
+    </div></div>
+  </div>
+
+  <!-- 3 TANKEN -->
+  <div class="acc" data-q="Tanken">
+    <div class="acc-head"><div class="acc-ico">⛽</div>
+      <div class="acc-tt"><div class="t">Tanken & Reichweite</div><div class="s">~500 km/Tank · 5–6 Stopps · günstig im Osten</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="cal warn"><b>A6 TFSI e:</b> Tank ~54 L · beladen ~9 L/100 km → sicher <b>~500 km/Tank</b> (bei 140+ nur ~450 km). Akku hilft nur die 1. Etappe. → <b>5–6 Tankfüllungen.</b></div>
+      <div class="cal danger"><b>Regel 1:</b> NIE auf Autobahn/Otoyol tanken — 1 Ausfahrt raus spart 10–20 %.<br><b>Regel 2:</b> DE/AT teuer (~1,80 €) → nur das Nötigste. Im Osten günstig volltanken.</div>
+      <h4>Tankplan nach Distanz</h4>
+      <div class="fuelrow"><div class="fnum">🏁</div><div><div class="fkm">0 km · 🇩🇪 Leverkusen</div><div class="ftxt">Voll + Akku laden (~1,87 €/L)</div></div></div>
+      <div class="fuelrow"><div class="fnum">1</div><div><div class="fkm">~550 km · 🇩🇪🇦🇹 Passau/Regensburg</div><div class="ftxt">Teuer → nur bis Ungarn auffüllen</div></div></div>
+      <div class="fuelrow"><div class="fnum">2</div><div><div class="fkm">~1.100 km · 🇭🇺 Győr/Tatabánya</div><div class="ftxt">MOL/OMV im Ort — VOLL! (~1,45 €)</div></div></div>
+      <div class="fuelrow"><div class="fnum">3</div><div><div class="fkm">~1.600 km · 🇷🇸 Belgrad/Niš</div><div class="ftxt">NIS Petrol / Gazprom / OMV</div></div></div>
+      <div class="fuelrow"><div class="fnum">4</div><div><div class="fkm">~2.100 km · 🇧🇬 Sofia/Plovdiv</div><div class="ftxt">Lukoil/OMV — vor Türkei voll!</div></div></div>
+      <div class="fuelrow"><div class="fnum">5</div><div><div class="fkm">~2.600 km · 🇹🇷 nach Istanbul</div><div class="ftxt">Petrol Ofisi/Opet — am billigsten (~1,15 €)</div></div></div>
+      <div class="cal tip">Vor jeder Nicht-EU-Grenze (Serbien, Türkei) mit mind. <b>¾ Tank</b> ankommen. Große Stadttankstellen meist 24 h offen. App-Tipp: <b>Clever Tanken</b>.</div>
+    </div></div>
+  </div>
+
+  <!-- 4 GRENZEN -->
+  <div class="acc" data-q="Grenze">
+    <div class="acc-head"><div class="acc-ico">🛂</div>
+      <div class="acc-tt"><div class="t">Grenzübergänge</div><div class="s">Kapıkule + 2 ruhigere Alternativen + Live-Tools</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <h4>Welcher Übergang?</h4>
+      <ul class="lst">
+        <li><b>Kapıkule</b> (Standard) — größter, im Sommer am vollsten. Direkt auf der Route.</li>
+        <li><b>Hamzabeyli</b> — 2. Wahl, oft deutlich leerer. Kleiner Umweg.</li>
+        <li><b>Dereköy</b> (über Kırklareli) — der ruhigste! Geheimtipp bei Stau, aber abseits der Edirne-Linie → Umweg.</li>
+      </ul>
+      <div class="cal tip"><b>Plan:</b> Kapıkule ansteuern, aber <b>vorher Live-Wartezeit checken</b>. Wenn Kapıkule >2 h staut → auf Hamzabeyli ausweichen.</div>
+      <h4>Live-Wartezeiten (vorher checken!)</h4>
+      <ul class="lst">
+        <li><b>trakyasinirlari.com</b> — Live-Kameras + Wartezeit aller Trakya-Grenzen</li>
+        <li><b>gdd.gov.tr</b> (Türkei) · <b>mvr.bg</b> (Bulgarien)</li>
+      </ul>
+      <h4>Beste Zeit</h4>
+      <p>Kürzeste Schlange <b>nachts 01–06 Uhr</b> & vormittags. Meiden: 17–21 Uhr.</p>
+      <div class="cal warn"><b>Auto wird in deinen Pass eingetragen</b> („araç giriş"). Du musst es selbst wieder ausführen — Beleg gut aufbewahren! Beim PTT an der Grenze direkt HGS kaufen + TL ziehen.</div>
+    </div></div>
+  </div>
+
+  <!-- 5 POLIZEI & ABZOCKE -->
+  <div class="acc" data-q="Sicherheit">
+    <div class="acc-head"><div class="acc-ico">🚓</div>
+      <div class="acc-tt"><div class="t">Polizei & Abzocke — wichtig!</div><div class="s">Tempofallen, falsche Helfer, Diebstahl</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="cal danger">Diese Punkte sind echtes Gurbetçi-Erfahrungswissen — bitte ernst nehmen.</div>
+      <h4>🇷🇸 Serbien — Tempofallen</h4>
+      <ul class="lst">
+        <li class="x">Zivile <b>weiße Audi / schwarze BMW</b> messen Tempo zwischen Belgrad–Niš. Strikt <b>130</b> fahren.</li>
+        <li class="x">Maut misst <b>Durchschnittstempo</b> zwischen zwei Stationen — zu schnell = automatische Strafe an der Ausfahrt!</li>
+        <li class="d">&gt;70 km/h zu schnell = bis zu <b>30 Tage Haft</b> möglich. Kein Spaß.</li>
+      </ul>
+      <h4>⚠️ Falsche Pannenhelfer (RS/BG/HU)</h4>
+      <ul class="lst">
+        <li class="x">Banden geben sich als <b>ADAC/ÖAMTC/ANWB</b> aus. Niemals fremden „Helfern" Geld geben.</li>
+        <li>Panne? Nur über die <b>offizielle Schutzbrief-Nummer</b> Hilfe rufen.</li>
+      </ul>
+      <h4>🇧🇬 Bulgarien — Diebstahl</h4>
+      <ul class="lst">
+        <li class="x">Diebstahl <b>ausländischer Kennzeichen</b> verbreitet; Banden fordern Lösegeld fürs Auto.</li>
+        <li>Auto immer <b>bewacht/beleuchtet</b> parken. Nichts Sichtbares liegen lassen.</li>
+        <li class="x">Baustellen mit Tempofallen — Limits genau beachten.</li>
+      </ul>
+      <h4>Allgemein</h4>
+      <ul class="lst">
+        <li class="x">Nicht bei jeder türkischen Flagge/Namen anhalten — nur <b>belebte, sichere</b> Raststätten.</li>
+        <li>Bei „Polizei"-Zweifel: zur nächsten <b>bewachten Tankstelle</b> fahren. Immer Quittung verlangen.</li>
+        <li class="x">Bargeld <b>über 10.000 € pro Person</b> an EU-Außengrenze anmelden!</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- 6 VERKEHRSREGELN -->
+  <div class="acc" data-q="Regeln">
+    <div class="acc-head"><div class="acc-ico">🏎️</div>
+      <div class="acc-tt"><div class="t">Verkehrsregeln pro Land</div><div class="s">Tempo & Alkohol — Achtung Ungarn 0,0!</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <table>
+        <tr><th>Land</th><th>Autobahn</th><th>Ort</th><th>Alkohol</th></tr>
+        <tr><td>🇩🇪 DE</td><td>unbegr.*</td><td>50</td><td>0,5 ‰</td></tr>
+        <tr><td>🇦🇹 AT</td><td>130</td><td>50</td><td>0,5 ‰</td></tr>
+        <tr><td>🇭🇺 HU</td><td>130</td><td>50</td><td><b>0,0 ‰</b></td></tr>
+        <tr><td>🇷🇸 RS</td><td>130</td><td>50</td><td>0,2 ‰</td></tr>
+        <tr><td>🇧🇬 BG</td><td>140</td><td>50</td><td>0,5 ‰</td></tr>
+        <tr><td>🇹🇷 TR</td><td>120–140</td><td>50</td><td>0,5 ‰</td></tr>
+      </table>
+      <p class="muted">*Richtgeschwindigkeit 130. AT teils IG-L-Zonen 100.</p>
+      <ul class="lst">
+        <li class="x"><b>Ungarn & Serbien:</b> praktisch Null-Alkohol — gar nichts trinken.</li>
+        <li>Tagsüber Abblendlicht in mehreren Ländern Pflicht — einfach immer an.</li>
+        <li>Warnweste für ALLE Insassen griffbereit (nicht im Kofferraum).</li>
+        <li>Handy am Steuer: überall teuer. Halterung nutzen.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- 7 HOTELS -->
+  <div class="acc" data-q="Hotels">
+    <div class="acc-head"><div class="acc-ico">🏨</div>
+      <div class="acc-tt"><div class="t">Hotels</div><div class="s">Budapest + Edirne · mit Parkplatz</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="grp">🇭🇺 Budapest · Nacht 1</div>
+      <div class="hotel"><div><div class="name">Holiday Inn Budapest-Budaörs</div><div class="desc">Direkt an M1/M7, leicht rein/raus, Parkplatz.</div></div><span class="tag">Top</span></div>
+      <div class="hotel"><div><div class="name">Aquaworld Resort Budapest</div><div class="desc">Am Ring M0, kostenloser Parkplatz, Pool.</div></div><span class="tag g">Familie</span></div>
+      <div class="hotel"><div><div class="name">Szőnyi Garden Hotel Pest</div><div class="desc">Großer sicherer Parkplatz, gutes P/L.</div></div><span class="tag b">Günstig</span></div>
+      <div class="grp">🇹🇷 Edirne · Nacht 2 (grenznah)</div>
+      <div class="hotel"><div><div class="name">Novo Star Hotel</div><div class="desc">Minuten vom Grenztor Kapıkule, viel Parkfläche, 24 h.</div></div><span class="tag">Grenznah</span></div>
+      <div class="hotel"><div><div class="name">The Plaza Hotel Edirne</div><div class="desc">Überdachter, sicherer Parkplatz, 15–20 Min. zur Grenze.</div></div><span class="tag g">Sicher</span></div>
+      <div class="hotel"><div><div class="name">Hilly Hotel</div><div class="desc">Stadtrand, leichte Autobahnanbindung, Parkplatz.</div></div><span class="tag p">Praktisch</span></div>
+      <div class="cal warn">Hochsaison! <b>Jetzt buchen</b>, möglichst mit kostenloser Stornierung.</div>
+    </div></div>
+  </div>
+
+  <!-- 8 VIGNETTEN -->
+  <div class="acc" data-q="Vignetten">
+    <div class="acc-head"><div class="acc-ico">🎫</div>
+      <div class="acc-tt"><div class="t">Vignetten & Maut 2026</div><div class="s">Vorab kaufen · HGS an der Grenze</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <table>
+        <tr><th>Land</th><th>Was</th><th>Preis</th><th>Wo</th></tr>
+        <tr><td>🇦🇹 AT</td><td>10-Tage digital</td><td><b>12,80 €</b></td><td>vorab online</td></tr>
+        <tr><td>🇭🇺 HU</td><td>D1 10-Tage</td><td><b>~18 €</b></td><td>vorab online</td></tr>
+        <tr><td>🇷🇸 RS</td><td>Maut/Ticket</td><td><b>~15–25 €</b></td><td>bar/Karte</td></tr>
+        <tr><td>🇧🇬 BG</td><td>Wochenvignette</td><td><b>~15–18 €</b></td><td>bgtoll.bg</td></tr>
+        <tr><td>🇹🇷 TR</td><td>HGS-Chip</td><td><b>+300–500 TL</b></td><td>PTT Grenze</td></tr>
+      </table>
+      <div class="cal danger">🇹🇷 <b>HGS ist Pflicht!</b> Ohne = Strafe (11-fach nach 7 Tagen) an Bosporus-Brücke/Otoyol.</div>
+      <div class="cal tip">AT + HU + BG <b>1 Tag vor Abfahrt online</b> kaufen — Kennzeichen EXAKT eingeben, sofort gültig. 🇩🇪 Deutschland kostenlos.</div>
+    </div></div>
+  </div>
+
+  <!-- 9 INTERNET -->
+  <div class="acc" data-q="Internet">
+    <div class="acc-head"><div class="acc-ico">📱</div>
+      <div class="acc-tt"><div class="t">Internet & eSIM</div><div class="s">EU-Roaming endet an der Serbien-Grenze!</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="cal danger"><b>Wichtig:</b> Dein dt. Tarif (EU-Roaming) gilt in 🇦🇹🇭🇺🇧🇬 — aber <b>NICHT in 🇷🇸 Serbien & 🇹🇷 Türkei</b>! Ab der Serbien-Grenze brechen die Daten ab oder es drohen Wucher-Rechnungen.</div>
+      <h4>Lösung: eSIM (vor Abfahrt installieren)</h4>
+      <ul class="lst">
+        <li>eSIM für <b>Europa + Serbien + Türkei</b>, z. B. ~10 GB für ~25 € (30 Tage).</li>
+        <li>Digital aufs Handy laden, an der Serbien-Grenze aktivieren — kein SIM-Wechsel.</li>
+        <li>Brauchst du für <b>Navi, Live-Grenzen, Pannenhilfe, Familie</b>.</li>
+      </ul>
+      <div class="cal tip">Zusätzlich: <b>Google Maps offline</b> für alle Länder vorher laden. In der Türkei navigiert <b>Yandex Navi</b> top.</div>
+    </div></div>
+  </div>
+
+  <!-- 10 GELD -->
+  <div class="acc" data-q="Geld">
+    <div class="acc-head"><div class="acc-ico">💶</div>
+      <div class="acc-tt"><div class="t">Geld & Währung</div><div class="s">EUR am Balkan · TL in der Türkei</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <ul class="lst">
+        <li>Währungen: 🇭🇺 Forint · 🇷🇸 Dinar · 🇧🇬 Lev · 🇹🇷 Lira. <b>EUR wird am Balkan oft akzeptiert.</b></li>
+        <li><b>Bargeld in EUR</b> mitnehmen; kleine Beträge Landeswährung am Automaten/Tankstelle.</li>
+        <li>Kreditkarte an großen Tankstellen überall ok.</li>
+        <li>In der Türkei: am besten <b>vor Ort TL</b> abheben (besserer Kurs als Wechselstube an der Grenze).</li>
+        <li class="x">Bargeld <b>über 10.000 €/Person</b> an der EU-Außengrenze anmelden!</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- 11 CHECKLISTE -->
+  <div class="acc" data-q="Checkliste">
+    <div class="acc-head"><div class="acc-ico">✅</div>
+      <div class="acc-tt"><div class="t">Checkliste</div><div class="s">Dokumente · Auto · wird gespeichert</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div id="checklist">
+        <div class="grp">📄 Dokumente (für ALLE)</div>
+        <label class="ck"><input type="checkbox"><span>Reisepass (nicht nur Perso!) · 6 Mon. gültig</span></label>
+        <label class="ck"><input type="checkbox"><span>Führerschein</span></label>
+        <label class="ck"><input type="checkbox"><span>Zulassungsbescheinigung Teil I (Original)</span></label>
+        <label class="ck"><input type="checkbox"><span>Grüne Karte — „TR" geprüft (asiat. Teil!) ✅</span></label>
+        <label class="ck"><input type="checkbox"><span>Schutzbrief mit Türkei-Abdeckung</span></label>
+        <div class="grp">🎫 Vorab erledigen</div>
+        <label class="ck"><input type="checkbox"><span>Vignette Österreich (digital)</span></label>
+        <label class="ck"><input type="checkbox"><span>Vignette Ungarn D1 (digital)</span></label>
+        <label class="ck"><input type="checkbox"><span>Vignette Bulgarien (bgtoll.bg)</span></label>
+        <label class="ck"><input type="checkbox"><span>eSIM gekauft & installiert</span></label>
+        <label class="ck"><input type="checkbox"><span>Google Maps offline geladen</span></label>
+        <label class="ck"><input type="checkbox"><span>Hotel Budapest gebucht</span></label>
+        <label class="ck"><input type="checkbox"><span>Hotel Edirne gebucht</span></label>
+        <div class="grp">🚗 Auto-Check</div>
+        <label class="ck"><input type="checkbox"><span>Inspektion · Öl · Bremsen · Kühlflüssigkeit</span></label>
+        <label class="ck"><input type="checkbox"><span>Reifen: Profil + Druck (beladen!)</span></label>
+        <label class="ck"><input type="checkbox"><span>Klimaanlage geprüft (40 °C!)</span></label>
+        <label class="ck"><input type="checkbox"><span>Warndreieck + Warnwesten für ALLE</span></label>
+        <label class="ck"><input type="checkbox"><span>Verbandskasten (Datum!) + Ersatzlampen</span></label>
+        <label class="ck"><input type="checkbox"><span>Type-2- + Schuko-Ladekabel (fürs Hotel)</span></label>
+        <div class="grp">💶 Sonstiges</div>
+        <label class="ck"><input type="checkbox"><span>Bargeld EUR + Kreditkarte</span></label>
+        <label class="ck"><input type="checkbox"><span>Sonnenschutz · Wasser · Snacks</span></label>
+        <label class="ck"><input type="checkbox"><span>Handy-Halterung + Auto-Ladekabel</span></label>
+        <label class="ck"><input type="checkbox"><span>Medikamente (Mama) griffbereit</span></label>
+      </div>
+      <button class="rs" id="reset">Checkliste zurücksetzen</button>
+    </div></div>
+  </div>
+
+  <!-- 12 NOTIZEN -->
+  <div class="acc open" data-q="Notizen">
+    <div class="acc-head"><div class="acc-ico">📝</div>
+      <div class="acc-tt"><div class="t">Meine Notizen</div><div class="s">Was dir noch einfällt — wird gespeichert</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <p class="muted">Schreib hier alles rein, was du noch ergänzen willst (Kennzeichen, Hotel-Buchungsnr., Treffpunkte, Sachen die fehlen …). Bleibt auf dem Handy gespeichert.</p>
+      <textarea id="notes" placeholder="• Kennzeichen: …&#10;• Hotel Budapest Buchungsnr.: …&#10;• Noch klären: …"></textarea>
+      <div class="saved" id="savedMsg"></div>
+    </div></div>
+  </div>
+
+  <!-- 13 NOTRUF -->
+  <div class="acc" data-q="Notruf">
+    <div class="acc-head"><div class="acc-ico">🆘</div>
+      <div class="acc-tt"><div class="t">Notruf & nützliche Apps</div><div class="s">Antippen zum Anrufen</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="em"><span>Notruf EU (überall)</span><a href="tel:112">112</a></div>
+      <div class="em"><span>Notruf Türkei</span><a href="tel:112">112</a></div>
+      <div class="em"><span>ADAC Auslandsnotruf</span><a href="tel:+498922222222">089 222222</a></div>
+      <div class="em"><span>Dt. Botschaft Ankara</span><a href="tel:+903124559000">+90 312 455 9000</a></div>
+      <div class="em"><span>Polizei Türkei</span><a href="tel:155">155</a></div>
+      <h4>Nützliche Links & Apps</h4>
+      <a class="lnk" href="https://trakyasinirlari.com" target="_blank"><b>trakyasinirlari.com</b> — Live-Grenzen Trakya</a>
+      <a class="lnk" href="https://bgtoll.bg/de/" target="_blank"><b>bgtoll.bg</b> — Vignette Bulgarien</a>
+      <a class="lnk" href="https://www.asfinag.at" target="_blank"><b>asfinag.at</b> — Vignette Österreich</a>
+      <a class="lnk" href="https://www.clever-tanken.de" target="_blank"><b>Clever Tanken</b> — günstig tanken</a>
+      <span class="lnk"><b>Yandex Navi</b> · <b>Google Maps (offline)</b> — Navigation</span>
+    </div></div>
+  </div>
+
+  <footer>
+    🌙 Sıla Yolu 2026 · privater Reiseplan · Preise ca.-Angaben<br>
+    Tipp: Browser → „Zum Home-Bildschirm" → wie eine App, offline nutzbar.<br>
+    İyi yolculuklar! 🚗💨
+  </footer>
+</main>
+
+<script>
+  // --- Accordion ---
+  document.querySelectorAll('.acc').forEach(acc=>{
+    const head=acc.querySelector('.acc-head');
+    const panel=acc.querySelector('.acc-panel');
+    if(acc.classList.contains('open')) panel.style.maxHeight=panel.scrollHeight+'px';
+    head.addEventListener('click',()=>{
+      const open=acc.classList.toggle('open');
+      panel.style.maxHeight = open ? panel.scrollHeight+'px' : 0;
+    });
+  });
+  // recalc height after content/textarea grows
+  function refresh(){document.querySelectorAll('.acc.open .acc-panel').forEach(p=>p.style.maxHeight=p.scrollHeight+'px');}
+
+  // --- Quick-Nav chips ---
+  const q=document.getElementById('quick');
+  document.querySelectorAll('.acc').forEach(acc=>{
+    const b=document.createElement('button');
+    b.textContent=acc.dataset.q;
+    b.onclick=()=>{
+      if(!acc.classList.contains('open')) acc.querySelector('.acc-head').click();
+      setTimeout(()=>acc.scrollIntoView({behavior:'smooth',block:'start'}),120);
+    };
+    q.appendChild(b);
+  });
+
+  // --- Countdown ---
+  (function(){
+    const target=new Date('2026-07-29T06:00:00');
+    const el=document.getElementById('cd');
+    function upd(){
+      const d=Math.ceil((target-new Date())/86400000);
+      el.textContent = d>0 ? ('🗓️ noch '+d+' Tage bis zur Abfahrt') : (d===0?'🚗 Heute geht es los!':'Abfahrt 29.07.2026');
+    }
+    upd();
+  })();
+
+  // --- Checklist persist ---
+  const boxes=document.querySelectorAll('#checklist input[type=checkbox]');
+  boxes.forEach((b,i)=>{
+    const k='sy26_ck_'+i;
+    b.checked=localStorage.getItem(k)==='1';
+    if(b.checked)b.closest('label').classList.add('done');
+    b.addEventListener('change',()=>{localStorage.setItem(k,b.checked?'1':'0');b.closest('label').classList.toggle('done',b.checked);});
+  });
+  document.getElementById('reset').addEventListener('click',()=>{
+    boxes.forEach((b,i)=>{b.checked=false;localStorage.removeItem('sy26_ck_'+i);b.closest('label').classList.remove('done');});
+  });
+
+  // --- Notes persist ---
+  const ta=document.getElementById('notes'), msg=document.getElementById('savedMsg');
+  ta.value=localStorage.getItem('sy26_notes')||'';
+  let t;
+  ta.addEventListener('input',()=>{
+    localStorage.setItem('sy26_notes',ta.value);
+    msg.textContent='✓ gespeichert'; clearTimeout(t);
+    t=setTimeout(()=>msg.textContent='',1500);
+    refresh();
+  });
+</script>
+</body>
+</html>
