@@ -7,7 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Sıla Yolu 2026">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Sıla Yolu 2026 · Leverkusen → Nevşehir</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   :root{
     --bg:#0a1219; --bg2:#0d1a24; --card:#13212c; --card2:#1b2d3a; --line:#273a48;
@@ -499,6 +503,17 @@
     t=setTimeout(()=>msg.textContent='',1500);
     refresh();
   });
+
+  // --- Service Worker: macht die Seite offline nutzbar ---
+  // Funktioniert nur über https:// (z. B. GitHub Pages) oder http://localhost,
+  // NICHT beim direkten Öffnen einer file://-Datei.
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register('sw.js').catch(err=>{
+        console.warn('Service Worker konnte nicht registriert werden:',err);
+      });
+    });
+  }
 </script>
 </body>
 </html>
