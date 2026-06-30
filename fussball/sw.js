@@ -1,7 +1,7 @@
-/* Sıla Yolu 2026 – Service Worker
-   Macht den Reiseplaner offline nutzbar. Beim Erhöhen der Version
-   wird der alte Cache verworfen und neu befüllt. */
-const CACHE = 'sila-yolu-2026-v1';
+/* GBO Trainingsportal – Service Worker
+   Macht das Portal offline nutzbar. Eigener Cache-Name, damit es sich
+   NICHT mit anderen Apps (z. B. Sıla Yolu) überschneidet. */
+const CACHE = 'gbo-portal-2026-v1';
 
 const ASSETS = [
   './',
@@ -13,7 +13,6 @@ const ASSETS = [
   './apple-touch-icon.png'
 ];
 
-// Installieren: alle Assets in den Cache legen
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE)
@@ -22,19 +21,18 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Aktivieren: alte Caches aufräumen
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(
-        keys.filter((k) => k.startsWith('sila-yolu-') && k !== CACHE).map((k) => caches.delete(k))
+        keys.filter((k) => k.startsWith('gbo-portal-') && k !== CACHE).map((k) => caches.delete(k))
       ))
       .then(() => self.clients.claim())
   );
 });
 
-// Abrufen: zuerst Netz (frische Inhalte), bei Offline aus dem Cache.
-// Navigations-Anfragen fallen immer auf index.html zurück.
+// Netz zuerst (frische Inhalte), bei Offline aus dem Cache.
+// Navigations-Anfragen fallen auf index.html zurück.
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
