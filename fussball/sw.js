@@ -1,7 +1,7 @@
 /* GBO Trainingsportal – Service Worker
    Macht das Portal offline nutzbar. Eigener Cache-Name, damit es sich
    NICHT mit anderen Apps (z. B. Sıla Yolu) überschneidet. */
-const CACHE = 'gbo-portal-2026-v1';
+const CACHE = 'gbo-portal-2026-v2';
 
 const ASSETS = [
   './',
@@ -14,11 +14,15 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
-  );
+  // Jede Datei einzeln cachen: schlägt eine fehl, bricht NICHT der ganze
+  // Vorgang ab – die wichtige index.html landet trotzdem im Cache.
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    await Promise.allSettled(
+      ASSETS.map((u) => cache.add(new Request(u, { cache: 'reload' })))
+    );
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (event) => {
