@@ -106,6 +106,8 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
 .conote-t{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#777;margin-bottom:5px;}
 .conote textarea{width:100%;min-height:64px;border:1px solid var(--border);border-radius:7px;padding:9px;font-family:inherit;font-size:13px;resize:vertical;background:#fff;color:var(--dark);}
 .conote .saved{font-size:10px;color:var(--p1);height:13px;margin-top:3px;}
+.vid-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:700;color:#fff;background:#FF0000;text-decoration:none;padding:5px 11px;border-radius:6px;}
+.vid-btn:active{opacity:.85;}
 </style>
 </head>
 <body>
@@ -367,6 +369,7 @@ S.forEach(s=>{
             <span class="bh-dur">${b.dur}</span>
           </div>
           <div class="bd">${b.desc}</div>
+          ${b.color!=='#333'?`<a class="vid-btn" target="_blank" rel="noopener" href="${b.video?b.video:'https://www.youtube.com/results?search_query='+encodeURIComponent(b.title.replace(/\([^)]*\)/g,'').trim()+' Fußball Training Übung')}">🎥 ${b.video?'Video ansehen':'Übung als Video suchen'}</a>`:''}
         </div>`).join('')}
       <div class="tnote"><div class="tnote-t">⚑ Trainer-Fokus</div><div class="tnote-d">${s.note}</div></div>
       <div class="conote">

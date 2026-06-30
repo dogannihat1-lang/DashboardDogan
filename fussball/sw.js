@@ -1,7 +1,7 @@
 /* GBO Trainingsportal – Service Worker
    Macht das Portal offline nutzbar. Eigener Cache-Name, damit es sich
    NICHT mit anderen Apps (z. B. Sıla Yolu) überschneidet. */
-const CACHE = 'gbo-portal-2026-v4';
+const CACHE = 'gbo-portal-2026-v5';
 
 const ASSETS = [
   './',
