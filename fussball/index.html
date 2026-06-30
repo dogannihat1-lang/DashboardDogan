@@ -83,6 +83,29 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
 .scroll-btn{position:fixed;bottom:20px;right:20px;background:var(--red);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:16px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
 .scroll-btn.vis{display:flex;}
 @media(max-width:700px){.phase-cards{grid-template-columns:1fr 1fr;}.hero-inner{flex-direction:column;align-items:flex-start;}.nav-links{display:none;}.ts-ort{margin-left:0;}}
+/* --- Werkzeug-Funktionen: Fortschritt, Heute, Material, Notizen --- */
+.cohint{background:#FCEBEB;border-left:3px solid var(--red);border-radius:5px;padding:9px 12px;font-size:11.5px;color:#a01020;margin:0 0 14px;line-height:1.45;}
+.cohint b{color:#7a0010;}
+.progress-wrap{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:0 0 18px;}
+.progress-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px;}
+.progress-top .rst{font-size:10px;font-weight:600;color:#999;background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;}
+.progress-track{height:9px;background:#eee;border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;width:0;background:var(--p1);border-radius:6px;transition:width .3s;}
+.sc-check{flex:0 0 auto;display:flex;align-items:center;margin-right:4px;cursor:pointer;}
+.sc-check input{width:22px;height:22px;accent-color:var(--p1);cursor:pointer;}
+.sc.done{opacity:.6;}
+.sc.done .sc-focus{text-decoration:line-through;}
+.sc.is-today{box-shadow:0 0 0 2px var(--red);border-radius:8px;}
+.today-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:1px;background:var(--red);color:#fff;padding:2px 7px;border-radius:4px;text-transform:uppercase;margin-right:6px;}
+.mat-box{background:#FAFAFA;border:1px dashed var(--border);border-radius:7px;padding:10px 12px;margin:2px 0 12px;}
+.mat-title{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#777;margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.mat-time{margin-left:auto;color:var(--p2);font-weight:800;}
+.mat-pills{display:flex;flex-wrap:wrap;gap:6px;}
+.mat-pill{font-size:11px;font-weight:600;background:#fff;border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:#444;}
+.conote{margin-top:12px;}
+.conote-t{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#777;margin-bottom:5px;}
+.conote textarea{width:100%;min-height:64px;border:1px solid var(--border);border-radius:7px;padding:9px;font-family:inherit;font-size:13px;resize:vertical;background:#fff;color:var(--dark);}
+.conote .saved{font-size:10px;color:var(--p1);height:13px;margin-top:3px;}
 </style>
 </head>
 <body>
@@ -120,6 +143,11 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
     <div class="pc" style="border-top-color:#BA7517" onclick="go('p3')"><div class="pc-lbl" style="color:#BA7517">Phase 3</div><div class="pc-name">Intensität & Spielnahe</div><div class="pc-meta">27. Juli–02. Aug · KW 31 · 3 Einheiten</div></div>
     <div class="pc" style="border-top-color:#cc0000" onclick="go('p4')"><div class="pc-lbl" style="color:#cc0000">Phase 4</div><div class="pc-name">Feinschliff & Ligastart</div><div class="pc-meta">03.–16. Aug · KW 32–33 · 6 Einheiten · Hakan Ufak</div></div>
   </div>
+  <div class="cohint">👥 <b>Co-Trainer-Hinweis:</b> Wenn Nihat nicht da ist, wird der Plan <b>1:1 durchgezogen</b> – Blöcke, Reihenfolge und Zeiten einhalten. Jede Einheit hat oben eine <b>Material- &amp; Aufbauliste</b>. Nach dem Training unten kurz notieren, was lief und wer gefehlt hat.</div>
+  <div class="progress-wrap">
+    <div class="progress-top"><span id="prog-txt">0 von 18 Einheiten erledigt</span><button class="rst" id="prog-rst">zurücksetzen</button></div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
   <div id="container"></div>
   <div class="ls-card"><div class="ls-icon">🏆</div><div><div class="ls-date">Sonntag, 16. August 2026 — Ligastart</div><div class="ls-sub">Saison 2026/27 · Gençlerbirliği Opladen II · Nihat Dogan ist ab 01.09 zurück</div></div></div>
 </div>
@@ -134,6 +162,27 @@ const TS=[
   {nr:"03",date:"02.08.2026",day:"Sonntag",time:"11:00 Uhr",gegner:"Mevlana Porz",ort:"Auswärts bei Mevlana Porz",after:12},
   {nr:"04",date:"09.08.2026",day:"Sonntag",time:"15:00 Uhr",gegner:"Quettingen 2",ort:"Auswärts in Quettingen",after:15}
 ];
+// Material & Aufbau + Trainingsuhrzeit je Einheit (Platzhalter-Uhrzeit 19:30 – bitte anpassen)
+const MAT={
+ 1:{time:"19:30 Uhr",mat:["12–15 Bälle","Hütchen (Schweinchen-Kreis)","Leibchen 2 Farben","Laufbahn frei","2 Standardtore"]},
+ 2:{time:"19:30 Uhr",mat:["12–15 Bälle","Hütchen","Leibchen 2 Farben","Laufbahn","Käfig/Kleinfeld"]},
+ 3:{time:"19:30 Uhr",mat:["10–12 Bälle","Hütchen (Dreiecke 20×10m)","Leibchen","Laufbahn","2 Tore"]},
+ 4:{time:"19:30 Uhr",mat:["10–12 Bälle","Hütchen (Felder 20×10m)","Leibchen 2 Farben","Laufbahn","2 Tore"]},
+ 5:{time:"19:30 Uhr",mat:["viele Bälle (Flanken)","Hütchen","Leibchen","Laufbahn","2 Tore","Markierung Flügel"]},
+ 6:{time:"19:30 Uhr",mat:["Bälle","Hütchen (Positionen/Linien)","Leibchen 2 Farben (11v11)","Großfeld","2 Tore","Taktiktafel"]},
+ 7:{time:"19:30 Uhr",mat:["Bälle","Hütchen (Pressingzonen)","Leibchen 3 Farben","Minitore + 2 Tore","Stangen"]},
+ 8:{time:"19:30 Uhr",mat:["Bälle","Hütchen (Raster)","Leibchen 2–3 Farben","2 Tore","Stangen"]},
+ 9:{time:"19:30 Uhr",mat:["Bälle","Eckfahnen/Markierung","Leibchen","2 Tore","Taktiktafel (Aufstellung)"]},
+ 10:{time:"19:30 Uhr",mat:["Bälle (locker)","Hütchen","Laufbahn","Taktiktafel"]},
+ 11:{time:"19:30 Uhr",mat:["Bälle","Hütchen (Pressinglinien)","Leibchen 2 Farben","Großfeld","2 Tore","Pfeife/Signal"]},
+ 12:{time:"19:30 Uhr",mat:["Bälle","Hütchen","Leibchen 2 Farben","2 Tore","Taktiktafel (Mevlana Porz)"]},
+ 13:{time:"19:30 Uhr",mat:["Bälle (locker)","Hütchen","Laufbahn","Taktiktafel"]},
+ 14:{time:"19:30 Uhr",mat:["Bälle","Hütchen (Linien)","Leibchen 2 Farben","Großfeld","2 Tore"]},
+ 15:{time:"19:30 Uhr",mat:["Bälle","Hütchen","Leibchen","2 Tore","Taktiktafel (Quettingen)"]},
+ 16:{time:"19:30 Uhr",mat:["Bälle (locker)","Hütchen","Laufbahn","Taktiktafel"]},
+ 17:{time:"19:30 Uhr",mat:["Bälle","Hütchen","Leibchen 2 Farben","Großfeld","2 Tore","Eckfahnen"]},
+ 18:{time:"19:30 Uhr",mat:["Bälle (locker)","Hütchen","Leibchen","2 Tore"]}
+};
 const S=[{
   nr:1,date:"06.07.2026",day:"Montag",kw:28,phase:1,
   dur:"80 Min",ort:"Birkenberg (Asche)",focus:'Auftakttraining',sub:'Kennenlernen · Kulturansage · Erste Konditionseinheit',
@@ -246,6 +295,11 @@ const S=[{
 function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
 function toggle(el){el.closest('.sc').classList.toggle('open');}
 const c=document.getElementById('container');
+// Heute / nächste Einheit anhand des Datums bestimmen
+function parseD(d){const p=d.split('.').map(Number);return new Date(p[2],p[1]-1,p[0]);}
+const today=new Date();today.setHours(0,0,0,0);
+let nextNr=null,best=Infinity;
+S.forEach(s=>{const t=parseD(s.date).getTime();if(t>=today.getTime()&&t<best){best=t;nextNr=s.nr;}});
 let cp=0;
 S.forEach(s=>{
   if(s.phase!==cp){
@@ -260,14 +314,18 @@ S.forEach(s=>{
     if(s.phase===4){const h=document.createElement('div');h.className='hakan-bar';h.innerHTML='🔴 <strong>Ab Phase 4: Leitung Hakan Ufak.</strong> Nihat Dogan ist per WhatsApp erreichbar und erhält nach jeder Einheit einen Bericht.';c.appendChild(h);}
   }
   const col=PC[s.phase];const bg=PB[s.phase];
+  const isNext=(s.nr===nextNr);
+  const todayBadge=isNext?`<span class="today-badge">${parseD(s.date).getTime()===today.getTime()?'Heute':'Nächste'}</span>`:'';
+  const m=MAT[s.nr]||{};
   const card=document.createElement('div');
-  card.className='sc';
+  card.className='sc'+(isNext?' is-today':'');
   card.innerHTML=`
     <div class="sc-head" style="border-left-color:${col}" onclick="toggle(this)">
+      <label class="sc-check" title="Einheit erledigt"><input type="checkbox" data-chk="${s.nr}"></label>
       <div class="sc-nr" style="color:${col}">${String(s.nr).padStart(2,'0')}</div>
       <div class="sc-main">
         <div class="sc-row">
-          <span class="sc-date">${s.date} · ${s.day}</span>
+          ${todayBadge}<span class="sc-date">${s.date} · ${s.day}</span>
           <span class="sc-kw">KW ${s.kw}</span>
           <span class="sc-ptag" style="background:${bg};color:${col}">${PN[s.phase]}</span>
           <span class="sc-dur">${s.dur}</span>
@@ -279,6 +337,10 @@ S.forEach(s=>{
       <div class="sc-toggle">›</div>
     </div>
     <div class="sc-body">
+      <div class="mat-box">
+        <div class="mat-title">🧰 Material & Aufbau ${m.time?`<span class="mat-time">⏱ ${m.time}</span>`:''}</div>
+        <div class="mat-pills">${(m.mat||['—']).map(x=>`<span class="mat-pill">${x}</span>`).join('')}</div>
+      </div>
       ${s.blocks.map(b=>`
         <div class="block">
           <div class="bh" style="border-left-color:${b.color}">
@@ -288,6 +350,11 @@ S.forEach(s=>{
           <div class="bd">${b.desc}</div>
         </div>`).join('')}
       <div class="tnote"><div class="tnote-t">⚑ Trainer-Fokus</div><div class="tnote-d">${s.note}</div></div>
+      <div class="conote">
+        <div class="conote-t">📝 Notiz zur Einheit (wird gespeichert)</div>
+        <textarea data-note="${s.nr}" placeholder="z. B. Anwesenheit, was lief gut/schlecht, Verletzungen, Absprachen …"></textarea>
+        <div class="saved" data-saved="${s.nr}"></div>
+      </div>
     </div>`;
   c.appendChild(card);
   TS.forEach(t=>{
@@ -299,6 +366,48 @@ S.forEach(s=>{
     }
   });
 });
+
+// --- Werkzeug-Logik: Abhaken, Fortschritt, Notizen, Heute ---
+const TOTAL=S.length;
+function updateProgress(){
+  let done=0;
+  document.querySelectorAll('.sc-check input').forEach(cb=>{if(cb.checked)done++;});
+  const fill=document.getElementById('prog-fill');
+  const txt=document.getElementById('prog-txt');
+  if(fill)fill.style.width=(TOTAL?Math.round(done/TOTAL*100):0)+'%';
+  if(txt)txt.textContent=done+' von '+TOTAL+' Einheiten erledigt';
+}
+document.querySelectorAll('.sc-check input').forEach(cb=>{
+  const nr=cb.getAttribute('data-chk');const k='gbo_done_'+nr;
+  cb.checked=localStorage.getItem(k)==='1';
+  cb.closest('.sc').classList.toggle('done',cb.checked);
+  cb.addEventListener('click',e=>e.stopPropagation());
+  cb.addEventListener('change',()=>{
+    localStorage.setItem(k,cb.checked?'1':'0');
+    cb.closest('.sc').classList.toggle('done',cb.checked);
+    updateProgress();
+  });
+});
+const rstBtn=document.getElementById('prog-rst');
+if(rstBtn)rstBtn.addEventListener('click',()=>{
+  if(!confirm('Alle Haken zurücksetzen?'))return;
+  document.querySelectorAll('.sc-check input').forEach(cb=>{cb.checked=false;localStorage.removeItem('gbo_done_'+cb.getAttribute('data-chk'));cb.closest('.sc').classList.remove('done');});
+  updateProgress();
+});
+updateProgress();
+document.querySelectorAll('[data-note]').forEach(ta=>{
+  const nr=ta.getAttribute('data-note');const k='gbo_note_'+nr;
+  ta.value=localStorage.getItem(k)||'';
+  const sv=document.querySelector('[data-saved="'+nr+'"]');let tmr;
+  ta.addEventListener('input',()=>{
+    localStorage.setItem(k,ta.value);
+    if(sv){sv.textContent='✓ gespeichert';clearTimeout(tmr);tmr=setTimeout(()=>sv.textContent='',1400);}
+  });
+});
+if(nextNr!==null){
+  const tcard=document.querySelector('.sc.is-today');
+  if(tcard){tcard.classList.add('open');setTimeout(()=>tcard.scrollIntoView({behavior:'smooth',block:'center'}),250);}
+}
 window.addEventListener('scroll',()=>document.getElementById('sb').classList.toggle('vis',scrollY>400));
 
 // --- Service Worker: macht das Portal offline nutzbar ---
