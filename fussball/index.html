@@ -108,6 +108,39 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
 .conote .saved{font-size:10px;color:var(--p1);height:13px;margin-top:3px;}
 .vid-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:700;color:#fff;background:#111;text-decoration:none;padding:5px 11px;border-radius:6px;}
 .vid-btn:active{opacity:.85;}
+.panel{background:#fff;border:1px solid var(--border);border-radius:8px;padding:15px 16px 18px;margin:0 0 16px;}
+.spl-group{margin-bottom:13px;}
+.spl-h{font-size:13px;font-weight:800;color:var(--dark);margin:0 0 6px;display:flex;align-items:center;gap:8px;}
+.spl-h .dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;}
+.spl-list{list-style:none;margin:0;padding:0;}
+.spl-list li{font-size:13px;color:#333;padding:4px 0 4px 16px;position:relative;line-height:1.45;}
+.spl-list li::before{content:'›';position:absolute;left:2px;top:3px;color:var(--p2);font-weight:800;}
+.spl-nonneg{background:#FCEBEB;border-left:3px solid var(--red);border-radius:6px;padding:10px 12px;margin-top:8px;font-size:12.5px;color:#a01020;line-height:1.5;}
+.spl-nonneg b{color:#7a0010;}
+.kader-add{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.kader-add input,.kader-add select{flex:1;min-width:110px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;background:#fff;}
+.kader-add button{background:var(--p1);color:#fff;border:none;border-radius:6px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.muted-note{font-size:12px;color:#999;padding:6px 0;line-height:1.5;}
+.pl{border:1px solid var(--border);border-radius:7px;margin-bottom:7px;overflow:hidden;}
+.pl-head{display:flex;align-items:center;gap:8px;padding:9px 11px;cursor:pointer;}
+.pl-pos{font-size:9px;font-weight:800;letter-spacing:.5px;background:#EEEDFE;color:var(--p2);padding:2px 7px;border-radius:4px;text-transform:uppercase;flex:0 0 auto;}
+.pl-name{font-size:13px;font-weight:700;color:var(--dark);flex:1;min-width:0;}
+.pl-att{font-size:11px;color:#777;font-weight:700;flex:0 0 auto;}
+.pl-del{background:none;border:none;color:#c00;font-size:14px;cursor:pointer;flex:0 0 auto;padding:0 4px;}
+.pl-body{display:none;padding:2px 11px 12px;}
+.pl.open .pl-body{display:block;}
+.pl-dev-t{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#777;margin:4px 0 5px;}
+.pl-body textarea{width:100%;min-height:56px;border:1px solid var(--border);border-radius:6px;padding:8px;font-family:inherit;font-size:13px;resize:vertical;background:#fff;color:var(--dark);}
+.att-wrap{background:#F7F7FB;border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin:2px 0 12px;}
+.att-title{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#777;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.att-count{margin-left:auto;color:var(--p1);font-weight:800;}
+.att-list{display:flex;flex-direction:column;gap:0;}
+.att-item{display:flex;align-items:center;gap:9px;font-size:13px;padding:5px 0;border-bottom:1px solid #ececf2;cursor:pointer;}
+.att-item:last-child{border:none;}
+.att-item input{width:20px;height:20px;accent-color:var(--p1);flex:0 0 auto;}
+.att-item .nm{flex:1;font-weight:600;}
+.att-item.absent .nm{color:#bbb;font-weight:400;}
+.att-empty{font-size:12px;color:#aaa;}
 </style>
 </head>
 <body>
@@ -145,6 +178,57 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
     <div class="pc" style="border-top-color:#BA7517" onclick="go('p3')"><div class="pc-lbl" style="color:#BA7517">Phase 3</div><div class="pc-name">Intensität & Spielnahe</div><div class="pc-meta">27. Juli–02. Aug · KW 31 · 3 Einheiten</div></div>
     <div class="pc" style="border-top-color:#cc0000" onclick="go('p4')"><div class="pc-lbl" style="color:#cc0000">Phase 4</div><div class="pc-name">Feinschliff & Ligastart</div><div class="pc-meta">03.–16. Aug · KW 32–33 · 6 Einheiten · Hakan Ufak</div></div>
   </div>
+  <div id="spielidee" class="panel">
+    <div class="sec-title" style="color:#534AB7">Spielidee & Prinzipien · 4-2-3-1</div>
+    <p style="font-size:13px;margin:0 0 12px;color:#444;">Unsere Grundhaltung: <b>mutig, ballorientiert, kompakt</b>. Wir wollen den Ball – aber ohne Risiko im Aufbau. Jeder Spieler kennt seine Aufgabe in allen vier Spielphasen.</p>
+    <div class="spl-group">
+      <div class="spl-h"><span class="dot" style="background:#0F6E56"></span>Mit Ball – Aufbau & Angriff</div>
+      <ul class="spl-list">
+        <li>Aufbau über die 2 Innenverteidiger + einen abkippenden Sechser (3er-Aufbau).</li>
+        <li>Außenverteidiger geben <b>Breite</b>, die Flügel bleiben hoch und breit.</li>
+        <li>Der Zehner sucht die Räume <b>zwischen den Linien</b>.</li>
+        <li>Geduldig verlagern, Tempo erst bei echter Torchance. Kein langer Ball ohne Grund.</li>
+        <li>Immer eine Anspielstation anbieten – nie den Ballführenden allein lassen.</li>
+      </ul>
+    </div>
+    <div class="spl-group">
+      <div class="spl-h"><span class="dot" style="background:#cc0000"></span>Gegen den Ball – Defensive & Pressing</div>
+      <ul class="spl-list">
+        <li>Kompakte Grundordnung, der Zehner rückt neben den Stürmer (4-4-2 gegen den Ball).</li>
+        <li><b>Mittleres Pressing</b> als Standard: den Gegner auf die Außen lenken und dort zustellen.</li>
+        <li>Maximal <b>10–12 m</b> zwischen den Mannschaftsteilen – eng bleiben.</li>
+        <li>Ballorientiert verschieben: ballnah eng, ballfern einrücken.</li>
+        <li>Pressing-Auslöser: schlechter Rückpass, hoher Ball, Annahme mit dem Rücken zum Spiel.</li>
+      </ul>
+    </div>
+    <div class="spl-group">
+      <div class="spl-h"><span class="dot" style="background:#BA7517"></span>Umschalten nach Ballgewinn</div>
+      <ul class="spl-list">
+        <li>Erste 3 Sekunden: sofort nach vorne denken, die Tiefe suchen.</li>
+        <li>Kein schneller Angriff möglich? Ball sichern, beruhigen, neu aufbauen.</li>
+      </ul>
+    </div>
+    <div class="spl-group">
+      <div class="spl-h"><span class="dot" style="background:#534AB7"></span>Umschalten nach Ballverlust</div>
+      <ul class="spl-list">
+        <li><b>Sofortiges Gegenpressing</b> am Ort des Ballverlusts – die ersten 5 Sekunden.</li>
+        <li>Gelingt die Rückeroberung nicht: schnell fallen lassen in die Grundordnung.</li>
+      </ul>
+    </div>
+    <div class="spl-nonneg"><b>Nicht verhandelbar:</b> Intensität in jedem Zweikampf · jeder arbeitet nach hinten mit · Kompaktheit halten · positive Kommunikation auf dem Platz · Standards ernst nehmen.</div>
+  </div>
+
+  <div id="kader" class="panel">
+    <div class="sec-title" style="color:#0F6E56">Kader · Anwesenheit & Entwicklung</div>
+    <div class="kader-add">
+      <input id="pl-name" type="text" placeholder="Spielername" maxlength="30">
+      <select id="pl-pos"></select>
+      <button id="pl-add">+ Hinzufügen</button>
+    </div>
+    <div id="roster-empty" class="muted-note">Noch keine Spieler angelegt. Füge oben deinen Kader hinzu – die Anwesenheit erscheint dann in jeder Einheit, und pro Spieler kannst du Entwicklungsnotizen führen.</div>
+    <div id="roster-list"></div>
+  </div>
+
   <div class="cohint">👥 <b>Co-Trainer-Hinweis:</b> Wenn Nihat nicht da ist, wird der Plan <b>1:1 durchgezogen</b> – Blöcke, Reihenfolge und Zeiten einhalten. Jede Einheit hat oben eine <b>Material- &amp; Aufbauliste</b>. Nach dem Training unten kurz notieren, was lief und wer gefehlt hat.</div>
   <div class="progress-wrap">
     <div class="progress-top"><span id="prog-txt">0 von 18 Einheiten erledigt</span><button class="rst" id="prog-rst">zurücksetzen</button></div>
@@ -362,6 +446,7 @@ S.forEach(s=>{
         <div class="mat-title">🧰 Material & Aufbau ${m.time?`<span class="mat-time">⏱ ${m.time}</span>`:''}</div>
         <div class="mat-pills">${(m.mat||['—']).map(x=>`<span class="mat-pill">${x}</span>`).join('')}</div>
       </div>
+      <div class="att-wrap" data-att="${s.nr}"></div>
       ${s.blocks.map(b=>`
         <div class="block">
           <div class="bh" style="border-left-color:${b.color}">
@@ -431,6 +516,97 @@ if(nextNr!==null){
   if(tcard){tcard.classList.add('open');setTimeout(()=>tcard.scrollIntoView({behavior:'smooth',block:'center'}),250);}
 }
 window.addEventListener('scroll',()=>document.getElementById('sb').classList.toggle('vis',scrollY>400));
+
+// ===== Kader · Anwesenheit & Entwicklung =====
+(function(){
+  const selPos=document.getElementById('pl-pos');
+  if(!selPos) return;
+  const POS=['TW','IV','AV','Sechser','Achter','Zehner','Flügel','Stürmer'];
+  POS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;selPos.appendChild(o);});
+  const sessNrs=S.map(s=>s.nr);
+  function load(){try{return JSON.parse(localStorage.getItem('gbo_roster')||'[]');}catch(e){return[];}}
+  function save(){localStorage.setItem('gbo_roster',JSON.stringify(roster));}
+  let roster=load();
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const attKey=(nr,id)=>'gbo_att_'+nr+'_'+id;
+  const attCount=id=>sessNrs.reduce((n,nr)=>n+(localStorage.getItem(attKey(nr,id))==='1'?1:0),0);
+  function newId(){let i;do{i='p'+Math.random().toString(36).slice(2,8);}while(roster.some(p=>p.id===i));return i;}
+  const listEl=document.getElementById('roster-list');
+  const emptyEl=document.getElementById('roster-empty');
+
+  function renderRoster(){
+    listEl.innerHTML='';
+    emptyEl.style.display=roster.length?'none':'block';
+    roster.forEach(p=>{
+      const div=document.createElement('div');div.className='pl';
+      div.innerHTML=`
+        <div class="pl-head">
+          <span class="pl-pos">${p.pos}</span>
+          <span class="pl-name"></span>
+          <span class="pl-att">${attCount(p.id)}/${sessNrs.length}</span>
+          <button class="pl-del" title="Spieler entfernen">✕</button>
+        </div>
+        <div class="pl-body">
+          <div class="pl-dev-t">📈 Entwicklung / Notizen (wird gespeichert)</div>
+          <textarea data-dev="${p.id}" placeholder="Stärken, Baustellen, Formverlauf, Positionswechsel …"></textarea>
+        </div>`;
+      div.querySelector('.pl-name').textContent=p.name;
+      div.querySelector('.pl-head').addEventListener('click',e=>{
+        if(e.target.closest('.pl-del'))return;
+        div.classList.toggle('open');
+      });
+      div.querySelector('.pl-del').addEventListener('click',()=>{
+        if(!confirm('„'+p.name+'" wirklich aus dem Kader entfernen?'))return;
+        roster=roster.filter(x=>x.id!==p.id);save();renderRoster();fillAttendance();
+      });
+      const ta=div.querySelector('[data-dev]');
+      ta.value=localStorage.getItem('gbo_dev_'+p.id)||'';
+      ta.addEventListener('input',()=>localStorage.setItem('gbo_dev_'+p.id,ta.value));
+      listEl.appendChild(div);
+    });
+  }
+
+  function updateCounts(nr){
+    const present=roster.filter(p=>localStorage.getItem(attKey(nr,p.id))==='1').length;
+    const cnt=document.querySelector('[data-attcount="'+nr+'"]');
+    if(cnt)cnt.textContent=present+'/'+roster.length+' da';
+    document.querySelectorAll('#roster-list .pl').forEach((el,i)=>{
+      const p=roster[i];if(!p)return;
+      const a=el.querySelector('.pl-att');if(a)a.textContent=attCount(p.id)+'/'+sessNrs.length;
+    });
+  }
+
+  function fillAttendance(){
+    document.querySelectorAll('[data-att]').forEach(box=>{
+      const nr=box.getAttribute('data-att');
+      if(!roster.length){box.innerHTML='<div class="att-title">🙋 Anwesenheit</div><div class="att-empty">Kader oben anlegen, dann hier abhaken.</div>';return;}
+      const present=roster.filter(p=>localStorage.getItem(attKey(nr,p.id))==='1').length;
+      box.innerHTML='<div class="att-title">🙋 Anwesenheit <span class="att-count" data-attcount="'+nr+'">'+present+'/'+roster.length+' da</span></div>'+
+        '<div class="att-list">'+roster.map(p=>{
+          const on=localStorage.getItem(attKey(nr,p.id))==='1';
+          return '<label class="att-item'+(on?'':' absent')+'"><input type="checkbox" data-att-nr="'+nr+'" data-att-id="'+p.id+'"'+(on?' checked':'')+'><span class="nm">'+esc(p.name)+'</span><span class="pl-pos">'+p.pos+'</span></label>';
+        }).join('')+'</div>';
+    });
+    document.querySelectorAll('[data-att-id]').forEach(cb=>{
+      cb.addEventListener('change',()=>{
+        const nr=cb.getAttribute('data-att-nr'),id=cb.getAttribute('data-att-id');
+        localStorage.setItem(attKey(nr,id),cb.checked?'1':'0');
+        cb.closest('.att-item').classList.toggle('absent',!cb.checked);
+        updateCounts(nr);
+      });
+    });
+  }
+
+  document.getElementById('pl-add').addEventListener('click',()=>{
+    const nameEl=document.getElementById('pl-name');
+    const name=nameEl.value.trim();if(!name)return;
+    roster.push({id:newId(),name:name,pos:selPos.value});save();
+    nameEl.value='';renderRoster();fillAttendance();
+  });
+  document.getElementById('pl-name').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('pl-add').click();});
+
+  renderRoster();fillAttendance();
+})();
 
 // --- Service Worker: macht das Portal offline nutzbar ---
 // Funktioniert nur über https:// (GitHub Pages), nicht bei file://
