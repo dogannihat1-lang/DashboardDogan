@@ -106,8 +106,8 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
 .conote-t{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#777;margin-bottom:5px;}
 .conote textarea{width:100%;min-height:64px;border:1px solid var(--border);border-radius:7px;padding:9px;font-family:inherit;font-size:13px;resize:vertical;background:#fff;color:var(--dark);}
 .conote .saved{font-size:10px;color:var(--p1);height:13px;margin-top:3px;}
-.vid-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:700;color:#fff;background:#111;text-decoration:none;padding:5px 11px;border-radius:6px;}
-.vid-btn:active{opacity:.85;}
+.dia{margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,.15);}
+.dia svg{display:block;width:100%;height:auto;}
 .panel{background:#fff;border:1px solid var(--border);border-radius:8px;padding:15px 16px 18px;margin:0 0 16px;}
 .spl-group{margin-bottom:13px;}
 .spl-h{font-size:13px;font-weight:800;color:var(--dark);margin:0 0 6px;display:flex;align-items:center;gap:8px;}
@@ -117,30 +117,6 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
 .spl-list li::before{content:'›';position:absolute;left:2px;top:3px;color:var(--p2);font-weight:800;}
 .spl-nonneg{background:#FCEBEB;border-left:3px solid var(--red);border-radius:6px;padding:10px 12px;margin-top:8px;font-size:12.5px;color:#a01020;line-height:1.5;}
 .spl-nonneg b{color:#7a0010;}
-.kader-add{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
-.kader-add input,.kader-add select{flex:1;min-width:110px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;background:#fff;}
-.kader-add button{background:var(--p1);color:#fff;border:none;border-radius:6px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
-.muted-note{font-size:12px;color:#999;padding:6px 0;line-height:1.5;}
-.pl{border:1px solid var(--border);border-radius:7px;margin-bottom:7px;overflow:hidden;}
-.pl-head{display:flex;align-items:center;gap:8px;padding:9px 11px;cursor:pointer;}
-.pl-pos{font-size:9px;font-weight:800;letter-spacing:.5px;background:#EEEDFE;color:var(--p2);padding:2px 7px;border-radius:4px;text-transform:uppercase;flex:0 0 auto;}
-.pl-name{font-size:13px;font-weight:700;color:var(--dark);flex:1;min-width:0;}
-.pl-att{font-size:11px;color:#777;font-weight:700;flex:0 0 auto;}
-.pl-del{background:none;border:none;color:#c00;font-size:14px;cursor:pointer;flex:0 0 auto;padding:0 4px;}
-.pl-body{display:none;padding:2px 11px 12px;}
-.pl.open .pl-body{display:block;}
-.pl-dev-t{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#777;margin:4px 0 5px;}
-.pl-body textarea{width:100%;min-height:56px;border:1px solid var(--border);border-radius:6px;padding:8px;font-family:inherit;font-size:13px;resize:vertical;background:#fff;color:var(--dark);}
-.att-wrap{background:#F7F7FB;border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin:2px 0 12px;}
-.att-title{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#777;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
-.att-count{margin-left:auto;color:var(--p1);font-weight:800;}
-.att-list{display:flex;flex-direction:column;gap:0;}
-.att-item{display:flex;align-items:center;gap:9px;font-size:13px;padding:5px 0;border-bottom:1px solid #ececf2;cursor:pointer;}
-.att-item:last-child{border:none;}
-.att-item input{width:20px;height:20px;accent-color:var(--p1);flex:0 0 auto;}
-.att-item .nm{flex:1;font-weight:600;}
-.att-item.absent .nm{color:#bbb;font-weight:400;}
-.att-empty{font-size:12px;color:#aaa;}
 </style>
 </head>
 <body>
@@ -216,17 +192,6 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
       </ul>
     </div>
     <div class="spl-nonneg"><b>Nicht verhandelbar:</b> Intensität in jedem Zweikampf · jeder arbeitet nach hinten mit · Kompaktheit halten · positive Kommunikation auf dem Platz · Standards ernst nehmen.</div>
-  </div>
-
-  <div id="kader" class="panel">
-    <div class="sec-title" style="color:#0F6E56">Kader · Anwesenheit & Entwicklung</div>
-    <div class="kader-add">
-      <input id="pl-name" type="text" placeholder="Spielername" maxlength="30">
-      <select id="pl-pos"></select>
-      <button id="pl-add">+ Hinzufügen</button>
-    </div>
-    <div id="roster-empty" class="muted-note">Noch keine Spieler angelegt. Füge oben deinen Kader hinzu – die Anwesenheit erscheint dann in jeder Einheit, und pro Spieler kannst du Entwicklungsnotizen führen.</div>
-    <div id="roster-list"></div>
   </div>
 
   <div class="cohint">👥 <b>Co-Trainer-Hinweis:</b> Wenn Nihat nicht da ist, wird der Plan <b>1:1 durchgezogen</b> – Blöcke, Reihenfolge und Zeiten einhalten. Jede Einheit hat oben eine <b>Material- &amp; Aufbauliste</b>. Nach dem Training unten kurz notieren, was lief und wer gefehlt hat.</div>
@@ -399,6 +364,41 @@ const S=[
 ];
 function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
 function toggle(el){el.closest('.sc').classList.toggle('open');}
+// ===== Übungs-Diagramme (Taktiktafel als SVG) =====
+const _RED='#e11',_DARK='#1b1b1b',_NEU='#f3c969';
+const _AH='<defs><marker id="ah" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6z" fill="#fff"/></marker></defs>';
+const _PITCH='<rect x="2" y="2" width="296" height="176" rx="6" fill="#24713f" stroke="#fff" stroke-opacity=".3"/>';
+function _cap(t){return '<text x="150" y="172" fill="#fff" fill-opacity=".85" font-size="11" text-anchor="middle" font-family="-apple-system,sans-serif">'+t+'</text>';}
+function _wrap(i){return '<div class="dia"><svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">'+_AH+_PITCH+i+'</svg></div>';}
+function _cone(x,y){return '<path d="M'+(x-6)+' '+(y+6)+'L'+x+' '+(y-6)+'L'+(x+6)+' '+(y+6)+'Z" fill="#ff8a1f" stroke="#7a3d00" stroke-width=".5"/>';}
+function _pl(x,y,c){return '<circle cx="'+x+'" cy="'+y+'" r="9" fill="'+c+'" stroke="#fff" stroke-width="1.5"/>';}
+function _ball(x,y){return '<circle cx="'+x+'" cy="'+y+'" r="5" fill="#fff" stroke="#111"/>';}
+function _pass(d){return '<path d="'+d+'" stroke="#ffd54a" stroke-width="2.5" fill="none" marker-end="url(#ah)"/>';}
+function _run(d){return '<path d="'+d+'" stroke="#fff" stroke-width="2" stroke-dasharray="5 4" fill="none" marker-end="url(#ah)"/>';}
+const DIA={
+ rondo:_wrap('<circle cx="150" cy="88" r="58" fill="none" stroke="#fff" stroke-opacity=".22" stroke-dasharray="4 4"/>'+_pl(208,88,_RED)+_pl(179,138,_RED)+_pl(121,138,_RED)+_pl(92,88,_RED)+_pl(121,38,_RED)+_pl(179,38,_RED)+_pl(138,88,_DARK)+_pl(162,88,_DARK)+_pass('M198 80 L132 44')+_pass('M121 48 L98 80')+_ball(200,72)+_cap('Rondo · außen halten, Mitte erobert')),
+ slalom:_wrap(_cone(80,60)+_cone(120,118)+_cone(160,60)+_cone(200,118)+_cone(240,60)+_pl(45,90,_RED)+_ball(56,90)+_run('M60 90 Q80 60 100 90 Q120 118 140 90 Q160 60 180 90 Q200 118 220 90 L262 90')+_cap('Dribbel-Parcours · Slalom, dann Antritt')),
+ possession:_wrap('<rect x="60" y="34" width="180" height="108" fill="none" stroke="#fff" stroke-opacity=".3" stroke-dasharray="5 4"/>'+_cone(60,34)+_cone(240,34)+_cone(60,142)+_cone(240,142)+_pl(95,60,_RED)+_pl(150,45,_RED)+_pl(205,70,_RED)+_pl(110,120,_RED)+_pl(195,125,_RED)+_pl(150,90,_DARK)+_pl(120,80,_DARK)+_pl(150,142,_NEU)+_pl(240,88,_NEU)+_pass('M100 66 L142 48')+_pass('M158 46 L198 66')+_ball(150,52)+_cap('Ballhalten · Überzahl nutzen, Ball laufen lassen')),
+ passing:_wrap(_cone(70,120)+_cone(150,60)+_cone(230,120)+_pl(70,140,_RED)+_pl(150,40,_RED)+_pl(230,140,_RED)+_pass('M78 132 L146 52')+_pass('M156 54 L224 128')+_run('M150 52 Q185 70 200 110')+_ball(72,128)+_cap('Passmuster · Doppelpass & Hinterlaufen')),
+ ssg:_wrap('<line x1="150" y1="20" x2="150" y2="160" stroke="#fff" stroke-opacity=".3" stroke-dasharray="4 4"/><rect x="6" y="55" width="6" height="24" fill="#fff"/><rect x="6" y="101" width="6" height="24" fill="#fff"/><rect x="288" y="55" width="6" height="24" fill="#fff"/><rect x="288" y="101" width="6" height="24" fill="#fff"/>'+_pl(70,60,_RED)+_pl(95,110,_RED)+_pl(120,85,_RED)+_pl(230,60,_DARK)+_pl(205,110,_DARK)+_pl(180,85,_DARK)+_pass('M120 85 L96 108')+_run('M130 80 L165 70')+_ball(120,85)+_cap('Kleinfeld-Spiel · Minitore, hohe Intensität')),
+ crossing:_wrap('<rect x="286" y="66" width="8" height="48" fill="none" stroke="#fff" stroke-width="2"/><rect x="228" y="40" width="60" height="100" fill="none" stroke="#fff" stroke-opacity=".35"/>'+_pl(60,150,_RED)+_ball(70,146)+_pl(250,70,_RED)+_pl(250,120,_RED)+'<path d="M72 142 Q170 60 236 78" stroke="#ffd54a" stroke-width="2.5" fill="none" marker-end="url(#ah)"/>'+_run('M235 90 L248 76')+_run('M235 130 L248 118')+_cap('Flanke & Abschluss · kurzer + langer Pfosten')),
+ sprintshot:_wrap('<rect x="286" y="66" width="8" height="48" fill="none" stroke="#fff" stroke-width="2"/>'+_cone(55,90)+_pl(55,112,_RED)+_run('M60 108 L150 92')+_ball(150,90)+_pass('M158 90 L285 90')+_cap('Antritt & Abschluss · Sprint, direkt aufs Tor')),
+ formation:_wrap('<rect x="10" y="66" width="8" height="48" fill="none" stroke="#fff" stroke-width="2"/><line x1="150" y1="18" x2="150" y2="162" stroke="#fff" stroke-opacity=".25" stroke-dasharray="4 4"/>'+_pl(32,90,_RED)+_pl(75,36,_RED)+_pl(75,72,_RED)+_pl(75,108,_RED)+_pl(75,144,_RED)+_pl(120,68,_RED)+_pl(120,112,_RED)+_pl(180,40,_RED)+_pl(180,140,_RED)+_pl(185,90,_RED)+_pl(230,90,_RED)+_cap('Grundformation 4-2-3-1'))
+};
+function diagramFor(t){
+  t=(t||'').toLowerCase();
+  if(t.includes('rondo')||t.includes('schweinchen'))return DIA.rondo;
+  if(t.includes('staffel')||t.includes('parcours')||t.includes('dribbel'))return DIA.slalom;
+  if(t.includes('flanke'))return DIA.crossing;
+  if(t.includes('antritt')||t.includes('sprint'))return DIA.sprintshot;
+  if(t.includes('passmuster')||t.includes('doppelpass')||t.includes('kombination')||t.includes('dritter mann')||t.includes('dreieck'))return DIA.passing;
+  if(t.includes('ballhalten')||t.includes('positionsspiel')||t.includes('ballbesitz'))return DIA.possession;
+  if(t.includes('ssg')||t.includes('minitore')||t.includes('spiel auf tore')||t.includes('abschlussspiel')||t.includes('spielform')||t.includes('11v11')||t.includes('pressing')||t.includes('verlagerung')||t.includes('umschalt')||t.includes('stellungsspiel'))return DIA.ssg;
+  if(t.includes('aufstellung')||t.includes('schattenlaufen')||t.includes('system')||t.includes('4-2-3-1')||t.includes('festigung'))return DIA.formation;
+  if(t.includes('abschluss'))return DIA.sprintshot;
+  if(t.includes('pass'))return DIA.passing;
+  return '';
+}
 const c=document.getElementById('container');
 // Heute / nächste Einheit anhand des Datums bestimmen
 function parseD(d){const p=d.split('.').map(Number);return new Date(p[2],p[1]-1,p[0]);}
@@ -446,7 +446,6 @@ S.forEach(s=>{
         <div class="mat-title">🧰 Material & Aufbau ${m.time?`<span class="mat-time">⏱ ${m.time}</span>`:''}</div>
         <div class="mat-pills">${(m.mat||['—']).map(x=>`<span class="mat-pill">${x}</span>`).join('')}</div>
       </div>
-      <div class="att-wrap" data-att="${s.nr}"></div>
       ${s.blocks.map(b=>`
         <div class="block">
           <div class="bh" style="border-left-color:${b.color}">
@@ -454,7 +453,7 @@ S.forEach(s=>{
             <span class="bh-dur">${b.dur}</span>
           </div>
           <div class="bd">${b.desc}</div>
-          ${b.color!=='#333'?`<a class="vid-btn" target="_blank" rel="noopener" href="${b.video?b.video:'https://www.tiktok.com/search?q='+encodeURIComponent(b.title.replace(/\([^)]*\)/g,'').trim()+' Fußball Training Übung')}">${b.video?'🎥 Video ansehen':'🎵 Übung auf TikTok'}</a>`:''}
+          ${b.color!=='#333'?diagramFor(b.title):''}
         </div>`).join('')}
       <div class="tnote"><div class="tnote-t">⚑ Trainer-Fokus</div><div class="tnote-d">${s.note}</div></div>
       <div class="conote">
@@ -516,97 +515,6 @@ if(nextNr!==null){
   if(tcard){tcard.classList.add('open');setTimeout(()=>tcard.scrollIntoView({behavior:'smooth',block:'center'}),250);}
 }
 window.addEventListener('scroll',()=>document.getElementById('sb').classList.toggle('vis',scrollY>400));
-
-// ===== Kader · Anwesenheit & Entwicklung =====
-(function(){
-  const selPos=document.getElementById('pl-pos');
-  if(!selPos) return;
-  const POS=['TW','IV','AV','Sechser','Achter','Zehner','Flügel','Stürmer'];
-  POS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;selPos.appendChild(o);});
-  const sessNrs=S.map(s=>s.nr);
-  function load(){try{return JSON.parse(localStorage.getItem('gbo_roster')||'[]');}catch(e){return[];}}
-  function save(){localStorage.setItem('gbo_roster',JSON.stringify(roster));}
-  let roster=load();
-  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const attKey=(nr,id)=>'gbo_att_'+nr+'_'+id;
-  const attCount=id=>sessNrs.reduce((n,nr)=>n+(localStorage.getItem(attKey(nr,id))==='1'?1:0),0);
-  function newId(){let i;do{i='p'+Math.random().toString(36).slice(2,8);}while(roster.some(p=>p.id===i));return i;}
-  const listEl=document.getElementById('roster-list');
-  const emptyEl=document.getElementById('roster-empty');
-
-  function renderRoster(){
-    listEl.innerHTML='';
-    emptyEl.style.display=roster.length?'none':'block';
-    roster.forEach(p=>{
-      const div=document.createElement('div');div.className='pl';
-      div.innerHTML=`
-        <div class="pl-head">
-          <span class="pl-pos">${p.pos}</span>
-          <span class="pl-name"></span>
-          <span class="pl-att">${attCount(p.id)}/${sessNrs.length}</span>
-          <button class="pl-del" title="Spieler entfernen">✕</button>
-        </div>
-        <div class="pl-body">
-          <div class="pl-dev-t">📈 Entwicklung / Notizen (wird gespeichert)</div>
-          <textarea data-dev="${p.id}" placeholder="Stärken, Baustellen, Formverlauf, Positionswechsel …"></textarea>
-        </div>`;
-      div.querySelector('.pl-name').textContent=p.name;
-      div.querySelector('.pl-head').addEventListener('click',e=>{
-        if(e.target.closest('.pl-del'))return;
-        div.classList.toggle('open');
-      });
-      div.querySelector('.pl-del').addEventListener('click',()=>{
-        if(!confirm('„'+p.name+'" wirklich aus dem Kader entfernen?'))return;
-        roster=roster.filter(x=>x.id!==p.id);save();renderRoster();fillAttendance();
-      });
-      const ta=div.querySelector('[data-dev]');
-      ta.value=localStorage.getItem('gbo_dev_'+p.id)||'';
-      ta.addEventListener('input',()=>localStorage.setItem('gbo_dev_'+p.id,ta.value));
-      listEl.appendChild(div);
-    });
-  }
-
-  function updateCounts(nr){
-    const present=roster.filter(p=>localStorage.getItem(attKey(nr,p.id))==='1').length;
-    const cnt=document.querySelector('[data-attcount="'+nr+'"]');
-    if(cnt)cnt.textContent=present+'/'+roster.length+' da';
-    document.querySelectorAll('#roster-list .pl').forEach((el,i)=>{
-      const p=roster[i];if(!p)return;
-      const a=el.querySelector('.pl-att');if(a)a.textContent=attCount(p.id)+'/'+sessNrs.length;
-    });
-  }
-
-  function fillAttendance(){
-    document.querySelectorAll('[data-att]').forEach(box=>{
-      const nr=box.getAttribute('data-att');
-      if(!roster.length){box.innerHTML='<div class="att-title">🙋 Anwesenheit</div><div class="att-empty">Kader oben anlegen, dann hier abhaken.</div>';return;}
-      const present=roster.filter(p=>localStorage.getItem(attKey(nr,p.id))==='1').length;
-      box.innerHTML='<div class="att-title">🙋 Anwesenheit <span class="att-count" data-attcount="'+nr+'">'+present+'/'+roster.length+' da</span></div>'+
-        '<div class="att-list">'+roster.map(p=>{
-          const on=localStorage.getItem(attKey(nr,p.id))==='1';
-          return '<label class="att-item'+(on?'':' absent')+'"><input type="checkbox" data-att-nr="'+nr+'" data-att-id="'+p.id+'"'+(on?' checked':'')+'><span class="nm">'+esc(p.name)+'</span><span class="pl-pos">'+p.pos+'</span></label>';
-        }).join('')+'</div>';
-    });
-    document.querySelectorAll('[data-att-id]').forEach(cb=>{
-      cb.addEventListener('change',()=>{
-        const nr=cb.getAttribute('data-att-nr'),id=cb.getAttribute('data-att-id');
-        localStorage.setItem(attKey(nr,id),cb.checked?'1':'0');
-        cb.closest('.att-item').classList.toggle('absent',!cb.checked);
-        updateCounts(nr);
-      });
-    });
-  }
-
-  document.getElementById('pl-add').addEventListener('click',()=>{
-    const nameEl=document.getElementById('pl-name');
-    const name=nameEl.value.trim();if(!name)return;
-    roster.push({id:newId(),name:name,pos:selPos.value});save();
-    nameEl.value='';renderRoster();fillAttendance();
-  });
-  document.getElementById('pl-name').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('pl-add').click();});
-
-  renderRoster();fillAttendance();
-})();
 
 // --- Service Worker: macht das Portal offline nutzbar ---
 // Funktioniert nur über https:// (GitHub Pages), nicht bei file://
