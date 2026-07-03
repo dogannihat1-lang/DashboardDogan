@@ -206,6 +206,12 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
     <div id="standards-list"></div>
   </div>
 
+  <div id="standards-def" class="panel">
+    <div class="sec-title" style="color:#cc0000">Standards verteidigen 🛡️</div>
+    <p style="font-size:13px;margin:0 0 12px;color:#444;">Die meisten Amateur-Gegentore fallen nach Standards. Klare Zuordnung – jeder weiß, wen oder welchen Raum er deckt.</p>
+    <div id="standards-def-list"></div>
+  </div>
+
   <div class="cohint">👥 <b>Co-Trainer-Hinweis:</b> Wenn Nihat nicht da ist, wird der Plan <b>1:1 durchgezogen</b> – Blöcke, Reihenfolge und Zeiten einhalten. Jede Einheit hat oben eine <b>Material- &amp; Aufbauliste</b>. Nach dem Training unten kurz notieren, was lief und wer gefehlt hat.</div>
   <div class="progress-wrap">
     <div class="progress-top"><span id="prog-txt">0 von 18 Einheiten erledigt</span><button class="rst" id="prog-rst">zurücksetzen</button></div>
@@ -550,6 +556,18 @@ window.addEventListener('scroll',()=>document.getElementById('sb').classList.tog
     svg:_wrap('<line x1="290" y1="10" x2="290" y2="170" stroke="#fff" stroke-opacity=".4"/>'+_ball(286,92)+_pl(286,106,_RED)+_pl(242,74,_RED)+_run('M248 82 L268 94')+_pass('M280 94 L250 80')+_pl(250,126,_RED)+_run('M250 126 L236 98')+_pass('M246 82 L250 118')+_cap('Einwurf · anbieten, klatschen lassen, hinterlaufen'))}
   ];
   el.innerHTML=STD.map(s=>'<div class="std"><div class="std-t">'+s.t+'</div><div class="std-d">'+s.d+'</div>'+s.svg+'</div>').join('');
+  const DEF=[
+   {t:'🛡️ Ecke verteidigen · Mischdeckung',
+    d:'Je ein Spieler sichert kurzen und langen Pfosten. Zwei verteidigen den Fünfer im Raum, der Rest deckt die gefährlichsten Gegner eng in Manndeckung. Ein Spieler stört den kurzen Pass.',
+    svg:_wrap(B+_ball(290,18)+_pl(278,32,_DARK)+_pl(252,50,_RED)+_pl(124,22,_RED)+_pl(176,22,_RED)+_pl(142,40,_RED)+_pl(158,40,_RED)+_pl(150,58,_DARK)+_pl(132,62,_DARK)+_pl(150,70,_RED)+_pl(124,72,_RED)+_cap('Ecke verteidigen · 2 am Pfosten, Mann + Raum'))},
+   {t:'🛡️ Freistoß verteidigen · Mauer + Manndeckung',
+    d:'Der Mauerchef stellt die Mauer (Anzahl je nach Distanz und Winkel). Alle anderen decken ihre Gegenspieler eng. Der Torwart organisiert die Mauer und sichert die freie Ecke.',
+    svg:_wrap(B+_pl(140,40,_RED)+_pl(150,40,_RED)+_pl(160,40,_RED)+_pl(170,40,_RED)+_ball(206,110)+_pl(216,118,_DARK)+_pl(138,62,_DARK)+_pl(165,64,_DARK)+_pl(138,74,_RED)+_pl(165,76,_RED)+_cap('Freistoß verteidigen · Mauer stellen, Rest Mann'))},
+   {t:'🛡️ Absicherung bei eigener Ecke',
+    d:'Bei eigenen Ecken bleiben zwei Spieler am Mittelkreis (Restverteidigung), um schnelle Konter abzufangen. Nie mit allen nach vorne – so entsteht kein 1-gegen-1 nach Ballverlust.',
+    svg:_wrap(_ball(290,18)+_pl(150,45,_RED)+_pl(175,55,_RED)+_pl(120,55,_RED)+_pl(150,92,_RED)+_pl(150,122,_DARK)+_pl(130,122,_RED)+_pl(180,122,_RED)+_run('M150 120 L58 152')+_cap('Absicherung · 2 bleiben hinten gegen den Konter'))}
+  ];
+  document.getElementById('standards-def-list').innerHTML=DEF.map(s=>'<div class="std"><div class="std-t">'+s.t+'</div><div class="std-d">'+s.d+'</div>'+s.svg+'</div>').join('');
 })();
 
 // --- Service Worker: macht das Portal offline nutzbar ---
