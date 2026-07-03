@@ -117,6 +117,12 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
 .spl-list li::before{content:'›';position:absolute;left:2px;top:3px;color:var(--p2);font-weight:800;}
 .spl-nonneg{background:#FCEBEB;border-left:3px solid var(--red);border-radius:6px;padding:10px 12px;margin-top:8px;font-size:12.5px;color:#a01020;line-height:1.5;}
 .spl-nonneg b{color:#7a0010;}
+.std{border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;}
+.std:last-child{margin-bottom:0;}
+.std-t{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px;}
+.std-d{font-size:13px;color:#444;line-height:1.5;margin-bottom:2px;}
+.legend{background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 12px;margin:0 0 14px;display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;font-size:11.5px;color:#555;}
+.legend b{color:var(--dark);margin-right:2px;}
 </style>
 </head>
 <body>
@@ -194,11 +200,18 @@ nav{background:var(--darker);padding:0 20px;display:flex;align-items:center;just
     <div class="spl-nonneg"><b>Nicht verhandelbar:</b> Intensität in jedem Zweikampf · jeder arbeitet nach hinten mit · Kompaktheit halten · positive Kommunikation auf dem Platz · Standards ernst nehmen.</div>
   </div>
 
+  <div id="standards" class="panel">
+    <div class="sec-title" style="color:#BA7517">Standards · Ecken, Freistöße, Einwürfe</div>
+    <p style="font-size:13px;margin:0 0 12px;color:#444;">Feste Abläufe – im Amateurfußball oft spielentscheidend. Jede Variante mit Aufgabenverteilung und Skizze, damit sie jeder (auch der Co-Trainer) einstudieren kann.</p>
+    <div id="standards-list"></div>
+  </div>
+
   <div class="cohint">👥 <b>Co-Trainer-Hinweis:</b> Wenn Nihat nicht da ist, wird der Plan <b>1:1 durchgezogen</b> – Blöcke, Reihenfolge und Zeiten einhalten. Jede Einheit hat oben eine <b>Material- &amp; Aufbauliste</b>. Nach dem Training unten kurz notieren, was lief und wer gefehlt hat.</div>
   <div class="progress-wrap">
     <div class="progress-top"><span id="prog-txt">0 von 18 Einheiten erledigt</span><button class="rst" id="prog-rst">zurücksetzen</button></div>
     <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
   </div>
+  <div class="legend"><b>Legende:</b><span>🔴 eigene</span><span>⚫ Gegner</span><span>🟡 neutral</span><span>🔺 Hütchen</span><span>⚪ Ball</span><span>— Pass</span><span>┈┈ Lauf</span></div>
   <div id="container"></div>
   <div class="ls-card"><div class="ls-icon">🏆</div><div><div class="ls-date">Sonntag, 16. August 2026 — Ligastart</div><div class="ls-sub">Saison 2026/27 · Gençlerbirliği Opladen II · Nihat Dogan ist ab 01.09 zurück</div></div></div>
 </div>
@@ -515,6 +528,29 @@ if(nextNr!==null){
   if(tcard){tcard.classList.add('open');setTimeout(()=>tcard.scrollIntoView({behavior:'smooth',block:'center'}),250);}
 }
 window.addEventListener('scroll',()=>document.getElementById('sb').classList.toggle('vis',scrollY>400));
+
+// ===== Standard-Bibliothek (Set Pieces mit Diagramm) =====
+(function(){
+  const el=document.getElementById('standards-list');
+  if(!el) return;
+  const B='<rect x="118" y="8" width="64" height="7" fill="#fff"/><rect x="70" y="15" width="160" height="74" fill="none" stroke="#fff" stroke-opacity=".35"/><rect x="112" y="15" width="76" height="30" fill="none" stroke="#fff" stroke-opacity=".28"/>';
+  const CROSS=(d)=>'<path d="'+d+'" stroke="#ffd54a" stroke-width="2.5" fill="none" marker-end="url(#ah)"/>';
+  const STD=[
+   {t:'⚽ Ecke · Variante 1 — kurz ausspielen',
+    d:'Schütze spielt kurz zum anlaufenden Mitspieler, der aus dem Halbfeld flankt. Zwei Läufer greifen kurzen und langen Pfosten an, ein Dritter lauert am Sechzehner für den Abpraller.',
+    svg:_wrap(B+_ball(290,18)+_pl(276,34,_RED)+_pl(248,54,_RED)+_pass('M282 28 L252 50')+CROSS('M244 56 Q180 38 150 44')+_pl(126,60,_RED)+_pl(172,60,_RED)+_pl(150,102,_RED)+_run('M126 60 L138 42')+_run('M172 60 L162 44')+_run('M150 102 L150 72')+_cap('Ecke 1 · kurz ausspielen, dann flanken'))},
+   {t:'⚽ Ecke · Variante 2 — direkt an die Pfosten',
+    d:'Direkte, scharfe Hereingabe. Ein Spieler blockt den Gegenspieler am kurzen Pfosten, damit der Läufer frei zum Kopfball kommt. Rest besetzt langen Pfosten und Rückraum.',
+    svg:_wrap(B+_ball(290,18)+_pl(278,32,_RED)+CROSS('M284 24 Q206 28 150 46')+_pl(132,50,_DARK)+_pl(120,62,_RED)+_pl(176,58,_RED)+_pl(150,96,_RED)+_run('M120 62 L134 44')+_run('M176 58 L166 46')+_run('M150 96 L150 68')+_cap('Ecke 2 · direkt an die Pfosten, Blocker am kurzen'))},
+   {t:'⚽ Freistoß — halbrechts',
+    d:'Mauer steht. Erste Option: Torschuss über oder um die Mauer in den langen Winkel. Zweite Option: kurze Ablage auf den einlaufenden Mitspieler zum Abschluss oder zur Flanke.',
+    svg:_wrap(B+_pl(138,42,_DARK)+_pl(152,42,_DARK)+_pl(166,42,_DARK)+_ball(206,110)+_pl(216,118,_RED)+_pass('M201 106 L152 22')+_pl(150,72,_RED)+_run('M150 72 L150 52')+_pass('M211 104 L158 76')+_cap('Freistoß · Torschuss über die Mauer oder Ablage'))},
+   {t:'⚽ Einwurf — sicher aufbauen',
+    d:'Anspielstation kommt entgegen, klatscht direkt zurück, ein Dritter hinterläuft in den freien Raum. So gibt es keinen Ballverlust und sofort Tempo über die Seite.',
+    svg:_wrap('<line x1="290" y1="10" x2="290" y2="170" stroke="#fff" stroke-opacity=".4"/>'+_ball(286,92)+_pl(286,106,_RED)+_pl(242,74,_RED)+_run('M248 82 L268 94')+_pass('M280 94 L250 80')+_pl(250,126,_RED)+_run('M250 126 L236 98')+_pass('M246 82 L250 118')+_cap('Einwurf · anbieten, klatschen lassen, hinterlaufen'))}
+  ];
+  el.innerHTML=STD.map(s=>'<div class="std"><div class="std-t">'+s.t+'</div><div class="std-d">'+s.d+'</div>'+s.svg+'</div>').join('');
+})();
 
 // --- Service Worker: macht das Portal offline nutzbar ---
 // Funktioniert nur über https:// (GitHub Pages), nicht bei file://
