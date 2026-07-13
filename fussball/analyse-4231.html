@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#0B1310">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>GBO · Spielanalyse & 4-2-3-1</title>
+</head>
+<body>
+<style>
+:root{
+  --bg:#0B1310; --bg2:#0F1A15; --panel:#13211B; --panel2:#182B23;
+  --line:#EAF3EE; --ink:#EAF3EE; --ink-soft:#A9BFB5; --ink-dim:#71887E;
+  --edge:#26382F; --edge2:#33473C;
+  --team:#EEF6F1; --team-ink:#0C1A14; --opp:#3A4A42; --opp-ink:#CBD8D1;
+  --ball:#FFD23F;
+  --c-order:#4CC6F5; --c-ball:#2ED47A; --c-gain:#F0AF35; --c-loss:#8E86F2; --c-press:#F5544A; --c-info:#4CC6F5;
+  --accent:var(--c-order);
+  --shadow:0 18px 48px rgba(0,0,0,.45);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
+body{
+  background:radial-gradient(120% 100% at 50% -10%, #14231C 0%, var(--bg) 60%, #070C0A 100%);
+  color:var(--ink); font-family:var(--font); overflow:hidden;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  height:100dvh;
+}
+.deck{position:fixed; inset:0; display:flex; align-items:stretch; justify-content:center;}
+
+/* ---- Slide ---- */
+.slide{position:absolute; inset:0; opacity:0; visibility:hidden; transform:translateY(8px) scale(.995);
+  transition:opacity .32s ease, transform .32s ease, visibility .32s; pointer-events:none;
+  display:grid; grid-template-rows:auto 1fr; padding:clamp(14px,2.4vh,26px) clamp(16px,2.6vw,40px) 0;}
+.slide.active{opacity:1; visibility:visible; transform:none; pointer-events:auto;}
+.slide[data-accent="order"]{--accent:var(--c-order);}
+.slide[data-accent="ball"]{--accent:var(--c-ball);}
+.slide[data-accent="gain"]{--accent:var(--c-gain);}
+.slide[data-accent="loss"]{--accent:var(--c-loss);}
+.slide[data-accent="press"]{--accent:var(--c-press);}
+.slide[data-accent="info"]{--accent:var(--c-info);}
+
+/* ---- Header ---- */
+.s-head{display:flex; align-items:flex-end; justify-content:space-between; gap:18px; padding-bottom:clamp(8px,1.4vh,16px);
+  border-bottom:1px solid var(--edge);}
+.kicker{display:flex; align-items:center; gap:10px; font-size:clamp(11px,1.35vh,14px); letter-spacing:.16em;
+  text-transform:uppercase; font-weight:800; color:var(--accent);}
+.kicker .pdot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent);}
+.s-title{margin:6px 0 0; font-size:clamp(24px,4.4vh,46px); line-height:1.02; font-weight:850; letter-spacing:-.015em; text-wrap:balance;}
+.s-sub{margin:4px 0 0;color:var(--ink-soft);font-size:clamp(13px,1.7vh,18px);font-weight:500;}
+.s-count{font-variant-numeric:tabular-nums; color:var(--ink-dim); font-weight:800; font-size:clamp(13px,1.7vh,17px); white-space:nowrap;}
+.s-count b{color:var(--ink);}
+
+/* ---- Body layout ---- */
+.s-body{min-height:0; display:grid; gap:clamp(14px,2vw,30px); align-items:center; padding:clamp(10px,2vh,22px) 0;}
+.s-body.split{grid-template-columns:minmax(0,1.55fr) minmax(260px,1fr);}
+.s-body.center{place-items:center; text-align:center;}
+.s-body.wide{grid-template-columns:1fr;}
+@media (max-width:820px), (orientation:portrait){ .s-body.split{grid-template-columns:1fr; align-content:start;} }
+
+.pitch-wrap{position:relative; min-width:0; align-self:center;}
+.pitch-wrap svg{width:100%; height:auto; max-height:78dvh; display:block; border-radius:16px; box-shadow:var(--shadow);
+  border:1px solid var(--edge2); background:linear-gradient(180deg,#12271B,#0E1F16);}
+.play-btn{position:absolute; top:12px; right:12px; z-index:4; display:inline-flex; align-items:center; gap:8px;
+  background:color-mix(in srgb,var(--accent) 92%, #000); color:#08130D; border:none; font-weight:800;
+  font-size:14px; padding:9px 14px; border-radius:999px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.4);}
+.play-btn:active{transform:translateY(1px);}
+.tap-hint{position:absolute; left:12px; bottom:12px; z-index:4; font-size:12px; font-weight:700; letter-spacing:.03em;
+  color:var(--ink-soft); background:rgba(6,12,9,.62); border:1px solid var(--edge2); padding:6px 11px; border-radius:999px;
+  display:inline-flex; align-items:center; gap:7px;}
+
+/* ---- Points panel ---- */
+.points{display:flex; flex-direction:column; gap:clamp(9px,1.5vh,15px); min-width:0;}
+.pt{display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start;
+  background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--edge);
+  border-left:4px solid var(--accent); border-radius:12px; padding:clamp(11px,1.6vh,16px) clamp(13px,1.4vw,18px);}
+.pt .num{font-weight:900; color:var(--accent); font-size:clamp(15px,2vh,20px); font-variant-numeric:tabular-nums; line-height:1.1;}
+.pt .tx{font-size:clamp(14px,1.95vh,19px); line-height:1.34; font-weight:500; color:#E7F1EB;}
+.pt .tx b{color:#fff; font-weight:800;}
+.pt .tx .hl{color:var(--accent); font-weight:800;}
+
+/* ---- Phase overview cards ---- */
+.phases{display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(12px,1.6vw,20px); width:100%;}
+@media (max-width:820px),(orientation:portrait){ .phases{grid-template-columns:repeat(2,1fr);} }
+.phase-card{background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--edge);
+  border-top:5px solid var(--pc); border-radius:16px; padding:clamp(16px,2.4vh,26px) clamp(14px,1.5vw,22px); text-align:left;}
+.phase-card .pn{font-size:clamp(11px,1.3vh,13px); letter-spacing:.14em; text-transform:uppercase; font-weight:800; color:var(--pc);}
+.phase-card h3{margin:8px 0 6px; font-size:clamp(18px,2.5vh,26px); font-weight:850; letter-spacing:-.01em;}
+.phase-card p{margin:0; color:var(--ink-soft); font-size:clamp(13px,1.75vh,17px); line-height:1.35;}
+.phase-card .tsec{margin-top:12px; font-weight:800; color:var(--pc); font-size:clamp(20px,2.8vh,30px); font-variant-numeric:tabular-nums;}
+
+/* ---- Editable analysis ---- */
+.edit-grid{display:grid; grid-template-columns:1fr; gap:14px; width:100%; max-width:1100px;}
+.edit-card{background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--edge);
+  border-left:4px solid var(--accent); border-radius:14px; padding:clamp(14px,2vh,22px) clamp(16px,1.8vw,26px);}
+.edit-card h3{margin:0 0 10px; font-size:clamp(16px,2.2vh,22px); font-weight:800; display:flex; align-items:center; gap:10px;}
+.edit-card h3 .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent);font-size:17px;}
+.editable{outline:none; font-size:clamp(15px,2vh,20px); line-height:1.5; color:#E7F1EB; min-height:1.4em;}
+.editable:empty:before{content:attr(data-ph); color:var(--ink-dim); font-style:italic;}
+.editable:focus{background:rgba(76,198,245,.06); border-radius:8px; box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 40%,transparent);}
+.editable li{margin:4px 0;}
+.edit-note{margin-top:10px; font-size:12.5px; color:var(--ink-dim); display:flex; align-items:center; gap:7px;}
+
+/* ---- Checklist (closing) ---- */
+.checks{display:grid; grid-template-columns:repeat(2,1fr); gap:12px 20px; width:100%; max-width:1000px; text-align:left;}
+@media (max-width:820px),(orientation:portrait){ .checks{grid-template-columns:1fr;} }
+.chk{display:flex; gap:12px; align-items:center; font-size:clamp(15px,2.1vh,21px); font-weight:600;}
+.chk .mk{flex:0 0 auto; width:30px;height:30px;border-radius:8px;background:color-mix(in srgb,var(--c-ball) 22%,transparent);
+  color:var(--c-ball); display:grid; place-items:center; font-weight:900; font-size:16px;}
+.big-msg{font-size:clamp(22px,4vh,44px); font-weight:850; line-height:1.14; text-wrap:balance; max-width:16ch;}
+.big-msg .g{color:var(--c-ball);}
+
+/* cover */
+.cover{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(10px,2vh,20px); text-align:center; height:100%;}
+.cover .badge{font-size:clamp(11px,1.5vh,15px); letter-spacing:.28em; text-transform:uppercase; font-weight:800; color:var(--c-ball);}
+.cover h1{margin:0; font-size:clamp(34px,8vh,86px); line-height:.98; font-weight:900; letter-spacing:-.02em;}
+.cover h1 .n{color:var(--c-ball);}
+.cover .meta{display:flex; flex-wrap:wrap; gap:10px 14px; justify-content:center; margin-top:6px;}
+.cover .chip{background:var(--panel); border:1px solid var(--edge2); border-radius:999px; padding:8px 16px;
+  font-size:clamp(12px,1.7vh,16px); font-weight:700; color:var(--ink-soft);}
+.cover .chip b{color:var(--ink);}
+.cover .hint{margin-top:clamp(14px,3vh,34px); color:var(--ink-dim); font-size:13px; letter-spacing:.02em;}
+
+/* ---- Bottom controls ---- */
+.controls{position:fixed; left:0; right:0; bottom:0; z-index:20; display:flex; align-items:center; justify-content:center; gap:16px;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom)); pointer-events:none;}
+.controls .bar{pointer-events:auto; display:flex; align-items:center; gap:14px; background:rgba(9,16,12,.72);
+  backdrop-filter:blur(10px); border:1px solid var(--edge2); border-radius:999px; padding:7px 10px; box-shadow:var(--shadow);}
+.nav-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--edge2); background:var(--panel2); color:var(--ink);
+  font-size:19px; cursor:pointer; display:grid; place-items:center;}
+.nav-btn:active{transform:scale(.94);} .nav-btn:disabled{opacity:.3;}
+.dots{display:flex; gap:6px; align-items:center; max-width:52vw; overflow:hidden;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--edge2); transition:all .25s; cursor:pointer; flex:0 0 auto;}
+.dot.on{background:var(--accent); width:22px; border-radius:5px;}
+.tools{position:fixed; top:calc(10px + env(safe-area-inset-top)); right:14px; z-index:20; display:flex; gap:8px;}
+.tool{pointer-events:auto; width:40px;height:40px;border-radius:11px;border:1px solid var(--edge2); background:rgba(9,16,12,.72);
+  backdrop-filter:blur(8px); color:var(--ink-soft); font-size:17px; cursor:pointer; display:grid; place-items:center;}
+.tool:active{transform:scale(.94);}
+
+/* tap zones */
+.tapzone{position:fixed; top:60px; bottom:70px; width:16vw; z-index:8; cursor:pointer;}
+.tapzone.left{left:0;} .tapzone.right{right:0;}
+@media (orientation:portrait){ .tapzone{display:none;} }
+
+/* task popover */
+.taskcard{position:fixed; left:50%; bottom:78px; transform:translateX(-50%) translateY(14px); z-index:30;
+  width:min(520px,92vw); background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--edge2);
+  border-top:4px solid var(--accent); border-radius:16px; padding:16px 18px; box-shadow:var(--shadow);
+  opacity:0; visibility:hidden; transition:all .22s ease;}
+.taskcard.show{opacity:1; visibility:visible; transform:translateX(-50%) translateY(0);}
+.taskcard .tc-h{display:flex; align-items:center; gap:12px;}
+.taskcard .tc-badge{width:44px;height:44px;border-radius:50%;background:var(--team);color:var(--team-ink);
+  display:grid;place-items:center;font-weight:900;font-size:18px;flex:0 0 auto;}
+.taskcard .tc-role{font-weight:850; font-size:18px;}
+.taskcard .tc-tag{font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:var(--accent);}
+.taskcard .tc-body{margin:11px 0 0; font-size:15.5px; line-height:1.45; color:#E7F1EB;}
+.taskcard .tc-close{position:absolute; top:10px; right:12px; background:none;border:none;color:var(--ink-dim);font-size:20px;cursor:pointer;}
+
+/* svg token interactivity */
+.tok{cursor:pointer;}
+.tok circle.body{transition:opacity .2s;}
+.dimmed .tok:not(.sel){opacity:.32;}
+.tok.sel circle.ring{opacity:1;}
+
+@media (prefers-reduced-motion:reduce){
+  .slide{transition:none;} .draw{stroke-dashoffset:0 !important; animation:none !important;}
+}
+.draw{stroke-dasharray:var(--len); stroke-dashoffset:var(--len);}
+.playing .draw{animation:draw .6s ease forwards; animation-delay:var(--dl,0s);}
+@keyframes draw{to{stroke-dashoffset:0;}}
+.playing .arrowhead{opacity:0; animation:pop .01s linear forwards; animation-delay:calc(var(--dl,0s) + .5s);}
+@keyframes pop{to{opacity:1;}}
+.arrowhead{opacity:1;}
+</style>
+
+<div class="deck" id="deck"></div>
+
+<div class="tools">
+  <button class="tool" id="btnFull" title="Vollbild">⛶</button>
+  <button class="tool" id="btnReset" title="Ablauf neu">↻</button>
+</div>
+
+<div class="tapzone left" id="tzL"></div>
+<div class="tapzone right" id="tzR"></div>
+
+<div class="taskcard" id="taskcard">
+  <button class="tc-close" id="tcClose">×</button>
+  <div class="tc-h">
+    <div class="tc-badge" id="tcBadge">10</div>
+    <div><div class="tc-tag" id="tcTag">Aufgabe</div><div class="tc-role" id="tcRole">Zehner</div></div>
+  </div>
+  <div class="tc-body" id="tcBody"></div>
+</div>
+
+<div class="controls">
+  <div class="bar">
+    <button class="nav-btn" id="prev" aria-label="Zurück">‹</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn" id="next" aria-label="Weiter">›</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============ PITCH GEOMETRY ============ */
+var VB={w:1050,h:680};
+function pitchSVG(inner){
+  return '<svg viewBox="0 0 '+VB.w+' '+VB.h+'" preserveAspectRatio="xMidYMid meet" role="img">'+DEFS+PITCH+inner+'</svg>';
+}
+var DEFS=(function(){
+  function marker(id,color,open){
+    if(open){
+      return '<marker id="'+id+'" markerWidth="9" markerHeight="9" refX="6.5" refY="4" orient="auto"><path class="arrowhead" d="M1 1 L7 4 L1 7" fill="none" stroke="'+color+'" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>';
+    }
+    return '<marker id="'+id+'" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 L3.4 5 Z" fill="'+color+'"/></marker>';
+  }
+  var m='';
+  m+=marker('mk-ball','#2ED47A');   m+=marker('mk-gain','#F0AF35');
+  m+=marker('mk-loss','#8E86F2');   m+=marker('mk-press','#F5544A');
+  m+=marker('mk-order','#4CC6F5');
+  m+=marker('mk-run','#EAF3EE',true);
+  return '<defs>'+m+'</defs>';
+})();
+var PITCH=(function(){
+  var s='';
+  var L='#7FB197', op=.55, sw=2.2;
+  function line(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+L+'" stroke-width="'+sw+'" stroke-opacity="'+op+'"/>';}
+  function rect(x,y,w,h){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="none" stroke="'+L+'" stroke-width="'+sw+'" stroke-opacity="'+op+'"/>';}
+  // mowing stripes
+  for(var i=0;i<8;i++){ if(i%2===0) s+='<rect x="'+(20+i*126.25)+'" y="20" width="126.25" height="640" fill="#ffffff" opacity="0.028"/>'; }
+  s+=rect(20,20,1010,640);
+  s+=line(525,20,525,660);
+  s+='<circle cx="525" cy="340" r="73" fill="none" stroke="'+L+'" stroke-width="'+sw+'" stroke-opacity="'+op+'"/>';
+  s+='<circle cx="525" cy="340" r="3.5" fill="'+L+'" fill-opacity="'+op+'"/>';
+  // left boxes
+  s+=rect(20,138.5,165,403);
+  s+=rect(20,248.5,55,183);
+  s+='<circle cx="130" cy="340" r="3.5" fill="'+L+'" fill-opacity="'+op+'"/>';
+  s+='<path d="M185 266.9 A 91.5 91.5 0 0 1 185 413.1" fill="none" stroke="'+L+'" stroke-width="'+sw+'" stroke-opacity="'+op+'"/>';
+  s+='<rect x="8" y="303" width="12" height="74" fill="none" stroke="'+L+'" stroke-width="'+sw+'" stroke-opacity="'+op+'"/>';
+  // right boxes
+  s+=rect(865,138.5,165,403);
+  s+=rect(975,248.5,55,183);
+  s+='<circle cx="920" cy="340" r="3.5" fill="'+L+'" fill-opacity="'+op+'"/>';
+  s+='<path d="M865 413.1 A 91.5 91.5 0 0 1 865 266.9" fill="none" stroke="'+L+'" stroke-width="'+sw+'" stroke-opacity="'+op+'"/>';
+  s+='<rect x="1030" y="303" width="12" height="74" fill="none" stroke="'+L+'" stroke-width="'+sw+'" stroke-opacity="'+op+'"/>';
+  return s;
+})();
+
+/* ============ TOKENS & ROLE TASKS ============ */
+var TASKS={
+  gk:"Aufbau eröffnen und <b>immer anspielbar</b> sein. Ruhig bleiben, mit dem Fuß mitspielen. Bei hohem Aufbau bist du die Absicherung hinter der Kette.",
+  lb:"Du gibst <b>Breite</b>. Wenn wir den Ball haben: hoch aufrücken. Ohne Ball: den Flügel zustellen, dich nicht überlaufen lassen.",
+  rb:"Du gibst <b>Breite</b>. Wenn wir den Ball haben: hoch aufrücken. Ohne Ball: den Flügel zustellen, dich nicht überlaufen lassen.",
+  cbL:"Ruhiger Aufbau, mutige Pässe ins Mittelfeld. Zweikampf gewinnen, die Tiefe verteidigen. <b>Abstand max. 10-12 m</b> zum Nebenmann halten.",
+  cbR:"Ruhiger Aufbau, mutige Pässe ins Mittelfeld. Zweikampf gewinnen, die Tiefe verteidigen. <b>Abstand max. 10-12 m</b> zum Nebenmann halten.",
+  dmL:"Einer von euch <b>kippt ab</b> (3er-Aufbau), der andere sichert ab. Immer eine Anspielstation zwischen den Linien öffnen. Konter abfangen.",
+  dmR:"Einer von euch <b>kippt ab</b> (3er-Aufbau), der andere sichert ab. Immer eine Anspielstation zwischen den Linien öffnen. Konter abfangen.",
+  am:"Zeig dich <b>zwischen den Linien</b>, finde die Löcher, mach Tore vor. Ohne Ball rückst du neben den Stürmer (4-4-2).",
+  lw:"<b>Hoch und breit</b> bleiben, das 1-gegen-1 suchen, in die Tiefe starten. Ohne Ball nach hinten arbeiten und den Außenverteidiger doppeln.",
+  rw:"<b>Hoch und breit</b> bleiben, das 1-gegen-1 suchen, in die Tiefe starten. Ohne Ball nach hinten arbeiten und den Außenverteidiger doppeln.",
+  st:"Die Tiefe attackieren, Bälle festmachen. Du <b>führst das Pressing an</b> und lenkst den Gegner auf die Außen."
+};
+var ROLE={gk:['TW','Torwart'],lb:['LV','Linksverteidiger'],rb:['RV','Rechtsverteidiger'],
+  cbL:['IV','Innenverteidiger links'],cbR:['IV','Innenverteidiger rechts'],
+  dmL:['6','Sechser (links)'],dmR:['6','Sechser (rechts)'],am:['10','Zehner'],
+  lw:['LA','Linksaußen'],rw:['RA','Rechtsaußen'],st:['9','Stürmer']};
+
+function T(id,x,y){return {id:id,x:x,y:y,ab:ROLE[id][0],role:ROLE[id][1],team:'us'};}
+function O(x,y,lbl){return {id:'o'+x+y,x:x,y:y,ab:lbl||'',role:'Gegner',team:'opp'};}
+
+/* Formations (our goal = LEFT, we attack RIGHT) */
+function baseUS(){return [T('gk',80,340),T('lb',245,110),T('cbL',225,258),T('cbR',225,422),T('rb',245,570),
+  T('dmL',405,278),T('dmR',405,402),T('am',600,340),T('lw',660,110),T('rw',660,570),T('st',800,340)];}
+function buildupUS(){return [T('gk',95,340),T('cbL',210,220),T('cbR',210,460),T('dmL',280,340),
+  T('lb',400,95),T('rb',400,585),T('dmR',470,340),T('am',630,335),T('lw',740,120),T('rw',740,560),T('st',860,335)];}
+function block442(shift){shift=shift||0;
+  return [T('gk',80,340),T('lb',255,110+shift),T('cbL',255,262+shift*0.6),T('cbR',255,418+shift*0.6),T('rb',255,570+shift),
+  T('lw',480,110+shift),T('dmL',480,278+shift*0.6),T('dmR',480,402+shift*0.6),T('rw',480,570+shift),
+  T('am',660,402+shift*0.5),T('st',660,278+shift*0.5)];}
+
+function idx(list){var m={};list.forEach(function(t){m[t.id]=t;});return m;}
+function resolve(list,ref){ if(Array.isArray(ref))return {x:ref[0],y:ref[1]}; var m=idx(list); return m[ref]?{x:m[ref].x,y:m[ref].y}:{x:0,y:0}; }
+
+/* ============ ARROW / ZONE RENDERING ============ */
+var MK={ball:'mk-ball',gain:'mk-gain',loss:'mk-loss',press:'mk-press',order:'mk-order',run:'mk-run'};
+var COL={ball:'#2ED47A',gain:'#F0AF35',loss:'#8E86F2',press:'#F5544A',order:'#4CC6F5',run:'#EAF3EE'};
+
+function renderArrows(us,opp,arrows){
+  if(!arrows) return '';
+  var all=us.concat(opp||[]);
+  var s='', dl=0;
+  arrows.forEach(function(a,i){
+    var p1=resolve(all,a.from), p2=resolve(all,a.to);
+    var kind=a.kind||'ball';
+    var col=COL[kind], mk=MK[kind];
+    var dash = (kind==='run'||kind==='move')?'stroke-dasharray:0;':'';
+    // shorten so head sits before token
+    var dx=p2.x-p1.x, dy=p2.y-p1.y, len=Math.sqrt(dx*dx+dy*dy)||1;
+    var pad = a.to && !Array.isArray(a.to) ? 30 : 6;
+    var ex=p2.x-dx/len*pad, ey=p2.y-dy/len*pad;
+    var sx=p1.x+dx/len*(a.from && !Array.isArray(a.from)?30:2), sy=p1.y+dy/len*(a.from && !Array.isArray(a.from)?30:2);
+    var d, plen;
+    if(kind==='run'||kind==='press'||a.curve){
+      var mx=(sx+ex)/2, my=(sy+ey)/2, off=(a.curve||45);
+      var nx=-(ey-sy), ny=(ex-sx), nl=Math.sqrt(nx*nx+ny*ny)||1;
+      var cx=mx+nx/nl*off, cy=my+ny/nl*off;
+      d='M '+sx+' '+sy+' Q '+cx+' '+cy+' '+ex+' '+ey;
+      // approx length
+      plen=Math.sqrt(Math.pow(cx-sx,2)+Math.pow(cy-sy,2))+Math.sqrt(Math.pow(ex-cx,2)+Math.pow(ey-cy,2));
+    } else {
+      d='M '+sx+' '+sy+' L '+ex+' '+ey; plen=len;
+    }
+    var wdt=(kind==='press')?5.5:(kind==='run')?3.4:4.4;
+    var strokeStyle=(kind==='run'||kind==='move')?'stroke-dasharray:1 9;stroke-linecap:round;':'';
+    dl=i*0.55;
+    if(kind==='run'||kind==='move'){
+      // dashed run: draw whole thing, animate via wrapper reveal using a solid guide
+      s+='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="'+wdt+'" style="'+strokeStyle+'opacity:.92" marker-end="url(#'+mk+')" class="run-static" data-dl="'+dl+'"/>';
+    } else {
+      s+='<path class="draw" style="--len:'+Math.round(plen)+';--dl:'+dl+'s;" d="'+d+'" fill="none" stroke="'+col+'" stroke-width="'+wdt+'" stroke-linecap="round" marker-end="url(#'+mk+')" opacity=".95"/>';
+    }
+  });
+  return s;
+}
+function renderZones(zones){
+  if(!zones)return '';var s='';
+  zones.forEach(function(z){
+    if(z.type==='rect'){s+='<rect x="'+z.x+'" y="'+z.y+'" width="'+z.w+'" height="'+z.h+'" rx="'+(z.r||18)+'" fill="'+(z.fill||'rgba(76,198,245,.10)')+'" stroke="'+(z.stroke||'rgba(76,198,245,.5)')+'" stroke-width="2" stroke-dasharray="'+(z.dash||'8 8')+'"/>'+(z.label?'<text x="'+(z.x+z.w/2)+'" y="'+(z.y-10)+'" text-anchor="middle" fill="'+(z.stroke||'#4CC6F5')+'" font-size="19" font-weight="800">'+z.label+'</text>':'');}
+    if(z.type==='poly'){s+='<polygon points="'+z.pts+'" fill="'+(z.fill||'rgba(245,84,74,.12)')+'" stroke="'+(z.stroke||'rgba(245,84,74,.55)')+'" stroke-width="2" stroke-dasharray="8 8"/>';}
+  });
+  return s;
+}
+function renderBall(list,ball){
+  if(!ball)return '';var p=resolve(list,ball);
+  return '<g transform="translate('+p.x+','+p.y+')"><circle r="12" fill="#0B140F"/><circle r="10" fill="var(--ball)" stroke="#0B140F" stroke-width="1.5"/><path d="M0 -10 L3 -3 L-3 -3 Z M0 10 L3 3 L-3 3 Z" fill="#0B140F" opacity=".6"/></g>';
+}
+function renderTokens(us,opp){
+  var s='';
+  (opp||[]).forEach(function(t){
+    s+='<g class="tok" data-noninter="1"><circle class="body" cx="'+t.x+'" cy="'+t.y+'" r="24" fill="var(--opp)" stroke="#0B140F" stroke-width="2"/>'+
+      '<text x="'+t.x+'" y="'+(t.y+6)+'" text-anchor="middle" fill="var(--opp-ink)" font-size="17" font-weight="800">'+(t.ab||'')+'</text></g>';
+  });
+  us.forEach(function(t){
+    s+='<g class="tok" data-id="'+t.id+'">'+
+      '<circle class="ring" cx="'+t.x+'" cy="'+t.y+'" r="30" fill="none" stroke="var(--accent)" stroke-width="4" opacity="0"/>'+
+      '<circle class="body" cx="'+t.x+'" cy="'+t.y+'" r="25" fill="var(--team)" stroke="#0B140F" stroke-width="2.5"/>'+
+      '<text x="'+t.x+'" y="'+(t.y+7)+'" text-anchor="middle" fill="var(--team-ink)" font-size="18" font-weight="900" style="pointer-events:none">'+t.ab+'</text></g>';
+  });
+  return s;
+}
+function board(cfg){
+  var us=cfg.us, opp=cfg.opp||[];
+  var inner = renderZones(cfg.zones)+renderTokens(us,opp)+renderArrows(us,opp,cfg.arrows)+renderBall(us.concat(opp),cfg.ball);
+  return '<div class="pitch-wrap">'+pitchSVG(inner)+
+    (cfg.arrows&&cfg.arrows.length?'<button class="play-btn" data-play>▶ Ablauf abspielen</button>':'')+
+    (cfg.tap?'<div class="tap-hint">👆 Tippe auf einen Spieler</div>':'')+'</div>';
+}
+
+/* ============ SLIDE CONTENT ============ */
+function pts(arr){return '<div class="points">'+arr.map(function(p,i){return '<div class="pt"><div class="num">'+(i+1)+'</div><div class="tx">'+p+'</div></div>';}).join('')+'</div>';}
+
+var SLIDES=[
+/* 0 COVER */
+{accent:'ball',layout:'cover',html:
+  '<div class="cover">'+
+  '<div class="badge">GBO · Vorbereitung 2026/27</div>'+
+  '<h1>Spielanalyse<br>&amp; die <span class="n">4-2-3-1</span></h1>'+
+  '<div class="meta">'+
+    '<span class="chip">Analyse: <b>Testspiel bei GSV Langenfeld 2</b></span>'+
+    '<span class="chip">Training <b>heute · 19:00</b></span>'+
+    '<span class="chip"><b>Mutig · ballorientiert · kompakt</b></span>'+
+  '</div>'+
+  '<div class="hint">Wischen oder Pfeiltasten →  ·  Tippe im Diagramm auf einen Spieler</div>'+
+  '</div>'},
+
+/* 1 Vier Spielphasen */
+{accent:'info', kicker:'Das Grundgerüst', title:'Unsere 4 Spielphasen', sub:'Jeder Spieler kennt seine Aufgabe in jeder Phase — daran hängt alles.',
+ layout:'wide', html:
+  '<div class="phases">'+
+  '<div class="phase-card" style="--pc:var(--c-ball)"><div class="pn">Phase 1</div><h3>Mit Ball</h3><p>Ruhiger Aufbau von hinten, geduldig verlagern, Anspielstationen anbieten.</p><div class="tsec">Aufbau</div></div>'+
+  '<div class="phase-card" style="--pc:var(--c-loss)"><div class="pn">Phase 2</div><h3>Ballverlust</h3><p>Sofortiges Gegenpressing am Ort des Verlusts — die ersten 5 Sekunden.</p><div class="tsec">5 Sek</div></div>'+
+  '<div class="phase-card" style="--pc:var(--c-press)"><div class="pn">Phase 3</div><h3>Gegen Ball</h3><p>Kompakt im 4-4-2, mittleres Pressing, den Gegner auf außen lenken.</p><div class="tsec">Kompakt</div></div>'+
+  '<div class="phase-card" style="--pc:var(--c-gain)"><div class="pn">Phase 4</div><h3>Ballgewinn</h3><p>Erste 3 Sekunden nach vorne denken, die Tiefe suchen — oder sichern.</p><div class="tsec">3 Sek</div></div>'+
+  '</div>'},
+
+/* 2 Grundordnung */
+{accent:'order', kicker:'So stehen wir', title:'Die 4-2-3-1 Grundordnung', sub:'Vier hinten · zwei Sechser · drei offensiv · ein Stürmer.',
+ layout:'split', tap:true, board:function(){return {us:baseUS(),tap:true,
+   zones:[{type:'rect',x:150,y:70,w:190,h:540,r:20,fill:'rgba(76,198,245,.06)',stroke:'rgba(76,198,245,.35)',dash:'6 8',label:'Viererkette'}]};},
+ points:[
+  '<b>Torwart + Viererkette</b> bilden die Basis — <span class="hl">Abstand max. 10-12 m</span> zwischen den Spielern.',
+  'Davor die <b>zwei Sechser</b> als Schutzschild und erste Aufbaustufe.',
+  'Oben das <b>Dreieck 10 – LA – RA</b> plus der Stürmer als Spitze.',
+  'Jeder hat eine <b>klare Position</b> — von hier aus starten alle Laufwege.'
+ ]},
+
+/* 3 Aufgaben tippen */
+{accent:'order', kicker:'Jeder kennt seinen Job', title:'Aufgaben pro Position', sub:'Tippe auf einen Spieler — dann besprechen wir seine Aufgabe einzeln.',
+ layout:'split', tap:true, board:function(){return {us:baseUS(),tap:true};},
+ points:[
+  '👆 <b>Tippe auf einen Spieler</b> im Diagramm — seine Aufgabe erscheint unten.',
+  'Wir gehen jede Position <b>einzeln</b> durch: Wo stehe ich, wohin orientiere ich mich?',
+  '<b>Mit Ball</b> und <b>gegen Ball</b> — jeder muss beides im Kopf haben.',
+  'Frag dich immer: <span class="hl">„Wo ist mein Gegenspieler und wo ist der Ball?"</span>'
+ ]},
+
+/* 4 Analyse gut (editable) */
+{accent:'gain', kicker:'Analyse gestern', title:'Was war gut ✅', sub:'Das nehmen wir mit und bauen darauf auf.',
+ layout:'wide', edit:true, html:
+  '<div class="edit-grid">'+
+  '<div class="edit-card"><h3><span class="ic">✅</span> Das lief gut gegen Langenfeld</h3>'+
+  '<ul class="editable" data-key="gut" data-ph="Hier eintippen: was hat funktioniert? (z. B. Kompaktheit, Zweikämpfe, Aufbau …)" contenteditable="true"><li>&nbsp;</li></ul>'+
+  '<div class="edit-note">✎ Direkt am iPad eintippen — wird auf diesem Gerät gespeichert.</div></div>'+
+  '</div>'},
+
+/* 5 Analyse besser (editable) */
+{accent:'press', kicker:'Analyse gestern', title:'Was müssen wir besser machen ⚠️', sub:'Ehrlich benennen — dann heute im Training korrigieren.',
+ layout:'wide', edit:true, html:
+  '<div class="edit-grid">'+
+  '<div class="edit-card"><h3><span class="ic">⚠️</span> Baustellen aus dem Spiel</h3>'+
+  '<ul class="editable" data-key="besser" data-ph="Hier eintippen: Stellungsfehler, Abstände, Laufwege, Umschaltmomente …" contenteditable="true"><li>&nbsp;</li></ul>'+
+  '<div class="edit-note">✎ Tipp: pro Punkt EIN klarer Korrektur-Satz — den zeigen wir gleich am Spielfeld.</div></div>'+
+  '</div>'},
+
+/* 6 Spielaufbau */
+{accent:'ball', kicker:'Mit Ball · Phase 1', title:'Spielaufbau: der 3er-Aufbau', sub:'Ein Sechser kippt ab — wir bauen mutig, aber ohne Risiko auf.',
+ layout:'split', board:function(){var us=buildupUS();return {us:us,
+   arrows:[{from:'gk',to:'cbR',kind:'ball'},{from:'cbR',to:'dmR',kind:'ball'},
+     {from:'lb',to:[520,90],kind:'run',curve:0},{from:'rb',to:[520,590],kind:'run',curve:0}],
+   zones:[]};},
+ points:[
+  'Aufbau über die <b>2 Innenverteidiger + den abkippenden Sechser</b> = 3er-Aufbau.',
+  'Die <b>Außenverteidiger geben Breite</b> und schieben hoch (weiße Laufwege).',
+  'Die <b>Flügel bleiben hoch und breit</b>, der Zehner sucht die Räume dazwischen.',
+  '<span class="hl">Immer eine Anspielstation anbieten</span> — nie den Ballführenden allein lassen.'
+ ]},
+
+/* 7 Passstafette 1 */
+{accent:'ball', kicker:'Mit Ball · Passstafette', title:'Verlagern & über den Flügel', sub:'Geduldig verlagern, Tempo erst bei echter Torchance.',
+ layout:'split', board:function(){var us=buildupUS();return {us:us, ball:'gk',
+   arrows:[{from:'gk',to:'cbL',kind:'ball'},{from:'cbL',to:'dmL',kind:'ball',curve:20},
+     {from:'dmL',to:'lb',kind:'ball',curve:-30},{from:'lb',to:'lw',kind:'ball'},
+     {from:'lw',to:[900,300],kind:'run',curve:40}],
+   };},
+ points:[
+  'Ball <b>zirkulieren lassen</b>: Torwart → IV → abkippender Sechser.',
+  '<b>Verlagern</b> auf die ballferne Seite — dort ist mehr Platz.',
+  'Über den <b>Außenverteidiger auf den Flügel</b>, dann Tempo und in die Tiefe.',
+  '<span class="hl">Kein langer Ball ohne Grund</span> — erst wenn die Tiefe wirklich offen ist.'
+ ]},
+
+/* 8 Passstafette 2 – dritter Mann */
+{accent:'ball', kicker:'Mit Ball · Passstafette', title:'Der dritte Mann über den Zehner', sub:'Zwischen den Linien anspielen, klatschen lassen, in die Tiefe.',
+ layout:'split', board:function(){var us=buildupUS();return {us:us, ball:'dmR',
+   arrows:[{from:'dmR',to:'am',kind:'ball'},{from:'am',to:'dmR',kind:'ball',curve:40},
+     {from:'st',to:[960,300],kind:'run',curve:-50},{from:'dmR',to:[930,320],kind:'ball',curve:-30}],
+   };},
+ points:[
+  'Der <b>Zehner zeigt sich zwischen den Linien</b> und wird angespielt.',
+  'Er lässt <b>klatschen</b> (Prallpass) — der Gegner ist kurz gebunden.',
+  'Der <b>Stürmer startet in die Tiefe</b>, der Pass geht in den Lauf.',
+  '<span class="hl">Dritter-Mann-Prinzip:</span> der Anspielbare ist nicht der, der abschließt.'
+ ]},
+
+/* 9 Orientierung / Dreiecke */
+{accent:'ball', kicker:'Mit Ball · Orientierung', title:'Dreiecke & Anspielstationen', sub:'Nie den Ballführenden allein lassen — immer zwei Optionen.',
+ layout:'split', board:function(){var us=baseUS();return {us:us, ball:'dmR',
+   arrows:[{from:'dmR',to:'cbR',kind:'run',curve:0},{from:'dmR',to:'rb',kind:'run',curve:0},{from:'dmR',to:'am',kind:'run',curve:0}],
+   zones:[{type:'poly',pts:'225,422 245,570 405,402',fill:'rgba(46,212,122,.12)',stroke:'rgba(46,212,122,.6)'}]};},
+ points:[
+  'Um den Ballführenden immer ein <b>Dreieck</b> bilden — mind. zwei Anspielstationen.',
+  '<b>Winkel schaffen</b>: nicht in einer Linie stehen, sondern versetzt anbieten.',
+  'Der ballnahe Spieler <b>kommt entgegen</b>, ein anderer bietet die Tiefe an.',
+  '<span class="hl">Kopf hoch vor der Annahme</span> — schon wissen, wohin der nächste Pass geht.'
+ ]},
+
+/* 10 Umschalten Ballgewinn */
+{accent:'gain', kicker:'Umschalten · Phase 4', title:'Nach Ballgewinn: Tiefe suchen', sub:'Erste 3 Sekunden — sofort nach vorne denken.',
+ layout:'split', board:function(){var us=baseUS();return {us:us, ball:'dmR',
+   arrows:[{from:'dmR',to:'st',kind:'gain'},{from:'st',to:[960,300],kind:'run',curve:-40},
+     {from:'lw',to:[900,120],kind:'run',curve:-30},{from:'rw',to:[900,560],kind:'run',curve:30}],
+   };},
+ points:[
+  '<b>Erste 3 Sekunden:</b> sofort nach vorne denken, die Tiefe attackieren.',
+  'Stürmer und Flügel <b>starten in die Tiefe</b> (weiße Laufwege) — Optionen für den schnellen Ball.',
+  'Ein <b>vertikaler Pass</b> in den Lauf, wenn er auf ist.',
+  '<span class="hl">Kein schneller Angriff möglich?</span> Ball sichern, beruhigen, neu aufbauen.'
+ ]},
+
+/* 11 Gegenpressing */
+{accent:'loss', kicker:'Umschalten · Phase 2', title:'Nach Ballverlust: Gegenpressing', sub:'Die ersten 5 Sekunden — sofort zurückerobern.',
+ layout:'split', board:function(){var us=baseUS();return {us:us, ball:[520,340],
+   arrows:[{from:'am',to:[520,340],kind:'loss',curve:20},{from:'dmR',to:[520,340],kind:'loss',curve:-20},{from:'st',to:[520,340],kind:'loss',curve:30}],
+   zones:[{type:'rect',x:430,y:250,w:190,h:180,r:90,fill:'rgba(142,134,242,.12)',stroke:'rgba(142,134,242,.6)',dash:'6 8',label:'5-Sekunden-Zone'}]};},
+ points:[
+  '<b>Sofortiges Gegenpressing</b> am Ort des Ballverlusts — nicht wegschauen!',
+  'Die <b>nächsten 2-3 Spieler</b> attackieren den Ball von allen Seiten (lila Pfeile).',
+  'Ziel: den Ball <b>direkt zurückerobern</b>, bevor der Gegner umschalten kann.',
+  '<span class="hl">Gelingt es nicht?</span> Schnell fallen lassen in die Grundordnung.'
+ ]},
+
+/* 12 Gegen Ball – 4-4-2 */
+{accent:'press', kicker:'Gegen Ball · Phase 3', title:'Kompakt im 4-4-2', sub:'Der Zehner rückt neben den Stürmer — wir verteidigen als Block.',
+ layout:'split', board:function(){var us=block442();return {us:us,
+   zones:[{type:'rect',x:230,y:80,w:470,h:520,r:22,fill:'rgba(245,84,74,.07)',stroke:'rgba(245,84,74,.45)',dash:'8 8',label:'max. 10-12 m zwischen den Linien'}]};},
+ points:[
+  'Gegen den Ball stehen wir <b>4-4-2</b>: der <span class="hl">Zehner rückt neben den Stürmer</span>.',
+  'Zwei kompakte Viererketten — <b>max. 10-12 m</b> zwischen den Mannschaftsteilen.',
+  '<b>Ballorientiert verschieben:</b> ballnah eng, ballfern einrücken.',
+  'Das war letzte Saison unser Kernproblem — <span class="hl">eng bleiben!</span>'
+ ]},
+
+/* 13 Mittelfeldpressing */
+{accent:'press', kicker:'Gegen Ball · Standard', title:'Mittelfeldpressing', sub:'Den Gegner auf die Außen lenken und dort zustellen.',
+ layout:'split', board:function(){var us=block442(30);
+   var opp=[O(880,565,''),O(910,340,''),O(830,120,''),O(960,430,'')];
+   return {us:us, opp:opp, ball:[880,565],
+   arrows:[{from:'rw',to:[850,560],kind:'press',curve:20},{from:'st',to:[900,360],kind:'press',curve:-25}],
+   zones:[{type:'poly',pts:'700,470 1010,470 1010,610 700,610',fill:'rgba(245,84,74,.14)',stroke:'rgba(245,84,74,.6)'}]};},
+ points:[
+  '<b>Mittleres Pressing</b> ist unser Standard — nicht wild anlaufen, geduldig zustellen.',
+  'Wir <b>lenken den Gegner auf die Außenlinie</b> (rote Zone = Pressingfalle).',
+  'Dort <b>zustellen und doppeln</b> — die Außenlinie ist unser zusätzlicher Verteidiger.',
+  '<span class="hl">Ballfern einrücken:</span> die andere Seite schiebt zur Mitte, kein Loch anbieten.'
+ ]},
+
+/* 14 Angriffspressing / Auslöser */
+{accent:'press', kicker:'Gegen Ball · Auslöser', title:'Pressing-Auslöser', sub:'Wann schalten wir den Turbo ein und pressen hoch?',
+ layout:'split', board:function(){var us=block442(-10);
+   // push front line higher for high press
+   us[9].x=760; us[10].x=760; us[9].y=300; us[10].y=380;
+   var opp=[O(920,340,''),O(860,255,''),O(860,425,'')];
+   return {us:us, opp:opp, ball:[920,340],
+   arrows:[{from:'st',to:[880,260],kind:'press',curve:-20},{from:'am',to:[880,420],kind:'press',curve:20}]};},
+ points:[
+  '<b>Auslöser 1 – schlechter Rückpass:</b> zu weich zum Torwart → sofort drauf.',
+  '<b>Auslöser 2 – hoher Ball:</b> in der Luft = Zeit zum Zuschieben, wir rücken auf.',
+  '<b>Auslöser 3 – Rücken zum Spiel:</b> Annahme mit dem Rücken zu uns → in den Rücken pressen.',
+  '<span class="hl">Der Stürmer gibt das Kommando</span> — dann pressen ALLE gemeinsam, nie allein.'
+ ]},
+
+/* 15 Nicht verhandelbar / Botschaft */
+{accent:'ball', kicker:'Unsere DNA', title:'Nicht verhandelbar', sub:'Egal ob Testspiel oder Ligastart — das bringen wir jedes Mal mit.',
+ layout:'center', html:
+  '<div style="display:flex;flex-direction:column;gap:26px;align-items:center;width:100%">'+
+  '<div class="checks">'+
+   '<div class="chk"><span class="mk">✓</span> Intensität in jedem Zweikampf</div>'+
+   '<div class="chk"><span class="mk">✓</span> Jeder arbeitet nach hinten mit</div>'+
+   '<div class="chk"><span class="mk">✓</span> Kompaktheit halten — eng bleiben</div>'+
+   '<div class="chk"><span class="mk">✓</span> Positive Kommunikation auf dem Platz</div>'+
+   '<div class="chk"><span class="mk">✓</span> Standards ernst nehmen</div>'+
+   '<div class="chk"><span class="mk">✓</span> Mutig, ballorientiert, kompakt</div>'+
+  '</div>'+
+  '<div class="big-msg">Wir wollen den Ball — aber <span class="g">jeder kennt seine Aufgabe</span> in allen vier Phasen.</div>'+
+  '</div>'}
+];
+
+/* ============ RENDER ============ */
+var deck=document.getElementById('deck');
+var STORE={};
+try{STORE=JSON.parse(localStorage.getItem('gbo4231')||'{}');}catch(e){STORE={};}
+
+SLIDES.forEach(function(sl,i){
+  var el=document.createElement('section');
+  el.className='slide'; el.setAttribute('data-accent',sl.accent||'info'); el.dataset.i=i;
+  var head='';
+  if(sl.layout!=='cover'){
+    head='<div class="s-head"><div>'+
+      '<div class="kicker"><span class="pdot"></span>'+(sl.kicker||'')+'</div>'+
+      '<h2 class="s-title">'+(sl.title||'')+'</h2>'+
+      (sl.sub?'<p class="s-sub">'+sl.sub+'</p>':'')+
+      '</div><div class="s-count"><b>'+(i)+'</b> / '+(SLIDES.length-1)+'</div></div>';
+  }
+  var bodyInner='';
+  if(sl.layout==='cover'){ bodyInner=sl.html; }
+  else if(sl.layout==='split'){
+    var bd = sl.board? board(sl.board()) : '';
+    bodyInner=bd+ (sl.points?pts(sl.points):(sl.html||''));
+  } else {
+    bodyInner=sl.html||'';
+  }
+  var bodyClass = sl.layout==='cover'?'':('s-body '+(sl.layout==='split'?'split':(sl.layout==='center'?'center':'wide')));
+  el.innerHTML= head + (sl.layout==='cover'? bodyInner : '<div class="'+bodyClass+'">'+bodyInner+'</div>');
+  deck.appendChild(el);
+});
+
+/* restore editable content */
+Array.prototype.forEach.call(document.querySelectorAll('.editable'),function(ed){
+  var k=ed.getAttribute('data-key');
+  if(STORE[k]) ed.innerHTML=STORE[k];
+  ed.addEventListener('input',function(){
+    STORE[k]=ed.innerHTML;
+    try{localStorage.setItem('gbo4231',JSON.stringify(STORE));}catch(e){}
+  });
+  // keep it a list on Enter
+});
+
+/* dots */
+var dots=document.getElementById('dots');
+SLIDES.forEach(function(_,i){var d=document.createElement('span');d.className='dot';d.dataset.i=i;d.onclick=function(){go(i);};dots.appendChild(d);});
+
+/* ============ NAV ============ */
+var cur=0, slidesEl=document.querySelectorAll('.slide'), dotEls=document.querySelectorAll('.dot');
+function playArrows(el){
+  var wrap=el.querySelector('.pitch-wrap svg');
+  if(!wrap)return;
+  var svg=el.querySelector('.pitch-wrap svg');
+  svg.classList.remove('playing'); void svg.offsetWidth; svg.classList.add('playing');
+  // animate dashed run paths via stroke reveal
+  Array.prototype.forEach.call(el.querySelectorAll('.run-static'),function(p){
+    try{var L=p.getTotalLength(); p.style.transition='none'; p.style.strokeDasharray=L+' '+L; p.style.strokeDashoffset=L;
+      void p.getBoundingClientRect();
+      var dl=parseFloat(p.getAttribute('data-dl'))||0;
+      p.style.transition='stroke-dashoffset .6s ease '+dl+'s'; p.style.strokeDashoffset='0';
+    }catch(e){}
+  });
+}
+function go(n){
+  n=Math.max(0,Math.min(SLIDES.length-1,n));
+  slidesEl[cur].classList.remove('active');
+  cur=n;
+  var el=slidesEl[cur];
+  el.classList.add('active');
+  dotEls.forEach(function(d,i){d.classList.toggle('on',i===cur);});
+  // accent for dots container
+  document.documentElement.style.setProperty('--accent', getComputedStyle(el).getPropertyValue('--accent'));
+  hideTask();
+  clearSel();
+  document.getElementById('prev').disabled=(cur===0);
+  document.getElementById('next').disabled=(cur===SLIDES.length-1);
+  try{ if(location.hash!=='#'+cur){ history.replaceState(null,'','#'+cur); } }catch(e){}
+  setTimeout(function(){playArrows(el);},260);
+}
+function next(){go(cur+1);} function prev(){go(cur-1);}
+document.getElementById('next').onclick=next;
+document.getElementById('prev').onclick=prev;
+document.getElementById('tzL').onclick=prev;
+document.getElementById('tzR').onclick=next;
+
+window.addEventListener('keydown',function(e){
+  if(e.target && e.target.isContentEditable) return;
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}
+  else if(e.key==='Home'){go(0);} else if(e.key==='End'){go(SLIDES.length-1);}
+});
+
+/* swipe */
+var tx=0,ty=0,tt=0;
+window.addEventListener('touchstart',function(e){var t=e.changedTouches[0];tx=t.clientX;ty=t.clientY;tt=Date.now();},{passive:true});
+window.addEventListener('touchend',function(e){
+  var t=e.changedTouches[0], dx=t.clientX-tx, dy=t.clientY-ty;
+  if(Date.now()-tt<600 && Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.6){ dx<0?next():prev(); }
+},{passive:true});
+
+/* ============ TAP PLAYER → TASK ============ */
+var task=document.getElementById('taskcard');
+function showTask(el,id){
+  clearSel();
+  var svg=el.querySelector('.pitch-wrap svg'); if(svg) svg.classList.add('dimmed');
+  var g=el.querySelector('.tok[data-id="'+id+'"]'); if(g) g.classList.add('sel');
+  document.getElementById('tcBadge').textContent=ROLE[id][0];
+  document.getElementById('tcRole').textContent=ROLE[id][1];
+  document.getElementById('tcBody').innerHTML=TASKS[id]||'';
+  task.classList.add('show');
+}
+function hideTask(){task.classList.remove('show');}
+function clearSel(){
+  Array.prototype.forEach.call(document.querySelectorAll('.pitch-wrap svg'),function(s){s.classList.remove('dimmed');});
+  Array.prototype.forEach.call(document.querySelectorAll('.tok.sel'),function(t){t.classList.remove('sel');});
+}
+document.getElementById('tcClose').onclick=function(){hideTask();clearSel();};
+deck.addEventListener('click',function(e){
+  var g=e.target.closest('.tok');
+  if(g && g.dataset.id){
+    var el=slidesEl[cur];
+    if(g.classList.contains('sel')){hideTask();clearSel();}
+    else showTask(el,g.dataset.id);
+    return;
+  }
+  var pb=e.target.closest('[data-play]');
+  if(pb){ playArrows(slidesEl[cur]); }
+});
+
+/* tools */
+document.getElementById('btnReset').onclick=function(){playArrows(slidesEl[cur]);};
+document.getElementById('btnFull').onclick=function(){
+  var d=document.documentElement;
+  if(!document.fullscreenElement && !document.webkitFullscreenElement){
+    (d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d);
+  } else {
+    (document.exitFullscreen||document.webkitExitFullscreen||function(){}).call(document);
+  }
+};
+
+/* start */
+var startAt=NaN;
+try{ startAt=parseInt((location.hash||'').replace('#',''),10); }catch(e){}
+go(isNaN(startAt)?0:startAt);
+})();
+</script>
+
+</body>
+</html>
