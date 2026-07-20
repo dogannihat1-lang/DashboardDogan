@@ -145,7 +145,7 @@
     <div class="stat"><div class="n">2</div><div class="l">Nächte</div></div>
     <div class="stat"><div class="n">~30 h</div><div class="l">Fahrt</div></div>
   </div>
-  <div class="countdown" id="cd">Abfahrt 29.07.2026</div>
+  <div class="countdown" id="cd">Abfahrt 26.07.2026</div>
 </div>
 
 <main>
@@ -159,17 +159,17 @@
       <div class="chev">▾</div></div>
     <div class="acc-panel"><div class="acc-body">
       <div class="stage">
-        <div class="d">Tag 1 · 29.07.</div><h3>Leverkusen → Budapest 🇭🇺</h3>
+        <div class="d">Tag 1 · So 26.07.</div><h3>Leverkusen → Budapest 🇭🇺</h3>
         <div class="pills"><span class="pill"><b>~1.350 km</b></span><span class="pill">⏱️ <b>~12–13 h</b></span><span class="pill">A3 · Passau · Wien</span></div>
         <div class="cal tip">Früh los (~6 Uhr). Alles Schengen — keine Kontrollen bis Ungarn. AT- & HU-Vignette vorher digital kaufen.</div>
       </div>
       <div class="stage">
-        <div class="d">Tag 2 · 30.07.</div><h3>Budapest → Edirne 🇹🇷</h3>
+        <div class="d">Tag 2 · Mo 27.07.</div><h3>Budapest → Edirne 🇹🇷</h3>
         <div class="pills"><span class="pill"><b>~1.080 km</b></span><span class="pill">⏱️ <b>~12 h + Grenze</b></span><span class="pill">RS · BG · Kapıkule</span></div>
         <div class="cal danger">⚠️ Der harte Tag! 2 Grenzen + Kapıkule. Im Sommer 1–6 h Stau. <b>Sehr früh aus Budapest (4–5 Uhr)</b> → Grenze vormittags. Edirne liegt schon in der Türkei.</div>
       </div>
       <div class="stage">
-        <div class="d">Tag 3 · 31.07.</div><h3>Edirne → Nevşehir 🏁</h3>
+        <div class="d">Tag 3 · Di 28.07.</div><h3>Edirne → Nevşehir 🏁</h3>
         <div class="pills"><span class="pill"><b>~960 km</b></span><span class="pill">⏱️ <b>~10–11 h</b></span><span class="pill">Istanbul · Ankara · Otoyol</span></div>
         <div class="cal tip">Schnelle Otoyol. HGS muss aktiv sein (Bosporus-Brücke!). Istanbul nicht zur Rushhour durchfahren.</div>
       </div>
@@ -472,11 +472,11 @@
 
   // --- Countdown ---
   (function(){
-    const target=new Date('2026-07-29T06:00:00');
+    const target=new Date('2026-07-26T06:00:00');
     const el=document.getElementById('cd');
     function upd(){
       const d=Math.ceil((target-new Date())/86400000);
-      el.textContent = d>0 ? ('🗓️ noch '+d+' Tage bis zur Abfahrt') : (d===0?'🚗 Heute geht es los!':'Abfahrt 29.07.2026');
+      el.textContent = d>0 ? ('🗓️ noch '+d+' Tage bis zur Abfahrt') : (d===0?'🚗 Heute geht es los!':'Abfahrt 26.07.2026');
     }
     upd();
   })();
