@@ -1,7 +1,7 @@
 /* Sıla Yolu 2026 – Service Worker
    Macht den Reiseplaner offline nutzbar. Beim Erhöhen der Version
    wird der alte Cache verworfen und neu befüllt. */
-const CACHE = 'sila-yolu-2026-v3';
+const CACHE = 'sila-yolu-2026-v4';
 
 const ASSETS = [
   './',

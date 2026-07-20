@@ -130,6 +130,13 @@
   .quick::-webkit-scrollbar{display:none}
   .quick button{flex:0 0 auto;background:var(--card2);border:1px solid var(--line);color:var(--txt);
     font-size:12px;padding:7px 12px;border-radius:20px;white-space:nowrap}
+  .livebtn{position:fixed;right:14px;bottom:16px;z-index:50;background:linear-gradient(90deg,var(--red),#c1121f);color:#fff;text-decoration:none;font-weight:800;font-size:13px;padding:11px 15px;border-radius:30px;box-shadow:0 6px 18px rgba(230,57,70,.45);display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.25)}
+  .livebtn .dot{width:9px;height:9px;border-radius:50%;background:#fff;animation:lp 1.2s infinite}
+  @keyframes lp{0%,100%{opacity:1}50%{opacity:.25}}
+  .liverow{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+  .liverow a{flex:1 1 44%;text-align:center;background:rgba(230,57,70,.14);border:1px solid rgba(230,57,70,.42);color:#ffd0d5;text-decoration:none;font-size:12.5px;font-weight:700;padding:10px;border-radius:10px}
+  .liverow a b{color:#fff}
+  .liverow a.wide{flex:1 1 100%;background:linear-gradient(90deg,rgba(230,57,70,.9),rgba(193,18,31,.9));color:#fff}
 </style>
 </head>
 <body>
@@ -149,6 +156,8 @@
 </div>
 
 <main>
+
+<a class="livebtn" href="https://trakyasinirlari.com/sinir-kapilari/kapikule" target="_blank" rel="noopener"><span class="dot"></span>LIVE Grenze</a>
 
   <div class="quick" id="quick"></div>
 
@@ -215,6 +224,11 @@
       <div class="acc-tt"><div class="t">Grenzübergänge</div><div class="s">Kapıkule + 2 ruhigere Alternativen + Live-Tools</div></div>
       <div class="chev">▾</div></div>
     <div class="acc-panel"><div class="acc-body">
+      <div class="liverow">
+        <a class="wide" href="https://trakyasinirlari.com/sinir-kapilari/kapikule" target="_blank" rel="noopener">🔴 Kapıkule — LIVE Wartezeit & Kamera</a>
+        <a href="https://trakyasinirlari.com" target="_blank" rel="noopener"><b>Alle Trakya-Grenzen</b> live</a>
+        <a href="https://silaway.app" target="_blank" rel="noopener"><b>SilaWay-App</b> öffnen</a>
+      </div>
       <h4>Welcher Übergang?</h4>
       <ul class="lst">
         <li><b>Kapıkule</b> (Standard) — größter, im Sommer am vollsten. Direkt auf der Route.</li>
