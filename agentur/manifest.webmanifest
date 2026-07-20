@@ -1,0 +1,19 @@
+{
+  "name": "Agentur-Cockpit · Leverkusen",
+  "short_name": "Agentur",
+  "description": "Privates Organisations-Tool für die Versicherungsagentur: Aufgaben, Kunden, Schäden, Kündigungen, Angebote, Ausgaben und Textbausteine. Läuft offline, Daten bleiben lokal.",
+  "lang": "de",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "/agentur/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#8a0a1e",
+  "theme_color": "#8a0a1e",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#8a0a1e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Agentur-Cockpit">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Agentur-Cockpit · Leverkusen</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%238a0a1e'/%3E%3Ctext x='50' y='68' font-size='54' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#eef1f5; --surface:#ffffff; --surface2:#f6f8fb; --line:#e2e7ee; --line2:#eef2f6;
+    --txt:#1c2733; --muted:#66788a; --muted2:#8a99a8;
+    --accent:#8a0a1e; --accent2:#b31226; --accentSoft:#fbe9ec;
+    --blue:#1a6fb5; --blueSoft:#e6f0fa;
+    --green:#1f8a4c; --greenSoft:#e5f5eb;
+    --amber:#b7791f; --amberSoft:#fdf3e0;
+    --red:#c0362c; --redSoft:#fbe8e6;
+    --purple:#6b4bb3; --purpleSoft:#efeafa;
+    --slate:#546678; --slateSoft:#eef1f5;
+    --shadow:0 1px 2px rgba(19,34,51,.05),0 6px 20px rgba(19,34,51,.06);
+    --radius:16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f151b; --surface:#18212b; --surface2:#131c24; --line:#26333f; --line2:#202b35;
+      --txt:#e8eef4; --muted:#93a4b3; --muted2:#7688978;
+      --accentSoft:#2a1418; --blueSoft:#12222f; --greenSoft:#0f2419; --amberSoft:#2a2010;
+      --redSoft:#2a1512; --purpleSoft:#1c1730; --slateSoft:#1a232c;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+    background:var(--bg);color:var(--txt);line-height:1.5;
+    padding-bottom:calc(72px + env(safe-area-inset-bottom));min-height:100vh;font-size:15px}
+
+  /* HEADER */
+  header.app{position:sticky;top:0;z-index:40;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#fff;padding:max(12px,env(safe-area-inset-top)) 16px 12px;
+    box-shadow:0 2px 14px rgba(138,10,30,.28)}
+  .hrow{display:flex;align-items:center;gap:12px;max-width:900px;margin:0 auto}
+  .logo{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.16);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;flex:0 0 auto;
+    border:1px solid rgba(255,255,255,.25)}
+  .htxt{flex:1;min-width:0}
+  .htxt h1{margin:0;font-size:16px;font-weight:800;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .htxt .sub{font-size:11.5px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hbtn{flex:0 0 auto;width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.12);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .hbtn:active{transform:scale(.94)}
+
+  /* SEARCH */
+  .searchwrap{max-width:900px;margin:10px auto 0}
+  .search{width:100%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.14);
+    color:#fff;border-radius:11px;padding:9px 12px;font-size:14px}
+  .search::placeholder{color:rgba(255,255,255,.75)}
+  .search:focus{outline:none;background:rgba(255,255,255,.22)}
+
+  main{max-width:900px;margin:0 auto;padding:16px 14px 20px}
+
+  h2.view{font-size:19px;font-weight:800;margin:2px 0 14px;letter-spacing:.2px}
+  .view-sub{color:var(--muted);font-size:13px;margin:-10px 0 16px}
+
+  /* CARDS */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:15px;margin-bottom:13px}
+  .card h3{margin:0 0 10px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .card h3 .ic{font-size:16px}
+
+  /* KPI GRID */
+  .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:14px}
+  @media(min-width:620px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 13px 12px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:pointer;transition:transform .12s}
+  .kpi:active{transform:scale(.97)}
+  .kpi .n{font-size:26px;font-weight:800;line-height:1;letter-spacing:-.5px}
+  .kpi .l{font-size:11.5px;color:var(--muted);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .kpi .bar{position:absolute;left:0;top:0;bottom:0;width:4px}
+  .kpi.a .bar{background:var(--accent)} .kpi.b .bar{background:var(--blue)}
+  .kpi.g .bar{background:var(--green)} .kpi.r .bar{background:var(--red)}
+  .kpi.am .bar{background:var(--amber)} .kpi.p .bar{background:var(--purple)}
+
+  /* PILLS / BADGES */
+  .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;
+    padding:3px 9px;border-radius:20px;white-space:nowrap;line-height:1.3}
+  .b-blue{background:var(--blueSoft);color:var(--blue)}
+  .b-green{background:var(--greenSoft);color:var(--green)}
+  .b-amber{background:var(--amberSoft);color:var(--amber)}
+  .b-red{background:var(--redSoft);color:var(--red)}
+  .b-purple{background:var(--purpleSoft);color:var(--purple)}
+  .b-slate{background:var(--slateSoft);color:var(--slate)}
+  .b-accent{background:var(--accentSoft);color:var(--accent2)}
+
+  /* LIST ITEMS */
+  .item{display:flex;gap:11px;align-items:flex-start;padding:12px 4px;border-top:1px solid var(--line2)}
+  .item:first-of-type{border-top:none}
+  .item .dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;margin-top:6px}
+  .item .body{flex:1;min-width:0}
+  .item .t{font-weight:600;font-size:14.5px;word-break:break-word}
+  .item .m{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+  .item .acts{flex:0 0 auto;display:flex;gap:6px;align-items:center}
+  .iconbtn{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--surface2);
+    color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .iconbtn:active{transform:scale(.9)}
+  .iconbtn.done{color:var(--green)}
+  .iconbtn.del:active{color:var(--red);border-color:var(--red)}
+
+  .empty{text-align:center;color:var(--muted2);padding:26px 10px;font-size:13.5px}
+  .empty .big{font-size:30px;margin-bottom:8px;opacity:.7}
+
+  /* BUTTONS */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;cursor:pointer;
+    font-size:14px;font-weight:700;padding:11px 16px;border-radius:12px;background:var(--accent);color:#fff;
+    box-shadow:0 3px 10px rgba(138,10,30,.22);transition:transform .1s}
+  .btn:active{transform:scale(.97)}
+  .btn.sec{background:var(--surface2);color:var(--txt);border:1px solid var(--line);box-shadow:none}
+  .btn.ghost{background:transparent;color:var(--accent2);box-shadow:none;border:1px solid var(--line)}
+  .btn.sm{padding:8px 12px;font-size:13px;border-radius:10px}
+  .btn.block{width:100%}
+  .btn.danger{background:var(--red);box-shadow:0 3px 10px rgba(192,54,44,.22)}
+  .btnrow{display:flex;gap:9px;flex-wrap:wrap}
+
+  /* FILTER CHIPS */
+  .chips{display:flex;gap:7px;overflow-x:auto;padding:2px 0 8px;margin:-2px 0 8px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:20px;
+    border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap}
+  .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  /* SECTION HEADER ROW */
+  .secrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px}
+  .secrow h2.view{margin:0}
+
+  /* FAB */
+  .fab{position:fixed;right:16px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:35;
+    width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;
+    font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(138,10,30,.4)}
+  .fab:active{transform:scale(.92)}
+
+  /* BOTTOM NAV */
+  nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:38;background:var(--surface);
+    border-top:1px solid var(--line);display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:0 -2px 14px rgba(19,34,51,.06)}
+  nav.bottom button{flex:1;background:none;border:none;cursor:pointer;color:var(--muted2);
+    display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;font-size:10px;font-weight:600}
+  nav.bottom button .ic{font-size:20px;line-height:1}
+  nav.bottom button.on{color:var(--accent)}
+
+  /* MODAL */
+  .modal-bg{position:fixed;inset:0;background:rgba(15,21,27,.55);z-index:60;display:none;
+    align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+  .modal-bg.show{display:flex}
+  @media(min-width:640px){.modal-bg{align-items:center}}
+  .modal{background:var(--surface);width:100%;max-width:560px;border-radius:20px 20px 0 0;
+    max-height:92vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,.3);
+    padding:0 0 calc(16px + env(safe-area-inset-bottom))}
+  @media(min-width:640px){.modal{border-radius:20px}}
+  .modal-head{position:sticky;top:0;background:var(--surface);padding:16px 18px 12px;
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;z-index:2}
+  .modal-head h3{margin:0;font-size:17px;font-weight:800}
+  .modal-body{padding:16px 18px}
+  .mgrip{width:38px;height:4px;border-radius:4px;background:var(--line);margin:8px auto -4px}
+
+  /* FORM */
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:5px}
+  .field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:var(--surface2);
+    color:var(--txt);border-radius:11px;padding:11px 12px;font-size:15px;font-family:inherit}
+  .field textarea{min-height:74px;resize:vertical;line-height:1.45}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+  .field .hint{font-size:11.5px;color:var(--muted2);margin-top:4px}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:460px){.frow{grid-template-columns:1fr}}
+
+  /* TABLE (offers compare) */
+  .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
+  table.cmp{border-collapse:collapse;width:100%;font-size:13px;min-width:340px}
+  table.cmp th,table.cmp td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  table.cmp th{background:var(--surface2);font-weight:700;position:sticky;left:0}
+  table.cmp td.best{background:var(--greenSoft)}
+  table.cmp .rowlabel{font-weight:700;background:var(--surface2);white-space:nowrap}
+
+  /* DETAIL ROWS */
+  .drow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line2);font-size:13.5px}
+  .drow:first-child{border-top:none}
+  .drow .k{color:var(--muted);font-weight:600}
+  .drow .v{text-align:right;word-break:break-word}
+
+  /* LOG / TIMELINE */
+  .log{list-style:none;margin:8px 0 0;padding:0}
+  .log li{position:relative;padding:0 0 12px 18px;font-size:13px;color:var(--txt)}
+  .log li::before{content:"";position:absolute;left:3px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .log li::after{content:"";position:absolute;left:6px;top:13px;bottom:0;width:2px;background:var(--line)}
+  .log li:last-child::after{display:none}
+  .log li .lt{font-size:11px;color:var(--muted2);margin-top:1px}
+
+  /* BAR CHART */
+  .barrow{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13px}
+  .barrow .bl{width:38%;color:var(--muted);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .barrow .bt{flex:1;height:20px;background:var(--surface2);border-radius:6px;overflow:hidden}
+  .barrow .bt span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:6px}
+  .barrow .bv{width:74px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+
+  .note{background:var(--amberSoft);border:1px solid #f0dcb0;color:var(--amber);border-radius:12px;
+    padding:11px 13px;font-size:12.5px;margin-bottom:13px;display:flex;gap:9px;align-items:flex-start}
+  @media (prefers-color-scheme: dark){.note{border-color:#3a2c10}}
+  .note .ic{font-size:16px;flex:0 0 auto}
+
+  .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+    background:var(--txt);color:var(--bg);padding:11px 18px;border-radius:24px;font-size:13.5px;font-weight:600;
+    z-index:80;opacity:0;transition:.28s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .tag-inline{font-size:12px;color:var(--muted);font-weight:600}
+  .muted{color:var(--muted)}
+  .strong{font-weight:700}
+  .mono{font-variant-numeric:tabular-nums}
+  .clickrow{cursor:pointer}
+  .clickrow:active{background:var(--surface2)}
+  .overdue{color:var(--red);font-weight:700}
+  .duesoon{color:var(--amber);font-weight:700}
+  .divider{height:1px;background:var(--line);margin:14px 0}
+  .templatebox{background:var(--surface2);border:1px solid var(--line);border-radius:11px;padding:11px 12px;
+    font-size:13px;white-space:pre-wrap;line-height:1.5;margin-top:8px;max-height:190px;overflow:auto}
+  .copyhint{font-size:11px;color:var(--muted2);margin-top:6px}
+  a.link{color:var(--blue);text-decoration:none;font-weight:600}
+
+  @media print{
+    header.app,nav.bottom,.fab,.chips,.searchwrap,.btn,.iconbtn,.hbtn{display:none!important}
+    body{background:#fff;padding:0}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="hrow">
+    <div class="logo">A</div>
+    <div class="htxt">
+      <h1 id="hTitle">Agentur-Cockpit</h1>
+      <div class="sub" id="hSub">ERGO · RD Düsseldorf · Leverkusen</div>
+    </div>
+    <button class="hbtn" onclick="App.go('settings')" title="Einstellungen">⚙︎</button>
+  </div>
+  <div class="searchwrap">
+    <input class="search" id="globalSearch" type="search" placeholder="🔍  Suchen: Kunde, Aufgabe, Schaden …" oninput="App.onSearch(this.value)">
+  </div>
+</header>
+
+<main id="app"><!-- rendered --></main>
+
+<button class="fab" id="fab" onclick="App.fabAction()" title="Neu">+</button>
+
+<nav class="bottom" id="nav"></nav>
+
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)App.closeModal()">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="mgrip"></div>
+    <div class="modal-head"><h3 id="modalTitle">—</h3><button class="hbtn" style="background:var(--surface2);color:var(--muted);border-color:var(--line)" onclick="App.closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   Agentur-Cockpit – lokales Kanzlei-/Agentur-Management
+   Alle Daten bleiben im Browser (localStorage). Kein Server.
+   ============================================================ */
+"use strict";
+
+/* ---------- Storage ---------- */
+const KEY = "agentur_data_v1";
+let memFallback = null; // falls localStorage nicht verfügbar (z.B. Vorschau)
+
+function lsGet(){
+  try{ return localStorage.getItem(KEY); }catch(e){ return memFallback; }
+}
+function lsSet(v){
+  try{ localStorage.setItem(KEY, v); }catch(e){ memFallback = v; }
+}
+
+const DEFAULT_TEMPLATES = [
+  { id:"tpl1", title:"Eingangsbestätigung Anfrage",
+    body:"Sehr geehrte/r {{Kunde}},\n\nvielen Dank für Ihre Anfrage vom {{Datum}}. Diese liegt uns vor und wird von uns bearbeitet. Wir melden uns zeitnah mit einer Rückmeldung bei Ihnen.\n\nMit freundlichen Grüßen\n{{Berater}}\n{{Agentur}}" },
+  { id:"tpl2", title:"Kündigungsbestätigung an Kunde",
+    body:"Sehr geehrte/r {{Kunde}},\n\nwir bestätigen den Eingang Ihrer Kündigung zum Vertrag {{Vertragsnummer}}. Die Kündigung wird zum nächstmöglichen Termin an die Gesellschaft weitergeleitet. Über die Bestätigung der Gesellschaft informieren wir Sie umgehend.\n\nMit freundlichen Grüßen\n{{Berater}}\n{{Agentur}}" },
+  { id:"tpl3", title:"Schadenmeldung an Schadenabteilung",
+    body:"Betreff: Neue Schadenmeldung – {{Kunde}} / Vertrag {{Vertragsnummer}}\n\nBitte um Bearbeitung folgender Schadenmeldung:\n\nKunde: {{Kunde}}\nVertragsnummer: {{Vertragsnummer}}\nSchadendatum: {{Datum}}\nSchadenhergang: \n\nRückfragen gerne an die Agentur.\n\nMit freundlichen Grüßen\n{{Berater}}\n{{Agentur}}" },
+  { id:"tpl4", title:"Schadenstand an Kunde",
+    body:"Sehr geehrte/r {{Kunde}},\n\nzum Stand Ihres Schadens (Schaden-Nr. {{Schadennummer}}) informieren wir Sie: Die Schadenabteilung bearbeitet den Vorgang aktuell. Sobald uns eine Rückmeldung vorliegt, erhalten Sie umgehend Nachricht.\n\nMit freundlichen Grüßen\n{{Berater}}\n{{Agentur}}" },
+  { id:"tpl5", title:"Angebot übersenden",
+    body:"Sehr geehrte/r {{Kunde}},\n\nwie besprochen erhalten Sie anbei unser Angebot. Gerne bespreche ich die Details persönlich mit Ihnen – rufen Sie mich einfach an oder antworten Sie auf diese Nachricht.\n\nMit freundlichen Grüßen\n{{Berater}}\n{{Agentur}}" },
+  { id:"tpl6", title:"Rechnung / Beleg eingereicht",
+    body:"Sehr geehrte/r {{Kunde}},\n\nwir bestätigen, dass wir Ihre eingereichte Rechnung vom {{Datum}} an die Gesellschaft weitergeleitet haben. Die Erstattung erfolgt direkt an Sie. Bei Rückfragen stehen wir gerne zur Verfügung.\n\nMit freundlichen Grüßen\n{{Berater}}\n{{Agentur}}" }
+];
+
+function seed(){
+  return {
+    meta:{ version:1, updatedAt:new Date().toISOString(), lastBackup:null },
+    settings:{
+      agency:"ERGO Agentur",
+      region:"Regionaldirektion Düsseldorf",
+      address:"Küppersteger Str. 5, 51373 Leverkusen",
+      berater:"",
+      expenseCats:["Büromaterial","Porto/Versand","Fahrtkosten","Bewirtung","Software/IT","Marketing","Fortbildung","Sonstiges"]
+    },
+    tasks:[], customers:[], offers:[], claims:[], cancellations:[], expenses:[],
+    templates: DEFAULT_TEMPLATES.map(t=>({...t}))
+  };
+}
+
+let DB;
+function load(){
+  const raw = lsGet();
+  if(!raw){ DB = seed(); save(); return; }
+  try{
+    DB = JSON.parse(raw);
+    // sanftes Auffüllen fehlender Felder
+    const s = seed();
+    for(const k of Object.keys(s)) if(DB[k]===undefined) DB[k]=s[k];
+    if(!DB.settings) DB.settings = s.settings;
+    for(const k of Object.keys(s.settings)) if(DB.settings[k]===undefined) DB.settings[k]=s.settings[k];
+    if(!Array.isArray(DB.templates)||!DB.templates.length) DB.templates = s.templates;
+  }catch(e){ DB = seed(); save(); }
+}
+function save(){
+  DB.meta.updatedAt = new Date().toISOString();
+  lsSet(JSON.stringify(DB));
+}
+
+/* ---------- Helpers ---------- */
+const uid = ()=> (Date.now().toString(36) + Math.floor(Math.random()*1e6).toString(36));
+const esc = (s)=> String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nl2br = (s)=> esc(s).replace(/\n/g,"<br>");
+function todayISO(){ const d=new Date(); return d.toISOString().slice(0,10); }
+function fmtDate(iso){
+  if(!iso) return "—";
+  const d=new Date(iso+ (iso.length<=10?"T00:00:00":""));
+  if(isNaN(d)) return iso;
+  return d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
+}
+function fmtDateShort(iso){
+  if(!iso) return "—";
+  const d=new Date(iso+(iso.length<=10?"T00:00:00":"")); if(isNaN(d))return iso;
+  return d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"});
+}
+function daysUntil(iso){
+  if(!iso) return null;
+  const d=new Date(iso+"T00:00:00"); const t=new Date(todayISO()+"T00:00:00");
+  return Math.round((d-t)/86400000);
+}
+function money(n){ return (Number(n)||0).toLocaleString("de-DE",{style:"currency",currency:"EUR"}); }
+function relDue(iso){
+  const d=daysUntil(iso); if(d===null) return "";
+  if(d<0) return `<span class="overdue">${Math.abs(d)} Tg. überfällig</span>`;
+  if(d===0) return `<span class="duesoon">heute fällig</span>`;
+  if(d===1) return `<span class="duesoon">morgen fällig</span>`;
+  if(d<=3) return `<span class="duesoon">in ${d} Tagen</span>`;
+  return `fällig ${fmtDateShort(iso)}`;
+}
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2200);
+}
+function customerName(id){ const c=DB.customers.find(x=>x.id===id); return c? c.name : ""; }
+
+/* ---------- Config ---------- */
+const TASK_CATS = ["Anfrage","Rechnung","Angebot","Kündigung","Schaden","Kundenpflege","Sonstiges"];
+const TASK_STATUS = ["Offen","In Bearbeitung","Wartet auf Rückmeldung","Erledigt"];
+const PRIOS = ["Hoch","Mittel","Niedrig"];
+const CLAIM_STATUS = ["Gemeldet","An Schadenabt. weitergeleitet","In Prüfung","Reguliert","Abgelehnt","Abgeschlossen"];
+const CANCEL_STATUS = ["Offen","An Gesellschaft weitergeleitet","Bestätigt","Widerrufen"];
+
+function prioBadge(p){ return p==="Hoch"?"b-red":p==="Mittel"?"b-amber":"b-slate"; }
+function statusBadge(s){
+  if(s==="Erledigt"||s==="Abgeschlossen"||s==="Reguliert"||s==="Bestätigt") return "b-green";
+  if(s==="In Bearbeitung"||s==="In Prüfung") return "b-blue";
+  if(s==="Wartet auf Rückmeldung"||s==="An Schadenabt. weitergeleitet"||s==="An Gesellschaft weitergeleitet") return "b-amber";
+  if(s==="Abgelehnt"||s==="Widerrufen") return "b-red";
+  if(s==="Gemeldet") return "b-purple";
+  return "b-slate";
+}
+function catBadge(c){
+  return {Anfrage:"b-blue",Rechnung:"b-purple",Angebot:"b-green",Kündigung:"b-amber",Schaden:"b-red",Kundenpflege:"b-slate",Sonstiges:"b-slate"}[c]||"b-slate";
+}
+
+/* ============================================================
+   APP
+   ============================================================ */
+const NAV = [
+  {id:"dashboard", ic:"▦", label:"Übersicht"},
+  {id:"tasks",     ic:"✓", label:"Aufgaben"},
+  {id:"customers", ic:"☺", label:"Kunden"},
+  {id:"claims",    ic:"⚠", label:"Schäden"},
+  {id:"more",      ic:"⋯", label:"Mehr"}
+];
+const MORE = [
+  {id:"offers", ic:"⇄", label:"Angebote & Vergleich"},
+  {id:"cancellations", ic:"✂", label:"Kündigungen"},
+  {id:"expenses", ic:"€", label:"Ausgaben"},
+  {id:"templates", ic:"✎", label:"Vorlagen / Textbausteine"},
+  {id:"settings", ic:"⚙", label:"Einstellungen & Backup"}
+];
+
+const App = {
+  view:"dashboard",
+  filter:{},
+  search:"",
+
+  init(){
+    load();
+    // Header
+    document.getElementById("hSub").textContent =
+      [DB.settings.agency, DB.settings.region, DB.settings.address.split(",")[1]?.trim()].filter(Boolean).join(" · ");
+    this.renderNav();
+    this.go("dashboard");
+    // Backup-Erinnerung
+    this.maybeRemindBackup();
+  },
+
+  renderNav(){
+    const nav=document.getElementById("nav");
+    nav.innerHTML = NAV.map(n=>`<button data-id="${n.id}" onclick="App.navClick('${n.id}')">
+      <span class="ic">${n.ic}</span><span>${n.label}</span></button>`).join("");
+    this.syncNav();
+  },
+  syncNav(){
+    const active = MORE.some(m=>m.id===this.view) ? "more" : this.view;
+    document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on", b.dataset.id===active));
+  },
+  navClick(id){ if(id==="more") return this.openMore(); this.go(id); },
+
+  go(view){
+    this.view=view; this.filter={};
+    window.scrollTo(0,0);
+    this.render();
+    this.syncNav();
+    document.getElementById("fab").style.display = ["dashboard","tasks","customers","claims","offers","cancellations","expenses","templates"].includes(view) ? "flex":"none";
+  },
+
+  onSearch(v){ this.search=v.trim().toLowerCase(); if(v.trim().length>=2 || this.view==="search") this.renderSearch(); else if(this.view==="search") this.go("dashboard"); },
+
+  fabAction(){
+    const map={tasks:"task",customers:"customer",claims:"claim",offers:"offer",cancellations:"cancel",expenses:"expense",templates:"template"};
+    this.openForm(map[this.view]||"task");
+  },
+
+  render(){
+    if(this.view==="search") return this.renderSearch();
+    const fn = this["render_"+this.view];
+    document.getElementById("app").innerHTML = fn? fn.call(this) : "<div class='empty'>—</div>";
+  },
+
+  /* ---------- DASHBOARD ---------- */
+  render_dashboard(){
+    const t = DB.tasks.filter(x=>x.status!=="Erledigt");
+    const dueToday = t.filter(x=>x.due && daysUntil(x.due)===0);
+    const overdue = t.filter(x=>x.due && daysUntil(x.due)<0);
+    const claimsOpen = DB.claims.filter(c=>!["Abgeschlossen","Abgelehnt"].includes(c.status));
+    const cancelOpen = DB.cancellations.filter(c=>!["Bestätigt","Widerrufen"].includes(c.status));
+    const monthKey = todayISO().slice(0,7);
+    const monthExp = DB.expenses.filter(e=>(e.date||"").slice(0,7)===monthKey).reduce((s,e)=>s+(Number(e.amount)||0),0);
+    const hour = new Date().getHours();
+    const greet = hour<11?"Guten Morgen":hour<18?"Guten Tag":"Guten Abend";
+    const name = DB.settings.berater? ", "+DB.settings.berater.split(" ")[0] : "";
+
+    // kommende Fristen (Aufgaben + Kündigungen + Schäden nächste Aktion)
+    const upcoming=[];
+    t.forEach(x=>{ if(x.due) upcoming.push({d:x.due, label:x.title, tag:"Aufgabe", view:"tasks", cls:catBadge(x.category)}); });
+    cancelOpen.forEach(c=>{ if(c.deadline) upcoming.push({d:c.deadline, label:`Kündigung ${customerName(c.customerId)||c.customer||""} · ${c.product||""}`, tag:"Frist", view:"cancellations", cls:"b-amber"}); });
+    claimsOpen.forEach(c=>{ if(c.nextAction) upcoming.push({d:c.nextAction, label:`Schaden ${customerName(c.customerId)||c.customer||""}`, tag:"Wiedervorlage", view:"claims", cls:"b-red"}); });
+    upcoming.sort((a,b)=> (a.d||"").localeCompare(b.d||""));
+    const next7 = upcoming.filter(u=>{const d=daysUntil(u.d); return d!==null && d<=7;});
+
+    const openList = (arr,title)=> arr.length? arr.map(x=>`
+      <div class="item clickrow" onclick="App.openDetail('task','${x.id}')">
+        <span class="dot" style="background:var(${x.priority==='Hoch'?'--red':x.priority==='Mittel'?'--amber':'--slate'})"></span>
+        <div class="body"><div class="t">${esc(x.title)}</div>
+          <div class="m"><span class="badge ${catBadge(x.category)}">${x.category}</span>
+          ${x.customerId?`<span>${esc(customerName(x.customerId))}</span>`:""}
+          <span>${relDue(x.due)}</span></div></div>
+        <div class="acts"><button class="iconbtn done" onclick="event.stopPropagation();App.completeTask('${x.id}')" title="Erledigt">✓</button></div>
+      </div>`).join("") : `<div class="empty" style="padding:14px">Nichts ${title} 🎉</div>`;
+
+    return `
+      <h2 class="view">${greet}${esc(name)} 👋</h2>
+      <div class="view-sub">${new Date().toLocaleDateString("de-DE",{weekday:"long",day:"2-digit",month:"long",year:"numeric"})}</div>
+
+      <div class="kpi-grid">
+        <div class="kpi a" onclick="App.go('tasks')"><span class="bar"></span><div class="n">${t.length}</div><div class="l">Offene Aufgaben</div></div>
+        <div class="kpi r" onclick="App.go('tasks')"><span class="bar"></span><div class="n">${overdue.length}</div><div class="l">Überfällig</div></div>
+        <div class="kpi am" onclick="App.go('claims')"><span class="bar"></span><div class="n">${claimsOpen.length}</div><div class="l">Offene Schäden</div></div>
+        <div class="kpi b" onclick="App.go('cancellations')"><span class="bar"></span><div class="n">${cancelOpen.length}</div><div class="l">Kündigungen offen</div></div>
+      </div>
+
+      ${overdue.length?`<div class="card"><h3><span class="ic">🔴</span> Überfällig (${overdue.length})</h3>${openList(overdue.slice(0,6),"")}</div>`:""}
+
+      <div class="card"><h3><span class="ic">📌</span> Heute fällig (${dueToday.length})</h3>${openList(dueToday,"für heute")}</div>
+
+      <div class="card">
+        <h3><span class="ic">🗓️</span> Nächste 7 Tage</h3>
+        ${next7.length? next7.slice(0,8).map(u=>`
+          <div class="item clickrow" onclick="App.go('${u.view}')">
+            <span class="dot" style="background:var(--accent)"></span>
+            <div class="body"><div class="t">${esc(u.label)}</div>
+            <div class="m"><span class="badge ${u.cls}">${u.tag}</span> <span>${relDue(u.d)}</span></div></div>
+          </div>`).join("") : `<div class="empty" style="padding:14px">Keine Fristen in den nächsten 7 Tagen</div>`}
+      </div>
+
+      <div class="card">
+        <h3><span class="ic">⚡</span> Schnell erfassen</h3>
+        <div class="btnrow">
+          <button class="btn sm" onclick="App.openForm('task',{category:'Rechnung'})">＋ Rechnung</button>
+          <button class="btn sm" onclick="App.openForm('task',{category:'Angebot'})">＋ Angebot</button>
+          <button class="btn sm" onclick="App.openForm('task',{category:'Kündigung'})">＋ Kündigung</button>
+          <button class="btn sm" onclick="App.openForm('claim')">＋ Schaden</button>
+          <button class="btn sm sec" onclick="App.openForm('task',{category:'Anfrage'})">＋ Anfrage</button>
+          <button class="btn sm sec" onclick="App.openForm('expense')">＋ Ausgabe</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="ic">💶</span> Ausgaben ${new Date().toLocaleDateString("de-DE",{month:"long"})}</h3>
+        <div style="display:flex;align-items:baseline;gap:10px;justify-content:space-between">
+          <div class="n" style="font-size:24px;font-weight:800">${money(monthExp)}</div>
+          <button class="btn sm ghost" onclick="App.go('expenses')">Details →</button>
+        </div>
+      </div>
+    `;
+  },
+
+  /* ---------- TASKS ---------- */
+  render_tasks(){
+    const f = this.filter.status||"aktiv";
+    let list = DB.tasks.slice();
+    if(f==="aktiv") list = list.filter(x=>x.status!=="Erledigt");
+    else if(f!=="alle") list = list.filter(x=>x.status===f || (f==="Erledigt"&&x.status==="Erledigt"));
+    if(this.filter.cat) list = list.filter(x=>x.category===this.filter.cat);
+    // Sortierung: überfällig zuerst, dann Fälligkeit, dann Prio
+    const pr={Hoch:0,Mittel:1,Niedrig:2};
+    list.sort((a,b)=>{
+      const da=a.due?daysUntil(a.due):9999, db=b.due?daysUntil(b.due):9999;
+      if(da!==db) return da-db;
+      return (pr[a.priority]??1)-(pr[b.priority]??1);
+    });
+
+    const chips = ["aktiv","Offen","In Bearbeitung","Wartet auf Rückmeldung","Erledigt","alle"].map(s=>
+      `<div class="chip ${f===s?"on":""}" onclick="App.filter.status='${s}';App.render()">${s==="aktiv"?"Aktiv":s==="alle"?"Alle":s}</div>`).join("");
+    const catChips = ["",...TASK_CATS].map(c=>
+      `<div class="chip ${(this.filter.cat||"")===c?"on":""}" onclick="App.filter.cat='${c}';App.render()">${c||"Alle Kategorien"}</div>`).join("");
+
+    return `
+      <div class="secrow"><h2 class="view">Aufgaben & Anfragen</h2></div>
+      <div class="chips">${chips}</div>
+      <div class="chips">${catChips}</div>
+      ${list.length? `<div class="card" style="padding:6px 15px">${list.map(x=>this.taskRow(x)).join("")}</div>`
+        : `<div class="empty"><div class="big">✓</div>Keine Aufgaben in dieser Ansicht.<br>Tippe unten rechts auf <b>+</b>.</div>`}
+    `;
+  },
+  taskRow(x){
+    const done = x.status==="Erledigt";
+    return `<div class="item clickrow" onclick="App.openDetail('task','${x.id}')">
+      <span class="dot" style="background:var(${done?'--green':x.priority==='Hoch'?'--red':x.priority==='Mittel'?'--amber':'--slate'})"></span>
+      <div class="body">
+        <div class="t" style="${done?'text-decoration:line-through;opacity:.6':''}">${esc(x.title)}</div>
+        <div class="m">
+          <span class="badge ${catBadge(x.category)}">${x.category}</span>
+          <span class="badge ${statusBadge(x.status)}">${x.status}</span>
+          ${x.customerId?`<span>👤 ${esc(customerName(x.customerId))}</span>`:""}
+          ${x.due?`<span>${relDue(x.due)}</span>`:""}
+        </div>
+      </div>
+      <div class="acts">
+        ${done?"":`<button class="iconbtn done" onclick="event.stopPropagation();App.completeTask('${x.id}')" title="Als erledigt">✓</button>`}
+      </div>
+    </div>`;
+  },
+  completeTask(id){
+    const t=DB.tasks.find(x=>x.id===id); if(!t)return;
+    t.status = t.status==="Erledigt"?"Offen":"Erledigt";
+    t.completedAt = t.status==="Erledigt"? new Date().toISOString():null;
+    save(); this.render(); toast(t.status==="Erledigt"?"Erledigt ✓":"Wieder geöffnet");
+  },
+
+  /* ---------- CUSTOMERS ---------- */
+  render_customers(){
+    let list = DB.customers.slice().sort((a,b)=>a.name.localeCompare(b.name,"de"));
+    return `
+      <div class="secrow"><h2 class="view">Kunden</h2><span class="tag-inline">${list.length} gesamt</span></div>
+      ${list.length? `<div class="card" style="padding:6px 15px">${list.map(c=>{
+        const open = DB.tasks.filter(t=>t.customerId===c.id && t.status!=="Erledigt").length;
+        return `<div class="item clickrow" onclick="App.openDetail('customer','${c.id}')">
+          <span class="dot" style="background:var(--accent)"></span>
+          <div class="body"><div class="t">${esc(c.name)}</div>
+            <div class="m">${c.knr?`<span>Nr. ${esc(c.knr)}</span>`:""}${c.phone?`<span>📞 ${esc(c.phone)}</span>`:""}
+            ${(c.contracts&&c.contracts.length)?`<span>${c.contracts.length} Vertrag/-verträge</span>`:""}
+            ${open?`<span class="badge b-accent">${open} offen</span>`:""}</div></div>
+        </div>`;}).join("")}</div>`
+        : `<div class="empty"><div class="big">☺</div>Noch keine Kunden angelegt.</div>`}
+    `;
+  },
+
+  /* ---------- CLAIMS ---------- */
+  render_claims(){
+    const f=this.filter.status||"offen";
+    let list=DB.claims.slice();
+    if(f==="offen") list=list.filter(c=>!["Abgeschlossen","Abgelehnt"].includes(c.status));
+    else if(f!=="alle") list=list.filter(c=>c.status===f);
+    list.sort((a,b)=> (a.nextAction||"9999").localeCompare(b.nextAction||"9999"));
+    const chips=["offen","Gemeldet","An Schadenabt. weitergeleitet","In Prüfung","Reguliert","alle"].map(s=>
+      `<div class="chip ${f===s?"on":""}" onclick="App.filter.status='${s}';App.render()">${s==="offen"?"Offen":s==="alle"?"Alle":s}</div>`).join("");
+    return `
+      <div class="secrow"><h2 class="view">Schadenabwicklung</h2></div>
+      <div class="chips">${chips}</div>
+      ${list.length? `<div class="card" style="padding:6px 15px">${list.map(c=>`
+        <div class="item clickrow" onclick="App.openDetail('claim','${c.id}')">
+          <span class="dot" style="background:var(--red)"></span>
+          <div class="body"><div class="t">${esc(customerName(c.customerId)||c.customer||"Schaden")} ${c.snr?`· ${esc(c.snr)}`:""}</div>
+            <div class="m"><span class="badge ${statusBadge(c.status)}">${c.status}</span>
+            ${c.type?`<span>${esc(c.type)}</span>`:""}
+            ${c.nextAction?`<span>Wiedervorlage ${relDue(c.nextAction)}</span>`:""}</div></div>
+        </div>`).join("")}</div>`
+        : `<div class="empty"><div class="big">⚠</div>Keine Schäden in dieser Ansicht.</div>`}
+    `;
+  },
+
+  /* ---------- OFFERS ---------- */
+  render_offers(){
+    let list=DB.offers.slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+    return `
+      <div class="secrow"><h2 class="view">Angebote & Vergleich</h2></div>
+      <div class="view-sub">Tarife nebeneinander vergleichen – günstigster Beitrag wird markiert.</div>
+      ${list.length? list.map(o=>this.offerCard(o)).join("")
+        : `<div class="empty"><div class="big">⇄</div>Noch kein Angebotsvergleich.<br>Tippe auf <b>+</b> für einen neuen Vergleich.</div>`}
+    `;
+  },
+  offerCard(o){
+    const opts=o.options||[];
+    const prices=opts.map(x=>Number(x.price)||Infinity);
+    const min=Math.min(...prices);
+    return `<div class="card">
+      <div class="secrow" style="margin-bottom:8px"><h3 style="margin:0">${esc(o.title||"Vergleich")}</h3>
+        <button class="iconbtn" onclick="App.openDetail('offer','${o.id}')">✎</button></div>
+      <div class="m" style="color:var(--muted);font-size:12.5px;margin-bottom:8px">
+        ${o.customerId?`👤 ${esc(customerName(o.customerId))} · `:""}${o.product?esc(o.product)+" · ":""}${fmtDate(o.date)}</div>
+      ${opts.length? `<div class="tblwrap"><table class="cmp">
+        <tr><td class="rowlabel">Anbieter/Tarif</td>${opts.map(x=>`<th>${esc(x.provider||"—")}</th>`).join("")}</tr>
+        <tr><td class="rowlabel">Beitrag</td>${opts.map(x=>`<td class="${(Number(x.price)||Infinity)===min&&isFinite(min)?"best":""}"><b>${x.price?money(x.price):"—"}</b>${x.cycle?`<br><span class="muted" style="font-size:11px">${esc(x.cycle)}</span>`:""}</td>`).join("")}</tr>
+        <tr><td class="rowlabel">SB</td>${opts.map(x=>`<td>${x.deductible?esc(x.deductible):"—"}</td>`).join("")}</tr>
+        <tr><td class="rowlabel">Leistungen</td>${opts.map(x=>`<td>${x.coverage?nl2br(x.coverage):"—"}</td>`).join("")}</tr>
+        <tr><td class="rowlabel">Notiz</td>${opts.map(x=>`<td>${x.note?nl2br(x.note):"—"}</td>`).join("")}</tr>
+      </table></div>` : `<div class="empty" style="padding:12px">Noch keine Tarife hinterlegt – auf ✎ tippen.</div>`}
+    </div>`;
+  },
+
+  /* ---------- CANCELLATIONS ---------- */
+  render_cancellations(){
+    const f=this.filter.status||"offen";
+    let list=DB.cancellations.slice();
+    if(f==="offen") list=list.filter(c=>!["Bestätigt","Widerrufen"].includes(c.status));
+    else if(f!=="alle") list=list.filter(c=>c.status===f);
+    list.sort((a,b)=>(a.deadline||"9999").localeCompare(b.deadline||"9999"));
+    const chips=["offen",...CANCEL_STATUS,"alle"].map(s=>
+      `<div class="chip ${f===s?"on":""}" onclick="App.filter.status='${s}';App.render()">${s==="offen"?"Offen":s==="alle"?"Alle":s}</div>`).join("");
+    return `
+      <div class="secrow"><h2 class="view">Kündigungen</h2></div>
+      <div class="view-sub">⚠️ Kündigungsfristen im Blick behalten.</div>
+      <div class="chips">${chips}</div>
+      ${list.length? `<div class="card" style="padding:6px 15px">${list.map(c=>`
+        <div class="item clickrow" onclick="App.openDetail('cancel','${c.id}')">
+          <span class="dot" style="background:var(--amber)"></span>
+          <div class="body"><div class="t">${esc(customerName(c.customerId)||c.customer||"Kündigung")} · ${esc(c.product||"")}</div>
+            <div class="m"><span class="badge ${statusBadge(c.status)}">${c.status}</span>
+            ${c.contractNr?`<span>Vertr. ${esc(c.contractNr)}</span>`:""}
+            ${c.deadline?`<span>Frist ${relDue(c.deadline)}</span>`:""}</div></div>
+        </div>`).join("")}</div>`
+        : `<div class="empty"><div class="big">✂</div>Keine Kündigungen in dieser Ansicht.</div>`}
+    `;
+  },
+
+  /* ---------- EXPENSES ---------- */
+  render_expenses(){
+    const mk = this.filter.month || todayISO().slice(0,7);
+    const months=[...new Set(DB.expenses.map(e=>(e.date||"").slice(0,7)).filter(Boolean))].sort().reverse();
+    if(!months.includes(mk)) months.unshift(mk);
+    let list=DB.expenses.filter(e=>(e.date||"").slice(0,7)===mk).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+    const total=list.reduce((s,e)=>s+(Number(e.amount)||0),0);
+    // Kategorie-Aufschlüsselung
+    const byCat={};
+    list.forEach(e=>{ byCat[e.category||"Sonstiges"]=(byCat[e.category||"Sonstiges"]||0)+(Number(e.amount)||0); });
+    const cats=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+    const maxc=cats.length?cats[0][1]:1;
+    const monthSel=`<select onchange="App.filter.month=this.value;App.render()" style="border:1px solid var(--line);background:var(--surface);color:var(--txt);border-radius:10px;padding:8px 10px;font-size:13px;font-weight:600">
+      ${months.map(m=>`<option value="${m}" ${m===mk?"selected":""}>${new Date(m+"-01").toLocaleDateString("de-DE",{month:"long",year:"numeric"})}</option>`).join("")}</select>`;
+
+    return `
+      <div class="secrow"><h2 class="view">Betriebsausgaben</h2>${monthSel}</div>
+      <div class="card" style="text-align:center">
+        <div class="l" style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600">Summe ${new Date(mk+"-01").toLocaleDateString("de-DE",{month:"long",year:"numeric"})}</div>
+        <div style="font-size:30px;font-weight:800;margin-top:4px">${money(total)}</div>
+        <div class="muted" style="font-size:12.5px">${list.length} Buchung${list.length===1?"":"en"}</div>
+      </div>
+      ${cats.length?`<div class="card"><h3><span class="ic">📊</span> Nach Kategorie</h3>
+        ${cats.map(([c,v])=>`<div class="barrow"><div class="bl">${esc(c)}</div><div class="bt"><span style="width:${Math.max(4,v/maxc*100)}%"></span></div><div class="bv">${money(v)}</div></div>`).join("")}
+      </div>`:""}
+      ${list.length? `<div class="card" style="padding:6px 15px">${list.map(e=>`
+        <div class="item clickrow" onclick="App.openDetail('expense','${e.id}')">
+          <span class="dot" style="background:var(--accent)"></span>
+          <div class="body"><div class="t">${esc(e.desc||e.category||"Ausgabe")}</div>
+            <div class="m"><span class="badge b-slate">${esc(e.category||"—")}</span><span>${fmtDate(e.date)}</span>${e.paid===false?`<span class="badge b-amber">offen</span>`:""}</div></div>
+          <div class="acts"><b class="mono">${money(e.amount)}</b></div>
+        </div>`).join("")}</div>`
+        : `<div class="empty"><div class="big">€</div>Keine Ausgaben in diesem Monat.</div>`}
+    `;
+  },
+
+  /* ---------- TEMPLATES ---------- */
+  render_templates(){
+    return `
+      <div class="secrow"><h2 class="view">Vorlagen / Textbausteine</h2></div>
+      <div class="view-sub">Antippen zum Kopieren. Platzhalter wie {{Kunde}}, {{Datum}}, {{Vertragsnummer}} vor dem Versenden ersetzen.</div>
+      ${DB.templates.map(t=>`<div class="card">
+        <div class="secrow" style="margin-bottom:6px"><h3 style="margin:0">${esc(t.title)}</h3>
+          <div class="acts">
+            <button class="iconbtn" onclick="App.copyTemplate('${t.id}')" title="Kopieren">⧉</button>
+            <button class="iconbtn" onclick="App.openForm('template',DB.templates.find(x=>x.id==='${t.id}'))" title="Bearbeiten">✎</button>
+          </div></div>
+        <div class="templatebox" onclick="App.copyTemplate('${t.id}')">${nl2br(t.body)}</div>
+        <div class="copyhint">Tippen zum Kopieren</div>
+      </div>`).join("")}
+    `;
+  },
+  copyTemplate(id){
+    const t=DB.templates.find(x=>x.id===id); if(!t)return;
+    const txt=t.body
+      .replace(/{{Berater}}/g, DB.settings.berater||"[Berater]")
+      .replace(/{{Agentur}}/g, [DB.settings.agency,DB.settings.address].filter(Boolean).join(", "))
+      .replace(/{{Datum}}/g, fmtDate(todayISO()));
+    const done=()=>toast("In Zwischenablage kopiert ⧉");
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>this.fallbackCopy(txt,done)); }
+    else this.fallbackCopy(txt,done);
+  },
+  fallbackCopy(txt,cb){
+    const ta=document.createElement("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); cb(); }catch(e){ toast("Kopieren nicht möglich"); }
+    document.body.removeChild(ta);
+  },
+
+  /* ---------- SETTINGS ---------- */
+  render_settings(){
+    const s=DB.settings;
+    const counts=`${DB.tasks.length} Aufgaben · ${DB.customers.length} Kunden · ${DB.claims.length} Schäden · ${DB.expenses.length} Ausgaben`;
+    const lb = DB.meta.lastBackup? fmtDate(DB.meta.lastBackup.slice(0,10))+" um "+new Date(DB.meta.lastBackup).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"}) : "noch nie";
+    return `
+      <div class="secrow"><h2 class="view">Einstellungen & Daten</h2></div>
+
+      <div class="note"><span class="ic">🔒</span><div><b>Datenschutz:</b> Alle Daten liegen ausschließlich lokal in diesem Browser/Gerät – nichts wird ins Internet gesendet. Erstelle regelmäßig ein Backup und lege sensible Kundendaten nur nach den Vorgaben deiner Agentur/ERGO ab.</div></div>
+
+      <div class="card">
+        <h3><span class="ic">🏢</span> Agentur-Angaben</h3>
+        <div class="field"><label>Agentur</label><input id="setAgency" value="${esc(s.agency)}"></div>
+        <div class="field"><label>Regionaldirektion</label><input id="setRegion" value="${esc(s.region)}"></div>
+        <div class="field"><label>Adresse</label><input id="setAddress" value="${esc(s.address)}"></div>
+        <div class="field"><label>Dein Name (für Vorlagen/Grußformel)</label><input id="setBerater" value="${esc(s.berater)}" placeholder="Vor- und Nachname"></div>
+        <button class="btn block" onclick="App.saveSettings()">Speichern</button>
+      </div>
+
+      <div class="card">
+        <h3><span class="ic">💾</span> Backup & Wiederherstellung</h3>
+        <div class="drow"><span class="k">Gespeichert</span><span class="v">${counts}</span></div>
+        <div class="drow"><span class="k">Letztes Backup</span><span class="v">${lb}</span></div>
+        <div class="divider"></div>
+        <div class="btnrow">
+          <button class="btn" onclick="App.exportJSON()">⬇︎ Backup (JSON)</button>
+          <button class="btn sec" onclick="App.importJSON()">⬆︎ Wiederherstellen</button>
+          <button class="btn sec" onclick="App.exportCSV()">Tabellen (CSV)</button>
+          <button class="btn sec" onclick="window.print()">🖨 Drucken</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="App.doImport(this.files[0])">
+      </div>
+
+      <div class="card">
+        <h3><span class="ic">🗑️</span> Zurücksetzen</h3>
+        <p class="muted" style="font-size:13px;margin:0 0 10px">Löscht alle lokal gespeicherten Daten unwiderruflich. Vorher Backup erstellen!</p>
+        <button class="btn danger" onclick="App.resetAll()">Alle Daten löschen</button>
+      </div>
+
+      <div class="card">
+        <h3><span class="ic">ℹ️</span> Über</h3>
+        <p class="muted" style="font-size:12.5px;margin:0">Agentur-Cockpit · privates Organisations-Tool. Kein offizielles ERGO-System. Version 1.0. Funktioniert offline (als App zum Startbildschirm hinzufügen).</p>
+      </div>
+    `;
+  },
+  saveSettings(){
+    DB.settings.agency=val("setAgency"); DB.settings.region=val("setRegion");
+    DB.settings.address=val("setAddress"); DB.settings.berater=val("setBerater");
+    save();
+    document.getElementById("hSub").textContent=[DB.settings.agency,DB.settings.region,DB.settings.address.split(",")[1]?.trim()].filter(Boolean).join(" · ");
+    toast("Gespeichert ✓");
+  },
+
+  /* ---------- SEARCH ---------- */
+  renderSearch(){
+    this.view="search"; this.syncNav();
+    document.getElementById("fab").style.display="none";
+    const q=this.search;
+    const hit=(s)=>String(s||"").toLowerCase().includes(q);
+    const R=[];
+    DB.tasks.forEach(t=>{ if(hit(t.title)||hit(t.notes)||hit(customerName(t.customerId))) R.push({t:"Aufgabe",cls:catBadge(t.category),label:t.title,sub:t.status,fn:`App.openDetail('task','${t.id}')`}); });
+    DB.customers.forEach(c=>{ if(hit(c.name)||hit(c.knr)||hit(c.phone)||hit(c.email)) R.push({t:"Kunde",cls:"b-accent",label:c.name,sub:c.knr||c.phone||"",fn:`App.openDetail('customer','${c.id}')`}); });
+    DB.claims.forEach(c=>{ if(hit(customerName(c.customerId))||hit(c.customer)||hit(c.snr)||hit(c.type)) R.push({t:"Schaden",cls:"b-red",label:(customerName(c.customerId)||c.customer)+" "+(c.snr||""),sub:c.status,fn:`App.openDetail('claim','${c.id}')`}); });
+    DB.cancellations.forEach(c=>{ if(hit(customerName(c.customerId))||hit(c.customer)||hit(c.product)||hit(c.contractNr)) R.push({t:"Kündigung",cls:"b-amber",label:(customerName(c.customerId)||c.customer)+" · "+(c.product||""),sub:c.status,fn:`App.openDetail('cancel','${c.id}')`}); });
+    DB.offers.forEach(o=>{ if(hit(o.title)||hit(o.product)||hit(customerName(o.customerId))) R.push({t:"Angebot",cls:"b-green",label:o.title||"Vergleich",sub:o.product||"",fn:`App.openDetail('offer','${o.id}')`}); });
+    document.getElementById("app").innerHTML=`
+      <h2 class="view">Suche: „${esc(this.search)}"</h2>
+      ${R.length? `<div class="card" style="padding:6px 15px">${R.map(r=>`
+        <div class="item clickrow" onclick="${r.fn}">
+          <span class="dot" style="background:var(--accent)"></span>
+          <div class="body"><div class="t">${esc(r.label)}</div><div class="m"><span class="badge ${r.cls}">${r.t}</span> <span>${esc(r.sub)}</span></div></div>
+        </div>`).join("")}</div>`
+        : `<div class="empty"><div class="big">🔍</div>Keine Treffer.</div>`}
+      <button class="btn sec block" onclick="document.getElementById('globalSearch').value='';App.search='';App.go('dashboard')">Suche schließen</button>
+    `;
+  },
+
+  /* ---------- MORE MENU ---------- */
+  openMore(){
+    this.modalTitle("Mehr");
+    document.getElementById("modalBody").innerHTML = MORE.map(m=>`
+      <div class="item clickrow" onclick="App.closeModal();App.go('${m.id}')" style="padding:14px 4px">
+        <div class="body"><div class="t">${m.ic}  ${m.label}</div></div>
+        <div class="acts muted">›</div>
+      </div>`).join("");
+    this.showModal();
+  },
+
+  /* ============================================================
+     FORMS (create/edit)
+     ============================================================ */
+  customerOptions(sel){
+    const opts=DB.customers.slice().sort((a,b)=>a.name.localeCompare(b.name,"de"))
+      .map(c=>`<option value="${c.id}" ${c.id===sel?"selected":""}>${esc(c.name)}</option>`).join("");
+    return `<option value="">— kein/e Kunde/in —</option>${opts}`;
+  },
+
+  openForm(type, data){
+    data = data && data.id ? {...data} : (data? {...data}:{});
+    const isEdit = !!data.id;
+    let body="", title="";
+    switch(type){
+      case "task":
+        title=isEdit?"Aufgabe bearbeiten":"Neue Aufgabe";
+        body=`
+          <div class="field"><label>Titel *</label><input id="f_title" value="${esc(data.title)}" placeholder="z. B. Rechnung Zahnarzt einreichen"></div>
+          <div class="frow">
+            <div class="field"><label>Kategorie</label><select id="f_category">${TASK_CATS.map(c=>`<option ${((data.category)||"Anfrage")===c?"selected":""}>${c}</option>`).join("")}</select></div>
+            <div class="field"><label>Priorität</label><select id="f_priority">${PRIOS.map(p=>`<option ${((data.priority)||"Mittel")===p?"selected":""}>${p}</option>`).join("")}</select></div>
+          </div>
+          <div class="frow">
+            <div class="field"><label>Status</label><select id="f_status">${TASK_STATUS.map(s=>`<option ${((data.status)||"Offen")===s?"selected":""}>${s}</option>`).join("")}</select></div>
+            <div class="field"><label>Fällig am</label><input type="date" id="f_due" value="${esc(data.due)}"></div>
+          </div>
+          <div class="field"><label>Kunde/in</label><select id="f_customerId">${this.customerOptions(data.customerId)}</select></div>
+          <div class="field"><label>Notizen</label><textarea id="f_notes" placeholder="Details, Rückrufe, offene Punkte …">${esc(data.notes)}</textarea></div>`;
+        break;
+      case "customer":
+        title=isEdit?"Kunde/in bearbeiten":"Neue/r Kunde/in";
+        body=`
+          <div class="field"><label>Name *</label><input id="f_name" value="${esc(data.name)}" placeholder="Nachname, Vorname"></div>
+          <div class="frow">
+            <div class="field"><label>Kundennummer</label><input id="f_knr" value="${esc(data.knr)}"></div>
+            <div class="field"><label>Telefon</label><input id="f_phone" value="${esc(data.phone)}" type="tel"></div>
+          </div>
+          <div class="field"><label>E-Mail</label><input id="f_email" value="${esc(data.email)}" type="email"></div>
+          <div class="field"><label>Adresse</label><input id="f_address" value="${esc(data.address)}"></div>
+          <div class="field"><label>Verträge (eine Zeile je Vertrag: Sparte – Vertragsnummer)</label><textarea id="f_contracts" placeholder="Hausrat – 4711/0815&#10;Kfz – 12345678">${esc((data.contracts||[]).map(c=>c.line||c).join("\n"))}</textarea></div>
+          <div class="field"><label>Notizen</label><textarea id="f_notes" placeholder="Geburtstag, Vorlieben, Historie …">${esc(data.notes)}</textarea></div>`;
+        break;
+      case "claim":
+        title=isEdit?"Schaden bearbeiten":"Neuer Schaden";
+        body=`
+          <div class="field"><label>Kunde/in</label><select id="f_customerId">${this.customerOptions(data.customerId)}</select></div>
+          <div class="frow">
+            <div class="field"><label>Schaden-Nr.</label><input id="f_snr" value="${esc(data.snr)}"></div>
+            <div class="field"><label>Vertrags-Nr.</label><input id="f_contractNr" value="${esc(data.contractNr)}"></div>
+          </div>
+          <div class="frow">
+            <div class="field"><label>Schadenart</label><input id="f_type" value="${esc(data.type)}" placeholder="z. B. Leitungswasser, Kfz-Haftpflicht"></div>
+            <div class="field"><label>Schadendatum</label><input type="date" id="f_date" value="${esc(data.date)}"></div>
+          </div>
+          <div class="field"><label>Status</label><select id="f_status">${CLAIM_STATUS.map(s=>`<option ${((data.status)||"Gemeldet")===s?"selected":""}>${s}</option>`).join("")}</select></div>
+          <div class="frow">
+            <div class="field"><label>Schadenabteilung / Kontakt</label><input id="f_dept" value="${esc(data.dept)}" placeholder="Sachbearbeiter/Tel."></div>
+            <div class="field"><label>Wiedervorlage am</label><input type="date" id="f_nextAction" value="${esc(data.nextAction)}"></div>
+          </div>
+          <div class="field"><label>Beschreibung / Hergang</label><textarea id="f_notes">${esc(data.notes)}</textarea></div>
+          <div class="field"><label>Verlaufseintrag hinzufügen (optional)</label><input id="f_logadd" placeholder="z. B. Kunde informiert, Unterlagen angefordert"></div>`;
+        break;
+      case "cancel":
+        title=isEdit?"Kündigung bearbeiten":"Neue Kündigung";
+        body=`
+          <div class="field"><label>Kunde/in</label><select id="f_customerId">${this.customerOptions(data.customerId)}</select></div>
+          <div class="frow">
+            <div class="field"><label>Sparte/Produkt</label><input id="f_product" value="${esc(data.product)}" placeholder="z. B. Kfz, Hausrat"></div>
+            <div class="field"><label>Vertrags-Nr.</label><input id="f_contractNr" value="${esc(data.contractNr)}"></div>
+          </div>
+          <div class="frow">
+            <div class="field"><label>Kündigungsfrist / Ablauf</label><input type="date" id="f_deadline" value="${esc(data.deadline)}"></div>
+            <div class="field"><label>Status</label><select id="f_status">${CANCEL_STATUS.map(s=>`<option ${((data.status)||"Offen")===s?"selected":""}>${s}</option>`).join("")}</select></div>
+          </div>
+          <div class="field"><label>Grund / Notiz</label><textarea id="f_notes" placeholder="Grund, Zielgesellschaft, Besonderheiten …">${esc(data.notes)}</textarea></div>`;
+        break;
+      case "expense":
+        title=isEdit?"Ausgabe bearbeiten":"Neue Ausgabe";
+        body=`
+          <div class="frow">
+            <div class="field"><label>Betrag (€) *</label><input id="f_amount" type="number" step="0.01" inputmode="decimal" value="${esc(data.amount)}"></div>
+            <div class="field"><label>Datum</label><input type="date" id="f_date" value="${esc(data.date||todayISO())}"></div>
+          </div>
+          <div class="field"><label>Kategorie</label><select id="f_category">${DB.settings.expenseCats.map(c=>`<option ${((data.category)||DB.settings.expenseCats[0])===c?"selected":""}>${c}</option>`).join("")}</select></div>
+          <div class="field"><label>Beschreibung</label><input id="f_desc" value="${esc(data.desc)}" placeholder="z. B. Druckerpapier, Kundenbewirtung"></div>
+          <div class="field"><label><input type="checkbox" id="f_paid" ${data.paid!==false?"checked":""} style="width:auto;margin-right:6px">bereits bezahlt</label></div>`;
+        break;
+      case "offer":
+        return this.openOfferEditor(data);
+      case "template":
+        title=isEdit?"Vorlage bearbeiten":"Neue Vorlage";
+        body=`
+          <div class="field"><label>Titel</label><input id="f_title" value="${esc(data.title)}"></div>
+          <div class="field"><label>Text (Platzhalter: {{Kunde}} {{Datum}} {{Vertragsnummer}} {{Schadennummer}} {{Betrag}} {{Berater}} {{Agentur}})</label>
+            <textarea id="f_body" style="min-height:180px">${esc(data.body)}</textarea></div>`;
+        break;
+    }
+    this.modalTitle(title);
+    document.getElementById("modalBody").innerHTML = body + `
+      <div class="btnrow" style="margin-top:6px">
+        <button class="btn block" onclick="App.saveForm('${type}','${data.id||""}')">Speichern</button>
+        ${isEdit?`<button class="btn danger sm" onclick="App.deleteEntity('${type}','${data.id}')">🗑</button>`:""}
+      </div>`;
+    this.showModal();
+    setTimeout(()=>{ const f=document.querySelector("#modalBody input,#modalBody textarea,#modalBody select"); if(f&&f.type!=="date")f.focus(); },120);
+  },
+
+  saveForm(type,id){
+    const g=(k)=>{const el=document.getElementById("f_"+k);return el?el.value.trim():"";};
+    const now=new Date().toISOString();
+    switch(type){
+      case "task":{
+        if(!g("title")){toast("Bitte einen Titel eingeben");return;}
+        const o=id?DB.tasks.find(x=>x.id===id):{id:uid(),createdAt:now,log:[]};
+        Object.assign(o,{title:g("title"),category:g("category"),priority:g("priority"),status:g("status"),due:g("due"),customerId:g("customerId"),notes:g("notes")});
+        if(!id)DB.tasks.push(o); break;
+      }
+      case "customer":{
+        if(!g("name")){toast("Bitte einen Namen eingeben");return;}
+        const contracts=g("contracts").split("\n").map(l=>l.trim()).filter(Boolean).map(line=>({line}));
+        const o=id?DB.customers.find(x=>x.id===id):{id:uid(),createdAt:now};
+        Object.assign(o,{name:g("name"),knr:g("knr"),phone:g("phone"),email:g("email"),address:g("address"),contracts,notes:g("notes")});
+        if(!id)DB.customers.push(o); break;
+      }
+      case "claim":{
+        const o=id?DB.claims.find(x=>x.id===id):{id:uid(),createdAt:now,log:[]};
+        Object.assign(o,{customerId:g("customerId"),snr:g("snr"),contractNr:g("contractNr"),type:g("type"),date:g("date"),status:g("status"),dept:g("dept"),nextAction:g("nextAction"),notes:g("notes")});
+        const la=g("logadd"); if(la){ o.log=o.log||[]; o.log.unshift({t:now,text:la}); }
+        if(!id)DB.claims.push(o); break;
+      }
+      case "cancel":{
+        const o=id?DB.cancellations.find(x=>x.id===id):{id:uid(),createdAt:now};
+        Object.assign(o,{customerId:g("customerId"),product:g("product"),contractNr:g("contractNr"),deadline:g("deadline"),status:g("status"),notes:g("notes")});
+        if(!id)DB.cancellations.push(o); break;
+      }
+      case "expense":{
+        if(!g("amount")){toast("Bitte einen Betrag eingeben");return;}
+        const paid=document.getElementById("f_paid").checked;
+        const o=id?DB.expenses.find(x=>x.id===id):{id:uid(),createdAt:now};
+        Object.assign(o,{amount:parseFloat(g("amount"))||0,date:g("date")||todayISO(),category:g("category"),desc:g("desc"),paid});
+        if(!id)DB.expenses.push(o); break;
+      }
+      case "template":{
+        const o=id?DB.templates.find(x=>x.id===id):{id:uid()};
+        Object.assign(o,{title:g("title")||"Vorlage",body:document.getElementById("f_body").value});
+        if(!id)DB.templates.push(o); break;
+      }
+    }
+    save(); this.closeModal();
+    if(this.view==="dashboard"||this.view==="search"){this.render();} else this.render();
+    toast("Gespeichert ✓");
+  },
+
+  /* ---------- OFFER EDITOR ---------- */
+  openOfferEditor(data){
+    const isEdit=!!data.id;
+    data.options = data.options || [{},{}];
+    this._offerDraft = JSON.parse(JSON.stringify(data));
+    this.modalTitle(isEdit?"Angebotsvergleich bearbeiten":"Neuer Angebotsvergleich");
+    this.renderOfferEditor();
+    this.showModal();
+  },
+  renderOfferEditor(){
+    const d=this._offerDraft;
+    const optHtml=(d.options||[]).map((o,i)=>`
+      <div class="card" style="background:var(--surface2);margin-bottom:10px">
+        <div class="secrow" style="margin-bottom:6px"><b>Tarif ${i+1}</b>
+          ${d.options.length>1?`<button class="iconbtn del" onclick="App.offerRemoveOpt(${i})">🗑</button>`:""}</div>
+        <div class="field" style="margin-bottom:8px"><label>Anbieter/Tarif</label><input value="${esc(o.provider)}" oninput="App._offerDraft.options[${i}].provider=this.value"></div>
+        <div class="frow">
+          <div class="field" style="margin-bottom:8px"><label>Beitrag (€)</label><input type="number" step="0.01" inputmode="decimal" value="${esc(o.price)}" oninput="App._offerDraft.options[${i}].price=this.value"></div>
+          <div class="field" style="margin-bottom:8px"><label>Zahlweise</label><input value="${esc(o.cycle)}" placeholder="mtl./jährl." oninput="App._offerDraft.options[${i}].cycle=this.value"></div>
+        </div>
+        <div class="field" style="margin-bottom:8px"><label>Selbstbeteiligung</label><input value="${esc(o.deductible)}" oninput="App._offerDraft.options[${i}].deductible=this.value"></div>
+        <div class="field" style="margin-bottom:8px"><label>Leistungen</label><textarea style="min-height:52px" oninput="App._offerDraft.options[${i}].coverage=this.value">${esc(o.coverage)}</textarea></div>
+        <div class="field" style="margin-bottom:0"><label>Notiz</label><input value="${esc(o.note)}" oninput="App._offerDraft.options[${i}].note=this.value"></div>
+      </div>`).join("");
+    document.getElementById("modalBody").innerHTML=`
+      <div class="field"><label>Titel des Vergleichs</label><input id="of_title" value="${esc(d.title)}" placeholder="z. B. Hausrat-Vergleich Familie Müller" oninput="App._offerDraft.title=this.value"></div>
+      <div class="frow">
+        <div class="field"><label>Kunde/in</label><select id="of_cust" onchange="App._offerDraft.customerId=this.value">${this.customerOptions(d.customerId)}</select></div>
+        <div class="field"><label>Sparte/Produkt</label><input value="${esc(d.product)}" oninput="App._offerDraft.product=this.value"></div>
+      </div>
+      <div class="field"><label>Datum</label><input type="date" value="${esc(d.date||todayISO())}" oninput="App._offerDraft.date=this.value"></div>
+      <div class="divider"></div>
+      <h3 style="margin:0 0 8px">Tarife</h3>
+      ${optHtml}
+      <button class="btn sec sm block" onclick="App.offerAddOpt()">＋ Tarif hinzufügen</button>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn block" onclick="App.saveOffer()">Vergleich speichern</button>
+        ${d.id?`<button class="btn danger sm" onclick="App.deleteEntity('offer','${d.id}')">🗑</button>`:""}
+      </div>`;
+  },
+  offerAddOpt(){ this._offerDraft.options.push({}); this.renderOfferEditor(); },
+  offerRemoveOpt(i){ this._offerDraft.options.splice(i,1); this.renderOfferEditor(); },
+  saveOffer(){
+    const d=this._offerDraft;
+    d.date=d.date||todayISO();
+    if(d.id){ const o=DB.offers.find(x=>x.id===d.id); Object.assign(o,d); }
+    else { d.id=uid(); d.createdAt=new Date().toISOString(); DB.offers.push(d); }
+    save(); this.closeModal(); this.go("offers"); toast("Vergleich gespeichert ✓");
+  },
+
+  /* ============================================================
+     DETAIL VIEWS
+     ============================================================ */
+  openDetail(type,id){
+    let html="",title="";
+    if(type==="task"){
+      const x=DB.tasks.find(o=>o.id===id); if(!x)return;
+      title="Aufgabe";
+      html=`
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px">${esc(x.title)}</div>
+        <div style="margin-bottom:12px"><span class="badge ${catBadge(x.category)}">${x.category}</span> <span class="badge ${statusBadge(x.status)}">${x.status}</span> <span class="badge ${prioBadge(x.priority)}">${x.priority}</span></div>
+        <div class="drow"><span class="k">Fällig</span><span class="v">${x.due?fmtDate(x.due)+" · "+relDue(x.due):"—"}</span></div>
+        <div class="drow"><span class="k">Kunde/in</span><span class="v">${x.customerId?esc(customerName(x.customerId)):"—"}</span></div>
+        <div class="drow"><span class="k">Angelegt</span><span class="v">${fmtDate((x.createdAt||"").slice(0,10))}</span></div>
+        ${x.notes?`<div class="divider"></div><div class="muted" style="font-size:12px;font-weight:700;margin-bottom:4px">NOTIZEN</div><div style="font-size:13.5px;white-space:pre-wrap">${nl2br(x.notes)}</div>`:""}
+        <div class="btnrow" style="margin-top:16px">
+          <button class="btn block" onclick="App.completeTask('${x.id}');App.closeModal()">${x.status==="Erledigt"?"Wieder öffnen":"✓ Erledigt"}</button>
+          <button class="btn sec sm" onclick="App.closeModal();App.openForm('task',DB.tasks.find(o=>o.id==='${x.id}'))">✎ Bearbeiten</button>
+        </div>`;
+    }
+    else if(type==="customer"){
+      const c=DB.customers.find(o=>o.id===id); if(!c)return;
+      title="Kunde/in";
+      const tasks=DB.tasks.filter(t=>t.customerId===c.id);
+      const claims=DB.claims.filter(t=>t.customerId===c.id);
+      html=`
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px">${esc(c.name)}</div>
+        <div class="drow"><span class="k">Kundennr.</span><span class="v">${esc(c.knr)||"—"}</span></div>
+        <div class="drow"><span class="k">Telefon</span><span class="v">${c.phone?`<a class="link" href="tel:${esc(c.phone)}">${esc(c.phone)}</a>`:"—"}</span></div>
+        <div class="drow"><span class="k">E-Mail</span><span class="v">${c.email?`<a class="link" href="mailto:${esc(c.email)}">${esc(c.email)}</a>`:"—"}</span></div>
+        <div class="drow"><span class="k">Adresse</span><span class="v">${esc(c.address)||"—"}</span></div>
+        ${(c.contracts&&c.contracts.length)?`<div class="divider"></div><div class="muted" style="font-size:12px;font-weight:700;margin-bottom:6px">VERTRÄGE</div>${c.contracts.map(v=>`<div class="drow"><span class="v" style="text-align:left">📄 ${esc(v.line||v)}</span></div>`).join("")}`:""}
+        ${c.notes?`<div class="divider"></div><div class="muted" style="font-size:12px;font-weight:700;margin-bottom:4px">NOTIZEN</div><div style="font-size:13.5px;white-space:pre-wrap">${nl2br(c.notes)}</div>`:""}
+        <div class="divider"></div>
+        <div class="drow"><span class="k">Offene Aufgaben</span><span class="v">${tasks.filter(t=>t.status!=="Erledigt").length}</span></div>
+        <div class="drow"><span class="k">Schäden</span><span class="v">${claims.length}</span></div>
+        <div class="btnrow" style="margin-top:14px">
+          <button class="btn sm" onclick="App.closeModal();App.openForm('task',{customerId:'${c.id}'})">＋ Aufgabe</button>
+          <button class="btn sm sec" onclick="App.closeModal();App.openForm('claim',{customerId:'${c.id}'})">＋ Schaden</button>
+          <button class="btn sm sec" onclick="App.closeModal();App.openForm('customer',DB.customers.find(o=>o.id==='${c.id}'))">✎ Bearbeiten</button>
+        </div>`;
+    }
+    else if(type==="claim"){
+      const c=DB.claims.find(o=>o.id===id); if(!c)return;
+      title="Schaden";
+      html=`
+        <div style="font-size:17px;font-weight:800;margin-bottom:4px">${esc(customerName(c.customerId)||c.customer||"Schaden")}</div>
+        <div style="margin-bottom:12px"><span class="badge ${statusBadge(c.status)}">${c.status}</span> ${c.type?`<span class="badge b-slate">${esc(c.type)}</span>`:""}</div>
+        <div class="drow"><span class="k">Schaden-Nr.</span><span class="v">${esc(c.snr)||"—"}</span></div>
+        <div class="drow"><span class="k">Vertrags-Nr.</span><span class="v">${esc(c.contractNr)||"—"}</span></div>
+        <div class="drow"><span class="k">Schadendatum</span><span class="v">${fmtDate(c.date)}</span></div>
+        <div class="drow"><span class="k">Schadenabt./Kontakt</span><span class="v">${esc(c.dept)||"—"}</span></div>
+        <div class="drow"><span class="k">Wiedervorlage</span><span class="v">${c.nextAction?fmtDate(c.nextAction)+" · "+relDue(c.nextAction):"—"}</span></div>
+        ${c.notes?`<div class="divider"></div><div class="muted" style="font-size:12px;font-weight:700;margin-bottom:4px">HERGANG</div><div style="font-size:13.5px;white-space:pre-wrap">${nl2br(c.notes)}</div>`:""}
+        ${(c.log&&c.log.length)?`<div class="divider"></div><div class="muted" style="font-size:12px;font-weight:700;margin-bottom:6px">VERLAUF</div><ul class="log">${c.log.map(l=>`<li>${esc(l.text)}<div class="lt">${fmtDate((l.t||"").slice(0,10))} ${new Date(l.t).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}</div></li>`).join("")}</ul>`:""}
+        <div class="field" style="margin-top:12px"><label>Verlauf/Kontakt notieren</label><input id="quicklog" placeholder="z. B. mit Schadenabt. telefoniert, Kunde informiert"></div>
+        <button class="btn sm block" onclick="App.addClaimLog('${c.id}')">＋ Eintrag speichern</button>
+        <div class="btnrow" style="margin-top:12px">
+          <button class="btn sec sm" onclick="App.closeModal();App.openForm('claim',DB.claims.find(o=>o.id==='${c.id}'))">✎ Bearbeiten</button>
+        </div>`;
+    }
+    else if(type==="cancel"){
+      const c=DB.cancellations.find(o=>o.id===id); if(!c)return;
+      title="Kündigung";
+      html=`
+        <div style="font-size:17px;font-weight:800;margin-bottom:4px">${esc(customerName(c.customerId)||c.customer||"Kündigung")}</div>
+        <div style="margin-bottom:12px"><span class="badge ${statusBadge(c.status)}">${c.status}</span></div>
+        <div class="drow"><span class="k">Sparte/Produkt</span><span class="v">${esc(c.product)||"—"}</span></div>
+        <div class="drow"><span class="k">Vertrags-Nr.</span><span class="v">${esc(c.contractNr)||"—"}</span></div>
+        <div class="drow"><span class="k">Frist/Ablauf</span><span class="v">${c.deadline?fmtDate(c.deadline)+" · "+relDue(c.deadline):"—"}</span></div>
+        ${c.notes?`<div class="divider"></div><div style="font-size:13.5px;white-space:pre-wrap">${nl2br(c.notes)}</div>`:""}
+        <div class="btnrow" style="margin-top:16px">
+          <button class="btn sec sm" onclick="App.closeModal();App.openForm('cancel',DB.cancellations.find(o=>o.id==='${c.id}'))">✎ Bearbeiten</button>
+        </div>`;
+    }
+    else if(type==="expense"){
+      const e=DB.expenses.find(o=>o.id===id); if(!e)return;
+      title="Ausgabe";
+      html=`
+        <div style="font-size:24px;font-weight:800;margin-bottom:6px">${money(e.amount)}</div>
+        <div class="drow"><span class="k">Beschreibung</span><span class="v">${esc(e.desc)||"—"}</span></div>
+        <div class="drow"><span class="k">Kategorie</span><span class="v">${esc(e.category)||"—"}</span></div>
+        <div class="drow"><span class="k">Datum</span><span class="v">${fmtDate(e.date)}</span></div>
+        <div class="drow"><span class="k">Status</span><span class="v">${e.paid===false?"offen":"bezahlt"}</span></div>
+        <div class="btnrow" style="margin-top:16px">
+          <button class="btn sec sm" onclick="App.closeModal();App.openForm('expense',DB.expenses.find(o=>o.id==='${e.id}'))">✎ Bearbeiten</button>
+        </div>`;
+    }
+    else if(type==="offer"){
+      this.closeModal(); return this.openForm("offer", DB.offers.find(o=>o.id===id));
+    }
+    this.modalTitle(title);
+    document.getElementById("modalBody").innerHTML=html;
+    this.showModal();
+  },
+  addClaimLog(id){
+    const c=DB.claims.find(o=>o.id===id); const v=document.getElementById("quicklog").value.trim();
+    if(!v)return; c.log=c.log||[]; c.log.unshift({t:new Date().toISOString(),text:v});
+    save(); this.openDetail("claim",id); toast("Eintrag gespeichert ✓");
+  },
+
+  deleteEntity(type,id){
+    if(!confirm("Diesen Eintrag wirklich löschen?"))return;
+    const map={task:"tasks",customer:"customers",claim:"claims",cancel:"cancellations",expense:"expenses",offer:"offers",template:"templates"};
+    const arr=DB[map[type]]; const i=arr.findIndex(x=>x.id===id);
+    if(i>=0)arr.splice(i,1);
+    save(); this.closeModal(); this.render(); toast("Gelöscht");
+  },
+
+  /* ============================================================
+     BACKUP / EXPORT
+     ============================================================ */
+  exportJSON(){
+    DB.meta.lastBackup=new Date().toISOString(); save();
+    const blob=new Blob([JSON.stringify(DB,null,2)],{type:"application/json"});
+    this.download(blob, `agentur-backup-${todayISO()}.json`);
+    toast("Backup erstellt ⬇︎"); this.render();
+  },
+  importJSON(){ document.getElementById("importFile").click(); },
+  doImport(file){
+    if(!file)return;
+    const r=new FileReader();
+    r.onload=()=>{
+      try{
+        const obj=JSON.parse(r.result);
+        if(!obj || typeof obj!=="object" || !("tasks" in obj)) throw new Error("Format");
+        if(!confirm("Backup einspielen? Die aktuellen Daten werden ersetzt.")) return;
+        DB=obj; const s=seed(); for(const k of Object.keys(s)) if(DB[k]===undefined)DB[k]=s[k];
+        save(); this.init(); toast("Backup wiederhergestellt ✓");
+      }catch(e){ toast("Ungültige Datei"); }
+    };
+    r.readAsText(file);
+  },
+  exportCSV(){
+    const rows=[["Typ","Titel/Name","Kunde","Kategorie/Status","Datum/Fällig","Betrag","Notiz"]];
+    DB.tasks.forEach(t=>rows.push(["Aufgabe",t.title,customerName(t.customerId),t.category+" / "+t.status,t.due||"","",t.notes||""]));
+    DB.claims.forEach(c=>rows.push(["Schaden",c.snr||"",customerName(c.customerId)||c.customer||"",c.type+" / "+c.status,c.date||"","",c.notes||""]));
+    DB.cancellations.forEach(c=>rows.push(["Kündigung",c.product||"",customerName(c.customerId)||c.customer||"",c.status,c.deadline||"","",c.notes||""]));
+    DB.expenses.forEach(e=>rows.push(["Ausgabe",e.desc||"","",e.category||"",e.date||"",(Number(e.amount)||0).toFixed(2),""]));
+    DB.customers.forEach(c=>rows.push(["Kunde",c.name,"",c.knr||"","","",(c.contracts||[]).map(v=>v.line||v).join(" | ")]));
+    const csv="﻿"+rows.map(r=>r.map(c=>`"${String(c==null?"":c).replace(/"/g,'""')}"`).join(";")).join("\n");
+    this.download(new Blob([csv],{type:"text/csv"}), `agentur-export-${todayISO()}.csv`);
+    toast("CSV exportiert");
+  },
+  download(blob,name){
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+    document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+  },
+  resetAll(){
+    if(!confirm("Wirklich ALLE Daten löschen? Bitte vorher Backup erstellen."))return;
+    if(!confirm("Letzte Sicherheitsabfrage: unwiderruflich löschen?"))return;
+    DB=seed(); save(); this.init(); toast("Zurückgesetzt");
+  },
+  maybeRemindBackup(){
+    const total=DB.tasks.length+DB.customers.length+DB.claims.length+DB.expenses.length;
+    if(total<8) return;
+    const lb=DB.meta.lastBackup? (Date.now()-new Date(DB.meta.lastBackup).getTime())/86400000 : 999;
+    if(lb>14) setTimeout(()=>toast("💾 Tipp: länger kein Backup – in Einstellungen sichern"),1500);
+  },
+
+  /* ---------- Modal helpers ---------- */
+  modalTitle(t){ document.getElementById("modalTitle").textContent=t; },
+  showModal(){ document.getElementById("modalBg").classList.add("show"); document.body.style.overflow="hidden"; },
+  closeModal(){ document.getElementById("modalBg").classList.remove("show"); document.body.style.overflow=""; }
+};
+
+function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
+
+/* Service Worker (nur wenn möglich; in Vorschau still ignorieren) */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+}
+
+document.addEventListener("DOMContentLoaded",()=>App.init());
+</script>
+</body>
+</html>
