@@ -1,0 +1,18 @@
+{
+  "name": "Roadtrip Spanien 2026 · Leverkusen → Barcelona",
+  "short_name": "Spanien 2026",
+  "description": "Familien-Roadtrip nach Spanien mit 2 Autos (1× Škoda Enyaq E-Auto, DKV): Etappen, Laden & Tanken, Hotels, Kinder-Tipps – offline nutzbar.",
+  "lang": "de",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1219",
+  "theme_color": "#0b1f2a",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

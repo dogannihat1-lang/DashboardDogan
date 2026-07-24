@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b1f2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Spanien Roadtrip">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Roadtrip Spanien 2026 · Leverkusen → Barcelona</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  :root{
+    --bg:#0a1219; --bg2:#0d1a24; --card:#13212c; --card2:#1b2d3a; --line:#273a48;
+    --txt:#eaf3f3; --muted:#94aab4; --red:#e63946; --teal:#2ec4b6; --gold:#f3c969;
+    --blue:#4895ef; --green:#43aa8b; --purple:#9d8df1;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+    background:radial-gradient(1200px 500px at 50% -100px,#12303f 0%,var(--bg) 60%);
+    color:var(--txt);line-height:1.55;padding-bottom:50px;min-height:100vh}
+
+  /* HERO */
+  .hero{padding:max(20px,env(safe-area-inset-top)) 18px 22px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    linear-gradient(135deg,rgba(230,57,70,.18),transparent 60%),
+    linear-gradient(-135deg,rgba(46,196,182,.16),transparent 60%);z-index:0}
+  .hero>*{position:relative;z-index:1}
+  .badge{display:inline-block;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--gold);border:1px solid rgba(243,201,105,.4);border-radius:30px;padding:4px 12px;margin-bottom:10px}
+  .hero h1{margin:0;font-size:25px;font-weight:800;letter-spacing:.5px;
+    background:linear-gradient(90deg,#fff,#bfe7e2);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero .route{font-size:14px;color:#c7dbe0;margin-top:4px;font-weight:600}
+  .flags{font-size:19px;letter-spacing:3px;margin-top:12px}
+  .stats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+  .stat{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:8px 12px;min-width:72px}
+  .stat .n{font-size:17px;font-weight:800;color:#fff}
+  .stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .countdown{margin-top:16px;font-size:13px;color:#fff;background:linear-gradient(90deg,var(--red),#c1121f);
+    display:inline-block;padding:9px 18px;border-radius:30px;font-weight:700;box-shadow:0 6px 18px rgba(230,57,70,.3)}
+
+  main{padding:6px 14px 0;max-width:680px;margin:0 auto}
+
+  /* ACCORDION */
+  .acc{margin-bottom:11px;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    background:linear-gradient(180deg,var(--card),var(--bg2));box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  .acc-head{display:flex;align-items:center;gap:13px;padding:15px 15px;cursor:pointer;user-select:none}
+  .acc-ico{flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;
+    justify-content:center;font-size:21px;background:rgba(255,255,255,.06)}
+  .acc-tt{flex:1;min-width:0}
+  .acc-tt .t{font-size:16px;font-weight:700;line-height:1.2}
+  .acc-tt .s{font-size:12px;color:var(--muted);margin-top:2px}
+  .chev{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.07);
+    display:flex;align-items:center;justify-content:center;transition:transform .35s;font-size:13px;color:var(--muted)}
+  .acc.open .chev{transform:rotate(180deg);background:var(--teal);color:#04201c}
+  .acc-panel{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+  .acc-body{padding:2px 15px 16px}
+  .acc.open{border-color:rgba(46,196,182,.45)}
+
+  h4{font-size:13px;margin:14px 0 7px;color:var(--gold);text-transform:uppercase;letter-spacing:.6px}
+  h4:first-child{margin-top:4px}
+  p{margin:7px 0;font-size:14px}
+  .muted{color:var(--muted)}
+
+  /* STAGE CARDS */
+  .stage{background:var(--card2);border-radius:13px;padding:13px;margin:10px 0;border-left:4px solid var(--red)}
+  .stage .d{font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+  .stage h3{margin:3px 0 7px;font-size:16px}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .pill{font-size:12px;background:rgba(255,255,255,.06);border:1px solid var(--line);padding:4px 9px;border-radius:8px;color:#cfe0e6}
+  .pill b{color:#fff}
+
+  /* NOTES (callouts) */
+  .cal{border-radius:11px;padding:10px 12px;margin:9px 0;font-size:13px;border:1px solid}
+  .cal.tip{background:rgba(46,196,182,.1);border-color:rgba(46,196,182,.35);color:#aef0e8}
+  .cal.warn{background:rgba(243,201,105,.1);border-color:rgba(243,201,105,.38);color:#f5dfa0}
+  .cal.danger{background:rgba(230,57,70,.12);border-color:rgba(230,57,70,.42);color:#ffc0c6}
+  .cal b{color:#fff}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+  th,td{text-align:left;padding:8px 5px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  td b{color:var(--gold)}
+
+  ul.lst{margin:7px 0;padding-left:0;list-style:none}
+  ul.lst li{padding:6px 0 6px 24px;position:relative;font-size:13.5px;border-bottom:1px solid rgba(39,58,72,.5)}
+  ul.lst li:last-child{border:none}
+  ul.lst li::before{content:"›";position:absolute;left:6px;top:6px;color:var(--teal);font-weight:800}
+  ul.lst li.x::before{content:"⚠";color:var(--gold);font-size:12px}
+  ul.lst li.d::before{content:"⛔";font-size:11px}
+
+  .hotel{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+  .hotel:last-child{border:none}
+  .hotel .name{font-weight:700;font-size:14px}
+  .hotel .desc{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .tag{font-size:10.5px;background:var(--teal);color:#04201c;font-weight:800;padding:3px 8px;border-radius:7px;white-space:nowrap}
+  .tag.g{background:var(--gold)} .tag.b{background:var(--blue);color:#031826} .tag.p{background:var(--purple);color:#100a2e}
+
+  .fuelrow{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .fuelrow:last-child{border:none}
+  .fnum{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:rgba(67,170,139,.2);color:#7ee0c4;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+  .fkm{font-size:11px;color:var(--gold);font-weight:700}
+  .ftxt{font-size:13px}
+
+  .ck{display:flex;gap:11px;align-items:flex-start;font-size:14px;cursor:pointer;padding:6px 0}
+  .ck input{width:21px;height:21px;margin-top:1px;accent-color:var(--teal);flex:0 0 auto}
+  .ck.done span{color:var(--muted);text-decoration:line-through}
+  .grp{font-size:11.5px;color:var(--gold);font-weight:800;margin:13px 0 3px;text-transform:uppercase;letter-spacing:.6px}
+  .grp:first-child{margin-top:2px}
+
+  .em{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .em:last-child{border:none}
+  .em a{color:#fff;background:var(--green);text-decoration:none;font-weight:700;padding:5px 13px;border-radius:9px;font-size:13px}
+  .lnk{display:block;color:#8fd9ff;text-decoration:none;font-size:13.5px;padding:8px 0;border-bottom:1px solid rgba(39,58,72,.5)}
+  .lnk:last-child{border:none}
+  .lnk b{color:#fff}
+
+  textarea{width:100%;min-height:130px;background:var(--bg);color:var(--txt);border:1px solid var(--line);
+    border-radius:11px;padding:12px;font-size:14px;font-family:inherit;resize:vertical}
+  .saved{font-size:11px;color:var(--green);margin-top:6px;height:14px;transition:opacity .3s}
+  button.rs{margin-top:10px;background:var(--card2);color:var(--muted);border:1px solid var(--line);
+    padding:8px 14px;border-radius:9px;font-size:12px}
+  footer{text-align:center;font-size:11px;color:var(--muted);padding:22px 16px 8px;line-height:1.7}
+  .quick{display:flex;gap:7px;overflow-x:auto;padding:4px 0 12px;-webkit-overflow-scrolling:touch}
+  .quick::-webkit-scrollbar{display:none}
+  .quick button{flex:0 0 auto;background:var(--card2);border:1px solid var(--line);color:var(--txt);
+    font-size:12px;padding:7px 12px;border-radius:20px;white-space:nowrap}
+  .livebtn{position:fixed;right:14px;bottom:16px;z-index:50;background:linear-gradient(90deg,var(--red),#c1121f);color:#fff;text-decoration:none;font-weight:800;font-size:13px;padding:11px 15px;border-radius:30px;box-shadow:0 6px 18px rgba(230,57,70,.45);display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.25)}
+  .livebtn .dot{width:9px;height:9px;border-radius:50%;background:#fff;animation:lp 1.2s infinite}
+  @keyframes lp{0%,100%{opacity:1}50%{opacity:.25}}
+  .liverow{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+  .liverow a{flex:1 1 44%;text-align:center;background:rgba(230,57,70,.14);border:1px solid rgba(230,57,70,.42);color:#ffd0d5;text-decoration:none;font-size:12.5px;font-weight:700;padding:10px;border-radius:10px}
+  .liverow a b{color:#fff}
+  .liverow a.wide{flex:1 1 100%;background:linear-gradient(90deg,rgba(230,57,70,.9),rgba(193,18,31,.9));color:#fff}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="badge">🚗 Roadtrip Spanien 2026</span>
+  <h1>Leverkusen → Barcelona</h1>
+  <div class="route">Bordeaux · Madrid · Granada · Altea · Barcelona</div>
+  <div class="flags">🇩🇪 🇧🇪 🇫🇷 🇪🇸</div>
+  <div class="stats">
+    <div class="stat"><div class="n">~3.050</div><div class="l">km</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">Etappen</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">Autos</div></div>
+    <div class="stat"><div class="n">4</div><div class="l">Kinder</div></div>
+  </div>
+  <div class="countdown" id="cd">☀️ Familien-Roadtrip · 1× Škoda Enyaq (E-Auto)</div>
+</div>
+
+<main>
+
+<a class="livebtn" href="https://chargemap.com/map" target="_blank" rel="noopener"><span class="dot"></span>🔌 Laden finden</a>
+
+  <div class="quick" id="quick"></div>
+
+  <!-- 1 ETAPPEN -->
+  <div class="acc" data-q="Etappen">
+    <div class="acc-head"><div class="acc-ico">📍</div>
+      <div class="acc-tt"><div class="t">Etappen & Route</div><div class="s">5 Etappen · Bordeaux → Madrid → Granada → Altea → Barcelona</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="stage">
+        <div class="d">Etappe 1</div><h3>Leverkusen → Bordeaux 🇫🇷</h3>
+        <div class="pills"><span class="pill"><b>~900 km</b></span><span class="pill">⏱️ <b>~9 h</b> + Ladepausen</span><span class="pill">🇧🇪/🇱🇺 · Paris · A10</span></div>
+        <div class="cal tip">Längste Etappe. E-Auto: ~3 Schnelllade-Stopps (alle ~250–300 km) → passt zu den Kinderpausen. Früh los, solange die Kids schlafen. Paris großräumig umfahren.</div>
+      </div>
+      <div class="stage">
+        <div class="d">Etappe 2</div><h3>Bordeaux → Madrid 🇪🇸</h3>
+        <div class="pills"><span class="pill"><b>~700 km</b></span><span class="pill">⏱️ <b>~7 h</b> + Laden</span><span class="pill">Irún · Burgos · A-1</span></div>
+        <div class="cal tip">Grenze bei Irún/San Sebastián — Schengen, keine Kontrolle. Keine Vignette. ~2–3 Ladestopps (Iberdrola/Ionity). In Spanien Klima + Hitze = mehr Verbrauch.</div>
+      </div>
+      <div class="stage">
+        <div class="d">Etappe 3</div><h3>Madrid → Granada 🇪🇸</h3>
+        <div class="pills"><span class="pill"><b>~420 km</b></span><span class="pill">⏱️ <b>~4 h</b></span><span class="pill">A-44</span></div>
+        <div class="cal warn">Beim Rausfahren aus Madrid <b>Umweltzone (ZBE)</b> beachten. 1–2 Ladestopps reichen.</div>
+      </div>
+      <div class="stage">
+        <div class="d">Etappe 4</div><h3>Granada → Altea 🇪🇸</h3>
+        <div class="pills"><span class="pill"><b>~490 km</b></span><span class="pill">⏱️ <b>~5 h</b> + Laden</span><span class="pill">A-92 · A-7 Küste</span></div>
+        <div class="cal tip">Über Murcia/Alicante an die Küste. Ziel: Ferienunterkunft in Altea. ~2 Ladestopps.</div>
+      </div>
+      <div class="stage">
+        <div class="d">Etappe 5</div><h3>Altea → Barcelona 🏁</h3>
+        <div class="pills"><span class="pill"><b>~530 km</b></span><span class="pill">⏱️ <b>~5 h</b> + Laden</span><span class="pill">AP-7 · Valencia · Tarragona</span></div>
+        <div class="cal warn">Barcelona hat eine große <b>Umweltzone (ZBE)</b> — Hotel/Route prüfen. ~2 Ladestopps.</div>
+      </div>
+      <div class="cal warn">Gesamt ~3.050 km · 5 Etappen. Altea & Barcelona sind Ferienziele → dort ggf. mehrere Nächte (Plan flexibel).</div>
+    </div></div>
+  </div>
+
+  <!-- 2 LADEN & TANKEN -->
+  <div class="acc" data-q="Laden">
+    <div class="acc-head"><div class="acc-ico">🔌</div>
+      <div class="acc-tt"><div class="t">Laden & Tanken (E-Auto + DKV)</div><div class="s">Škoda Enyaq · DKV-Karte · alle ~250–300 km</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="cal warn"><b>Škoda Enyaq 85:</b> ~82 kWh · real ~350–430 km/Ladung (Sommer, beladen, Klima eher ~330–380 km). DC-Schnellladen bis ~135 kW → <b>10→80 % in ~28 Min</b> (≈ +230 km). → ~alle <b>250–300 km</b> laden = perfekte Familienpause.</div>
+      <h4>Mit der DKV-Karte laden</h4>
+      <ul class="lst">
+        <li><b>DKV Card +Charge:</b> ~1,2 Mio. Ladepunkte. 🇫🇷 Ionity · TotalEnergies · Allego · 🇪🇸 Iberdrola/bp pulse · Ionity.</li>
+        <li>Akzeptierte Stationen über die <b>DKV-Mobility-App</b> finden (Filter „meine Karte").</li>
+        <li>Route mit Ladestopps planen: <b>A Better Route Planner (ABRP)</b> — Enyaq wählen, DKV-Netze aktivieren.</li>
+        <li>Immer dabei: <b>Ladekabel + DKV-Karte/RFID</b>; Backup: DKV-App / kontaktlos.</li>
+      </ul>
+      <h4>Ladestrategie</h4>
+      <ul class="lst">
+        <li>Mit ~10–20 % an den Schnelllader, nur auf <b>80 %</b> laden (danach wird's langsam) — nicht auf 100 %.</li>
+        <li>An <b>Autobahn-Schnellladern</b> (Ionity/Iberdrola) laden, nicht in der Stadt.</li>
+        <li>Hitze + Klima + volle Beladung = mehr Verbrauch → Reserve einplanen, nicht auf 5 % ausreizen.</li>
+        <li>Am Hotel über Nacht laden, wenn möglich (Destination-Charging) → morgens voll.</li>
+      </ul>
+      <div class="cal danger"><b>2. Auto (Verbrenner):</b> DKV geht auch zum <b>Tanken</b> (Shell/Total/…). Beide Autos <b>gemeinsam stoppen</b>: E-Auto lädt, Verbrenner tankt + Pause — ein Rhythmus, keiner wartet allein.</div>
+      <h4>Ladestopps grob nach Etappe</h4>
+      <div class="fuelrow"><div class="fnum">1</div><div><div class="fkm">Etappe 1 · ~900 km 🇫🇷</div><div class="ftxt">~3× laden (A26/A10 · Ionity/TotalEnergies)</div></div></div>
+      <div class="fuelrow"><div class="fnum">2</div><div><div class="fkm">Etappe 2 · ~700 km 🇪🇸</div><div class="ftxt">~2–3× (Grenze/Burgos · Iberdrola/Ionity)</div></div></div>
+      <div class="fuelrow"><div class="fnum">3</div><div><div class="fkm">Etappe 3 · ~420 km</div><div class="ftxt">~1–2× (A-44 · Iberdrola)</div></div></div>
+      <div class="fuelrow"><div class="fnum">4</div><div><div class="fkm">Etappe 4 · ~490 km</div><div class="ftxt">~2× (A-7 Küste)</div></div></div>
+      <div class="fuelrow"><div class="fnum">5</div><div><div class="fkm">Etappe 5 · ~530 km</div><div class="ftxt">~2× (AP-7 · Valencia/Tarragona)</div></div></div>
+      <div class="cal tip">Vor der Reise: DKV-App + ABRP installieren, Ladekarte(n) testen, Google-Maps offline für FR + ES laden.</div>
+    </div></div>
+  </div>
+
+  <!-- 3 HOTELS -->
+  <div class="acc" data-q="Hotels">
+    <div class="acc-head"><div class="acc-ico">🏨</div>
+      <div class="acc-tt"><div class="t">Hotels</div><div class="s">Bordeaux · Madrid · Granada · Altea · Barcelona</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="grp">🇫🇷 Bordeaux · Nacht 1 ✅</div>
+      <div class="hotel"><div><div class="name">Ibis Budget Bordeaux Sud</div><div class="desc">Günstig, an der Autobahn, Parkplatz. E-Auto: Lademöglichkeit vorab prüfen.</div></div><span class="tag">✅ gebucht</span></div>
+      <div class="grp">🇪🇸 Madrid · Nacht 2 ✅</div>
+      <div class="hotel"><div><div class="name">Ibis Styles Madrid</div><div class="desc">Achtung Umweltzone (ZBE) — Lage/Zufahrt prüfen. Parken + ggf. Laden checken.</div></div><span class="tag">✅ gebucht</span></div>
+      <div class="grp">🇪🇸 Granada · Nacht 3 ✅</div>
+      <div class="hotel"><div><div class="name">Occidental Granada</div><div class="desc">Gute Basis für Granada (Alhambra!). Parkplatz + Lademöglichkeit prüfen.</div></div><span class="tag g">✅ gebucht</span></div>
+      <div class="grp">🇪🇸 Altea · Nacht 4 ✅</div>
+      <div class="hotel"><div><div class="name">Ferienunterkunft Altea</div><div class="desc">Urbanització Tosal del Molar 3, 03590 Altea (Alicante). Küste/Strand. Laden ggf. am Haus/öffentlich in der Nähe.</div></div><span class="tag p">Ferienhaus</span></div>
+      <div class="grp">🇪🇸 Barcelona · Nacht 5 ⚠️ buchen</div>
+      <div class="hotel"><div><div class="name">Hotel Barcelona suchen</div><div class="desc">Mit Parkplatz + möglichst Lademöglichkeit. Achtung große Umweltzone (ZBE) — Zufahrt prüfen. Stadtrand mit ÖPNV-Anbindung oft praktischer.</div></div><span class="tag b">offen</span></div>
+      <div class="cal tip">🔌 <b>E-Auto-Tipp:</b> Wo möglich Hotels mit Lademöglichkeit wählen — über Nacht laden = morgens voll und keine Zeit unterwegs verlieren.</div>
+    </div></div>
+  </div>
+
+  <!-- 4 MIT KINDERN -->
+  <div class="acc" data-q="Kinder">
+    <div class="acc-head"><div class="acc-ico">🧒</div>
+      <div class="acc-tt"><div class="t">Mit Kindern (2 pro Auto)</div><div class="s">Pausen · Hitze · Unterhaltung · Sicherheit</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <ul class="lst">
+        <li><b>Pause alle ~2 h</b> — passt genau zu den Ladestopps. Bewegung, Toilette, Snack.</li>
+        <li>Stopps mit <b>Spielplatz</b> wählen (FR „aire de jeux", ES „área de servicio").</li>
+        <li class="x"><b>Hitze in Spanien!</b> Nie ein Kind allein im Auto lassen. Sonnenrollos an den Scheiben, viel Wasser.</li>
+        <li>Früh starten, solange die Kinder schlafen; Mittagshitze möglichst meiden.</li>
+        <li>Unterhaltung: Tablet + Kopfhörer, Hörspiele, kleine Spiele, Lieblingskuscheltier.</li>
+        <li>Reiseübelkeit: leichte Kost, Blick nach vorn, Lüften, ggf. Mittel dabei.</li>
+        <li class="x">Kindersitze korrekt gesichert (FR/ES Pflicht bis ~135 cm / 12 J.).</li>
+        <li>Kleine Reiseapotheke für Kinder (Fieber, Pflaster, Sonnencreme LSF 50).</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- 5 KONVOI -->
+  <div class="acc" data-q="Konvoi">
+    <div class="acc-head"><div class="acc-ico">🚗</div>
+      <div class="acc-tt"><div class="t">2 Autos · Konvoi</div><div class="s">Zusammen bleiben, ein Rhythmus</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <ul class="lst">
+        <li><b>Das E-Auto gibt den Takt vor</b> — Ladestopps sind die gemeinsamen Pausen. Verbrenner tankt dort mit.</li>
+        <li>Ständiger Kontakt: <b>WhatsApp Live-Standort teilen</b> oder Google-Maps-Standort. Optional Walkie-Talkie-App (Zello).</li>
+        <li>Immer den <b>nächsten Stopp im Navi vereinbaren</b> — falls man sich verliert, trifft man sich dort.</li>
+        <li>Nicht drängeln, gleiche Route/Navi-Ziel in beiden Autos.</li>
+        <li>Klar absprechen: wer zahlt was (DKV läuft je Karte/Fahrzeug separat).</li>
+        <li>Telefon-Akkus laden, Halterung nutzen.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- 6 GRENZE & UMWELTZONEN -->
+  <div class="acc" data-q="Umwelt">
+    <div class="acc-head"><div class="acc-ico">🛂</div>
+      <div class="acc-tt"><div class="t">Grenze · Umweltzonen · Maut</div><div class="s">Crit'Air · ZBE · Péage</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <p>Alles <b>Schengen</b> — keine Grenzkontrollen DE → FR → ES. Keine Vignette nötig (anders als AT/CH).</p>
+      <h4>🇫🇷 Frankreich — Crit'Air-Plakette</h4>
+      <ul class="lst">
+        <li class="x">Für Umweltzonen (z. B. Bordeaux, Paris, Lyon) <b>Crit'Air-Plakette Pflicht</b>. <b>Verbrenner vorab online bestellen</b> (certificat-air.gouv.fr, ~5 €).</li>
+        <li>E-Auto (Enyaq) = <b>Crit'Air grün (E)</b> — trotzdem bestellen/mitführen.</li>
+      </ul>
+      <h4>🇪🇸 Spanien — Umweltzonen (ZBE)</h4>
+      <ul class="lst">
+        <li class="x">Große Städte (<b>Madrid, Barcelona</b>) haben ZBE. Ausländische Kfz müssen sich teils <b>vorher registrieren</b> oder das Zentrum meiden.</li>
+        <li>E-Auto hat „Cero"-Vorteil. Hotels/Ziele in Madrid & Barcelona auf ZBE prüfen.</li>
+      </ul>
+      <h4>Maut</h4>
+      <ul class="lst">
+        <li>🇫🇷 <b>Péage teuer</b> (~90–100 € einfach bis zur Grenze) — Karte/bar. Optional <b>DKV-Télépéage-Box</b> (Durchfahrt ohne Anhalten).</li>
+        <li>🇪🇸 Viele Autobahnen <b>mautfrei</b>; einzelne AP (v. a. Katalonien) noch Maut.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- 7 REGELN -->
+  <div class="acc" data-q="Regeln">
+    <div class="acc-head"><div class="acc-ico">🅿️</div>
+      <div class="acc-tt"><div class="t">Verkehrsregeln FR / ES</div><div class="s">Tempo · Alkohol · Pflichtausrüstung</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <table>
+        <tr><th>Land</th><th>Autobahn</th><th>Landstr.</th><th>Ort</th><th>Alkohol</th></tr>
+        <tr><td>🇫🇷 FR</td><td>130 (110 Regen)</td><td>80</td><td>50</td><td>0,5 ‰</td></tr>
+        <tr><td>🇪🇸 ES</td><td>120</td><td>90</td><td>50</td><td>0,5 ‰</td></tr>
+      </table>
+      <ul class="lst">
+        <li>Warnwesten für <b>ALLE</b> Insassen griffbereit (nicht im Kofferraum), Warndreieck.</li>
+        <li class="x">🇪🇸 <b>Ab 2026: V16-Warnlicht</b> (connected) ersetzt das Warndreieck — besorgen.</li>
+        <li>Kindersitze Pflicht (bis ~135 cm). Abblendlicht bei schlechter Sicht.</li>
+        <li>Handy nur mit Halterung. In FR: bei Panne Warnweste an, bevor man aussteigt.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- 8 GELD -->
+  <div class="acc" data-q="Geld">
+    <div class="acc-head"><div class="acc-ico">💶</div>
+      <div class="acc-tt"><div class="t">Geld & Praktisches</div><div class="s">EUR überall · Karte/kontaktlos</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <ul class="lst">
+        <li>🇫🇷 und 🇪🇸 haben <b>beide den Euro</b> — kein Wechseln nötig. 🙂</li>
+        <li>Kreditkarte/kontaktlos praktisch überall; etwas Bargeld für Kleinigkeiten.</li>
+        <li>EU-Roaming gilt in FR & ES — dein dt. Handytarif funktioniert normal.</li>
+        <li>DKV-Karte(n) für Laden/Tanken/Maut — Abrechnung läuft über die Karte.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <!-- 9 CHECKLISTE -->
+  <div class="acc" data-q="Checkliste">
+    <div class="acc-head"><div class="acc-ico">✅</div>
+      <div class="acc-tt"><div class="t">Checkliste</div><div class="s">Dokumente · E-Auto · Kinder · wird gespeichert</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div id="checklist">
+        <div class="grp">📄 Dokumente (beide Autos)</div>
+        <label class="ck"><input type="checkbox"><span>Perso/Reisepass für alle (EU reicht Perso)</span></label>
+        <label class="ck"><input type="checkbox"><span>Führerschein</span></label>
+        <label class="ck"><input type="checkbox"><span>Fahrzeugschein / Zulassung</span></label>
+        <label class="ck"><input type="checkbox"><span>Grüne Versicherungskarte (empfohlen)</span></label>
+        <label class="ck"><input type="checkbox"><span>Schutzbrief / Pannenhilfe-Nummer</span></label>
+        <div class="grp">🔌 E-Auto & DKV</div>
+        <label class="ck"><input type="checkbox"><span>DKV-Karte(n) dabei + getestet</span></label>
+        <label class="ck"><input type="checkbox"><span>Ladekabel (Typ 2) im Auto</span></label>
+        <label class="ck"><input type="checkbox"><span>DKV-Mobility-App installiert</span></label>
+        <label class="ck"><input type="checkbox"><span>ABRP (Routenplaner) mit Enyaq eingerichtet</span></label>
+        <label class="ck"><input type="checkbox"><span>Google Maps offline (FR + ES)</span></label>
+        <div class="grp">🎫 Umweltzonen</div>
+        <label class="ck"><input type="checkbox"><span>Crit'Air-Plakette FR (Verbrenner) bestellt</span></label>
+        <label class="ck"><input type="checkbox"><span>ZBE Madrid/Barcelona geprüft</span></label>
+        <div class="grp">🚗 Auto & Sicherheit</div>
+        <label class="ck"><input type="checkbox"><span>Warnwesten für ALLE + Warndreieck</span></label>
+        <label class="ck"><input type="checkbox"><span>V16-Warnlicht (Spanien 2026)</span></label>
+        <label class="ck"><input type="checkbox"><span>Reifen: Profil + Druck (beladen!)</span></label>
+        <label class="ck"><input type="checkbox"><span>Kindersitze korrekt montiert</span></label>
+        <div class="grp">🧒 Kinder & Sonstiges</div>
+        <label class="ck"><input type="checkbox"><span>Hotel Barcelona buchen</span></label>
+        <label class="ck"><input type="checkbox"><span>Sonnencreme LSF 50 · Sonnenrollos · Wasser</span></label>
+        <label class="ck"><input type="checkbox"><span>Snacks · Tablet/Kopfhörer · Spiele</span></label>
+        <label class="ck"><input type="checkbox"><span>Reiseapotheke (Kinder!)</span></label>
+      </div>
+      <button class="rs" id="reset">Checkliste zurücksetzen</button>
+    </div></div>
+  </div>
+
+  <!-- 10 NOTIZEN -->
+  <div class="acc open" data-q="Notizen">
+    <div class="acc-head"><div class="acc-ico">📝</div>
+      <div class="acc-tt"><div class="t">Meine Notizen</div><div class="s">Reisedaten, Buchungsnr., wird gespeichert</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <p class="muted">Hier alles rein, was noch fehlt: Reisedatum, Hotel-Buchungsnummern, Kennzeichen beider Autos, Treffpunkte, DKV-Kartennummern …</p>
+      <textarea id="notes" placeholder="• Abfahrt am: …&#10;• Kennzeichen Auto 1 / Auto 2: …&#10;• Hotel Barcelona: …&#10;• Noch klären: …"></textarea>
+      <div class="saved" id="savedMsg"></div>
+    </div></div>
+  </div>
+
+  <!-- 11 NOTRUF -->
+  <div class="acc" data-q="Notruf">
+    <div class="acc-head"><div class="acc-ico">🆘</div>
+      <div class="acc-tt"><div class="t">Notruf & nützliche Apps</div><div class="s">Antippen zum Anrufen</div></div>
+      <div class="chev">▾</div></div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="em"><span>Notruf EU (FR + ES)</span><a href="tel:112">112</a></div>
+      <div class="em"><span>ADAC Auslandsnotruf</span><a href="tel:+498922222222">089 222222</a></div>
+      <h4>Nützliche Links & Apps</h4>
+      <a class="lnk" href="https://chargemap.com/map" target="_blank"><b>Chargemap</b> — Ladestationen-Karte</a>
+      <a class="lnk" href="https://abetterrouteplanner.com" target="_blank"><b>A Better Route Planner</b> — E-Auto-Route mit Laden</a>
+      <a class="lnk" href="https://www.dkv-mobility.com" target="_blank"><b>DKV Mobility</b> — App & Stationssuche</a>
+      <a class="lnk" href="https://www.certificat-air.gouv.fr/" target="_blank"><b>Crit'Air</b> — Umweltplakette Frankreich</a>
+      <span class="lnk"><b>Google Maps (offline)</b> · <b>Waze</b> — Navigation</span>
+    </div></div>
+  </div>
+
+  <footer>
+    🚗 Roadtrip Spanien 2026 · privater Reiseplan · Preise & km ca.-Angaben<br>
+    Tipp: Browser → „Zum Home-Bildschirm" → wie eine App, offline nutzbar.<br>
+    Buen viaje! ☀️
+  </footer>
+</main>
+
+<script>
+  // --- Accordion ---
+  document.querySelectorAll('.acc').forEach(acc=>{
+    const head=acc.querySelector('.acc-head');
+    const panel=acc.querySelector('.acc-panel');
+    if(acc.classList.contains('open')) panel.style.maxHeight=panel.scrollHeight+'px';
+    head.addEventListener('click',()=>{
+      const open=acc.classList.toggle('open');
+      panel.style.maxHeight = open ? panel.scrollHeight+'px' : 0;
+    });
+  });
+  // recalc height after content/textarea grows
+  function refresh(){document.querySelectorAll('.acc.open .acc-panel').forEach(p=>p.style.maxHeight=p.scrollHeight+'px');}
+
+  // --- Quick-Nav chips ---
+  const q=document.getElementById('quick');
+  document.querySelectorAll('.acc').forEach(acc=>{
+    const b=document.createElement('button');
+    b.textContent=acc.dataset.q;
+    b.onclick=()=>{
+      if(!acc.classList.contains('open')) acc.querySelector('.acc-head').click();
+      setTimeout(()=>acc.scrollIntoView({behavior:'smooth',block:'start'}),120);
+    };
+    q.appendChild(b);
+  });
+
+  // (kein Countdown – Reisedatum offen; steht statisch im Hero)
+
+  // --- Checklist persist ---
+  const boxes=document.querySelectorAll('#checklist input[type=checkbox]');
+  boxes.forEach((b,i)=>{
+    const k='es26_ck_'+i;
+    b.checked=localStorage.getItem(k)==='1';
+    if(b.checked)b.closest('label').classList.add('done');
+    b.addEventListener('change',()=>{localStorage.setItem(k,b.checked?'1':'0');b.closest('label').classList.toggle('done',b.checked);});
+  });
+  document.getElementById('reset').addEventListener('click',()=>{
+    boxes.forEach((b,i)=>{b.checked=false;localStorage.removeItem('es26_ck_'+i);b.closest('label').classList.remove('done');});
+  });
+
+  // --- Notes persist ---
+  const ta=document.getElementById('notes'), msg=document.getElementById('savedMsg');
+  ta.value=localStorage.getItem('es26_notes')||'';
+  let t;
+  ta.addEventListener('input',()=>{
+    localStorage.setItem('es26_notes',ta.value);
+    msg.textContent='✓ gespeichert'; clearTimeout(t);
+    t=setTimeout(()=>msg.textContent='',1500);
+    refresh();
+  });
+
+  // --- Service Worker: macht die Seite offline nutzbar ---
+  // Funktioniert nur über https:// (z. B. GitHub Pages) oder http://localhost,
+  // NICHT beim direkten Öffnen einer file://-Datei.
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register('sw.js').catch(err=>{
+        console.warn('Service Worker konnte nicht registriert werden:',err);
+      });
+    });
+  }
+</script>
+</body>
+</html>
